@@ -1,69 +1,36 @@
-var fg_image;
-var bg_image;
-var g_imagedata;
 
-function main() {
-    bg_ctx.scale(bg_canvas.width/bg_image.width, bg_canvas.height/bg_image.height);
-    bg_ctx.drawImage(bg_image, 0, 0);
+function Map(descr) {
+    this.setup(descr);
 
-    g_ctx.scale(g_canvas.width/fg_image.width, g_canvas.height/g_image.height);
-	g_ctx.drawImage(fg_image, 0, 0);
+    this.sprite = g_sprites['map'];
 
-	g_imagedata = g_ctx.getImageData(0, 0, g_canvas.width, g_canvas.height);
+    g_ctx.drawImage(this.sprite, 0, 0);
+    this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
 }
 
-function getAlphaAt(imgData, x, y) {
+Map.prototype = new Entity();
+
+Map.prototype.getAlphaAt = function(x, y) {
     var i =  y * g_canvas.width * 4 + x * 4 + 3;
 
-    return imgData.data[i];
-}
+    return this.imageData.data[i];
+};
 
-function setAlphaAt(imgData, x, y, alpha) {
+Map.prototype.setAlphaAt = function(x, y, alpha) {
     var i =  y * g_canvas.width * 4 + x * 4 + 3;
     
-    imgData.data[i] = alpha;
-}
+    this.imageData.data[i] = alpha;
+};
 
-window.addEventListener("mousedown", handleMousedown);
+Map.prototype.render = function(ctx) {
+    ctx.putImageData(this.imageData, 0, 0);
+};
 
-function handleMousedown(e) {
-    console.time("asdf");
-    var posX = e.clientX;
-    var posY = e.clientY;
-
-    var r = 50;
-
-    for(var y=posY-r; y<posY+r; y++) {
-        for(var x=posX-r; x<posX+r; x++) {
-            if(Math.pow(x - posX, 2) + Math.pow(y - posY, 2) < r*r)
-                setAlphaAt(g_imagedata, x, y, 0);
+Map.prototype.takeHit = function(cx, cy, r) {
+    for(var y=cx-r; y<cy+r; y++) {
+        for(var x=cx-r; x<cy+r; x++) {
+            if(util.square(x - cx) + util.square(y - cy) < r*r)
+                setAlphaAt(this.imageData, x, y, 0);
         }
     }
-
-    fg_ctx.putImageData(g_imagedata, 0, 0);
-    console.timeEnd("asdf");
-} 
-
-function preload1(completionCallback) {
-    fg_image = new Image();
-    
-    fg_image.onload = function () { 
-        completionCallback(main);
-    };
-    
-    fg_image.src = "world3.png";
-    fg_image.crossOrigin = "Anonymous";
-}
-
-function preload2(completionCallback) {
-    bg_image = new Image();
-    
-    bg_image.onload = function () { 
-        completionCallback();
-    };
-    
-    bg_image.src = "clouds.jpg";
-    bg_image.crossOrigin = "Anonymous";
-}
-
-preload1(preload2);
+};
