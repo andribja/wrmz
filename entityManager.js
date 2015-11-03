@@ -26,8 +26,8 @@ with suitable 'data' and 'methods'.
 var entityManager = {
 
 // "PRIVATE" DATA
-_map = [],
-_bullet = [],
+_map : [],
+_bullet : [],
 // "PRIVATE" METHODS
 
 _forEachOf: function(aCategory, fn) {
