@@ -33,7 +33,7 @@ need to tweak it if you do something "non-obvious" in yours.
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-var g_canvas = document.getElementById("myCanvas");
+var g_canvas = document.getElementById("g_canvas");
 var g_ctx = g_canvas.getContext("2d");
 
 /*

@@ -4,7 +4,7 @@
 
 /*jslint browser: true, devel: true, white: true */
 
-var canvas = document.getElementById("myCanvas");
+var canvas = document.getElementById("g_canvas");
 var ctx = canvas.getContext("2d");
 
 /*
