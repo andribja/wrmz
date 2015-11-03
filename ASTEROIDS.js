@@ -189,13 +189,13 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
+    g_sprites.map = new Sprite(g_images.map);
+    //g_sprites.ship  = new Sprite(g_images.ship);
+    //g_sprites.ship2 = new Sprite(g_images.ship2);
+    //g_sprites.rock  = new Sprite(g_images.rock);
 
-    g_sprites.ship  = new Sprite(g_images.ship);
-    g_sprites.ship2 = new Sprite(g_images.ship2);
-    g_sprites.rock  = new Sprite(g_images.rock);
-
-    g_sprites.bullet = new Sprite(g_images.ship);
-    g_sprites.bullet.scale = 0.25;
+    //g_sprites.bullet = new Sprite(g_images.ship);
+    //g_sprites.bullet.scale = 0.25;
 
     entityManager.init();
     createInitialShips();
@@ -219,7 +219,7 @@ function preloadDone() {
 
 function renderSimulation(ctx) {
     ctx.drawImage(g_images["map"], 0, 0);
-    entityManager.render(ctx);
+    //entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
