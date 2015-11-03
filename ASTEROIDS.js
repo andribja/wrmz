@@ -48,11 +48,6 @@ var g_ctx = g_canvas.getContext("2d");
 
 function createInitialShips() {
 
-    entityManager.generateShip({
-        cx : 200,
-        cy : 200
-    });
-    
 }
 
 // ====================
@@ -202,14 +197,14 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
-
-    g_sprites.ship  = new Sprite(g_images.ship);
-    g_sprites.ship2 = new Sprite(g_images.ship2);
-    g_sprites.rock  = new Sprite(g_images.rock);
+    g_sprites.map = new Sprite(g_images.map);
+    //g_sprites.ship  = new Sprite(g_images.ship);
+    //g_sprites.ship2 = new Sprite(g_images.ship2);
+    //g_sprites.rock  = new Sprite(g_images.rock);
     g_sprites.worm  = new Sprite(g_images.worm);
 
-    g_sprites.bullet = new Sprite(g_images.ship);
-    g_sprites.bullet.scale = 0.25;
+    //g_sprites.bullet = new Sprite(g_images.ship);
+    //g_sprites.bullet.scale = 0.25;
 
     entityManager.init();
     createInitialShips();
