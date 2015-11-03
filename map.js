@@ -26,11 +26,15 @@ Map.prototype.render = function(ctx) {
     ctx.putImageData(this.imageData, 0, 0);
 };
 
-Map.prototype.takeHit = function(cx, cy, r) {
+Map.prototype.destroy = function(cx, cy, r) {
     for(var y=cx-r; y<cy+r; y++) {
         for(var x=cx-r; x<cy+r; x++) {
             if(util.square(x - cx) + util.square(y - cy) < r*r)
                 setAlphaAt(this.imageData, x, y, 0);
         }
     }
+};
+
+Map.prototype.update = function(du) {
+
 };
