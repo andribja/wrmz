@@ -23,7 +23,7 @@ function handleMouse(evt) {
     var button = evt.buttons === undefined ? evt.which : evt.buttons;
     if (!button) return;
     
-    entityManager.destroyMap(g_mouseX, g_mouseY);
+    entityManager.destroyMap(g_mouseX, g_mouseY, 50);
 }
 
 // Handle "down" and "move" events the same way.

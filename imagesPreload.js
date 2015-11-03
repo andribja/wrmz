@@ -123,6 +123,7 @@ function imagesPreload(requiredImages,
             console.log("preloading image", currentName);
             currentImage = new Image();
             currentImage.name = currentName;
+            currentImage.crossOrigin = "Anonymous";
 
             currentImage.asyncLoad(requiredImages[currentName], preloadHandler);
         }

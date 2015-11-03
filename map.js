@@ -4,7 +4,7 @@ function Map(descr) {
 
     this.sprite = g_sprites['map'];
 
-    g_ctx.drawImage(this.sprite, 0, 0);
+    this.sprite.drawAt(g_ctx, 0, 0);
     this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
 }
 
@@ -27,12 +27,13 @@ Map.prototype.render = function(ctx) {
 };
 
 Map.prototype.destroy = function(cx, cy, r) {
-    for(var y=cx-r; y<cy+r; y++) {
-        for(var x=cx-r; x<cy+r; x++) {
+    for(var y=cy-r; y<cy+r; y++) {
+        for(var x=cx-r; x<cx+r; x++) {
             if(util.square(x - cx) + util.square(y - cy) < r*r)
-                setAlphaAt(this.imageData, x, y, 0);
+                this.setAlphaAt(x, y, 0);
         }
     }
+    console.log(cx, cy, r);
 };
 
 Map.prototype.update = function(du) {

@@ -47,7 +47,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._bullet];
+    this._categories = [this._map];
 },
 
 init: function() {
@@ -58,6 +58,7 @@ init: function() {
 
 destroyMap: function(cx, cy, r) {
     this._map[0].destroy(cx, cy, r);
+    console.log(this._map[0]);
 },
 
 fireBullet: function(cx, cy, velX, velY, rotation) {
@@ -97,7 +98,6 @@ update: function(du) {
         }
     }
     
-    if (this._rocks.length === 0) this._generateRocks();
 
 },
 

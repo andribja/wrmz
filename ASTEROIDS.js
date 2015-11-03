@@ -80,8 +80,6 @@ function updateSimulation(du) {
     
     entityManager.update(du);
 
-    // Prevent perpetual firing!
-    eatKey(Ship.prototype.KEY_FIRE);
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -171,9 +169,6 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        ship   : "https://notendur.hi.is/~pk/308G/images/ship.png",
-        ship2  : "https://notendur.hi.is/~pk/308G/images/ship_2.png",
-        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png",
         map    : "images/world3.png"
             
     };
@@ -213,7 +208,6 @@ function preloadDone() {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
-    ctx.drawImage(g_images["map"], 0, 0);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
