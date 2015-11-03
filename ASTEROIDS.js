@@ -159,14 +159,13 @@ function processDiagnostics() {
 
 
 // GAME-SPECIFIC RENDERING
-
+/*
 function renderSimulation(ctx) {
-
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
-
+*/
 
 // =============
 // PRELOAD STUFF
@@ -179,7 +178,9 @@ function requestPreloads() {
     var requiredImages = {
         ship   : "https://notendur.hi.is/~pk/308G/images/ship.png",
         ship2  : "https://notendur.hi.is/~pk/308G/images/ship_2.png",
-        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png"
+        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png",
+        map    : "images/world3.png"
+            
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -200,6 +201,27 @@ function preloadDone() {
     createInitialShips();
 
     main.init();
+}
+
+// =================
+// RENDER SIMULATION
+// =================
+
+// We take a very layered approach here...
+//
+// The primary `render` routine handles generic stuff such as
+// the diagnostic toggles (including screen-clearing).
+//
+// It then delegates the game-specific logic to `gameRender`
+
+
+// GAME-SPECIFIC RENDERING
+
+function renderSimulation(ctx) {
+    ctx.drawImage(g_images["map"], 0, 0);
+    entityManager.render(ctx);
+
+    if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
 
 // Kick it off
