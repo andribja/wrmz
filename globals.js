@@ -11,8 +11,11 @@ Evil, ugly (but "necessary") globals, which everyone can use.
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-var g_canvas = document.getElementById("myCanvas");
+var g_canvas = document.getElementById("g_canvas");
 var g_ctx = g_canvas.getContext("2d");
+
+var bg_canvas = document.getElementById("bg_canvas");
+var bg_ctx = bg_canvas.getContext("2d");
 
 // The "nominal interval" is the one that all of our time-based units are
 // calibrated to e.g. a velocity unit is "pixels per nominal interval"

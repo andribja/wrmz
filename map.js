@@ -1,9 +1,3 @@
-var bg_canvas = document.getElementById("bg_canvas");
-var fg_canvas = document.getElementById("fg_canvas");
-
-var bg_ctx = bg_canvas.getContext("2d");
-var fg_ctx = fg_canvas.getContext("2d");
-
 var fg_image;
 var bg_image;
 var g_imagedata;
@@ -12,20 +6,20 @@ function main() {
     bg_ctx.scale(bg_canvas.width/bg_image.width, bg_canvas.height/bg_image.height);
     bg_ctx.drawImage(bg_image, 0, 0);
 
-    fg_ctx.scale(fg_canvas.width/fg_image.width, fg_canvas.height/fg_image.height);
-	fg_ctx.drawImage(fg_image, 0, 0);
+    g_ctx.scale(g_canvas.width/fg_image.width, g_canvas.height/g_image.height);
+	g_ctx.drawImage(fg_image, 0, 0);
 
-	g_imagedata = fg_ctx.getImageData(0, 0, fg_canvas.width, fg_canvas.height);
+	g_imagedata = g_ctx.getImageData(0, 0, g_canvas.width, g_canvas.height);
 }
 
 function getAlphaAt(imgData, x, y) {
-    var i =  y * fg_canvas.width * 4 + x * 4 + 3;
+    var i =  y * g_canvas.width * 4 + x * 4 + 3;
 
     return imgData.data[i];
 }
 
 function setAlphaAt(imgData, x, y, alpha) {
-    var i =  y * fg_canvas.width * 4 + x * 4 + 3;
+    var i =  y * g_canvas.width * 4 + x * 4 + 3;
     
     imgData.data[i] = alpha;
 }
