@@ -181,7 +181,7 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        map    : "images/world3.png"
+        map    : "images/world3.png",
 		worm   : "images/worm.png"
     };
 
