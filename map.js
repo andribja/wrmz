@@ -39,3 +39,8 @@ Map.prototype.destroy = function(cx, cy, r) {
 Map.prototype.update = function(du) {
 
 };
+
+Map.prototype.pixelCollides = function(pxx, pxy){
+    if(this.getAlphaAt(pxx, pxy) != 0) return true;
+    else return false;
+};

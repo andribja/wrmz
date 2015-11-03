@@ -26,8 +26,10 @@ with suitable 'data' and 'methods'.
 var entityManager = {
 
 // "PRIVATE" DATA
+_worms   : [],
 _map : [],
 _bullet : [],
+
 // "PRIVATE" METHODS
 
 _forEachOf: function(aCategory, fn) {
@@ -47,7 +49,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map];
+    this._categories = [this._map, this._worms];
 },
 
 init: function() {
@@ -72,8 +74,14 @@ fireBullet: function(cx, cy, velX, velY, rotation) {
     }));
 },
 
+
+generateWorm : function(descr) {
+    this._worms.push(new Worm(descr));
+},
+
 generateMap : function(descr) {
     this._map.push(new Map(descr)); // TODO fix parameter to map image variable
+
 },
 
 update: function(du) {
