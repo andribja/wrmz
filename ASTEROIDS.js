@@ -219,7 +219,7 @@ function preloadDone() {
 
 function renderSimulation(ctx) {
     ctx.drawImage(g_images["map"], 0, 0);
-    //entityManager.render(ctx);
+    entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
