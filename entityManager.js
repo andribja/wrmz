@@ -56,6 +56,10 @@ init: function() {
     //this._generateShip();
 },
 
+destroyMap: function(cx, cy, r) {
+    this._map[0].destroy(cx, cy, r);
+},
+
 fireBullet: function(cx, cy, velX, velY, rotation) {
     this._bullets.push(new Bullet({
         cx   : cx,
