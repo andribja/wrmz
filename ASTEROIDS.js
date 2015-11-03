@@ -55,6 +55,18 @@ function createInitialShips() {
     
 }
 
+// ====================
+// CREATE INITIAL WORMS
+// ====================
+
+function createInitialWorms() {
+    entityManager.generateWorm({
+        cx : 100,
+        cy : 100
+    });
+    
+}
+
 // =============
 // GATHER INPUTS
 // =============
@@ -179,7 +191,8 @@ function requestPreloads() {
         ship   : "https://notendur.hi.is/~pk/308G/images/ship.png",
         ship2  : "https://notendur.hi.is/~pk/308G/images/ship_2.png",
         rock   : "https://notendur.hi.is/~pk/308G/images/rock.png",
-        map    : "images/world3.png"
+        map    : "images/world3.png",
+		worm   : "images/worm.png"
             
     };
 
@@ -193,12 +206,14 @@ function preloadDone() {
     g_sprites.ship  = new Sprite(g_images.ship);
     g_sprites.ship2 = new Sprite(g_images.ship2);
     g_sprites.rock  = new Sprite(g_images.rock);
+    g_sprites.worm  = new Sprite(g_images.worm);
 
     g_sprites.bullet = new Sprite(g_images.ship);
     g_sprites.bullet.scale = 0.25;
 
     entityManager.init();
     createInitialShips();
+    createInitialWorms();
 
     main.init();
 }
