@@ -18,7 +18,7 @@ function Worm(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
 
-    this.rememberResets();
+    //this.rememberResets();
     
     // Default sprite, if not otherwise specified
     this.sprite = this.sprite || g_sprites.worm;
@@ -26,24 +26,23 @@ function Worm(descr) {
     this.height = this.sprite.height;
     // Set normal drawing scale, and warp state off
     this._scale = 1;
-    this._isWarping = false;
 };
 
 Worm.prototype = new Entity();
-
+/*
 Worm.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_cx = this.cx;
     this.reset_cy = this.cy;
     this.reset_rotation = this.rotation;
 };
-
+*/
 Worm.prototype.KEY_LEFT = 'A'.charCodeAt(0);
 Worm.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_L   = 'W'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_R  = 'S'.charCodeAt(0);
 
-Worm.prototype.KEY_FIRE   = ' '.charCodeAt(0);
+Worm.prototype.KEY_JUMP   = ' '.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -52,7 +51,7 @@ Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
 Worm.prototype.velY = 0;
 Worm.prototype.launchVel = 2;
-Worm.prototype.numSubSteps = 1;
+//Worm.prototype.numSubSteps = 1;
 /*
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.warpSound = new Audio(
@@ -139,7 +138,7 @@ Worm.prototype.update = function (du) {
     this.maybeMove();
 
     // Handle firing
-    this.maybeFireBullet();
+    //this.maybeFireBullet();
 
     //  Register?
 
@@ -184,11 +183,9 @@ Worm.prototype.isOnGround = function(x, y){
         if(entityManager._map[0].getAlphaAt(j, yBottom) == 0)
             i++;
     }
-    if(i > 7)
-        return false;
+    if(i > 7) return false;
     
-    else
-        return true;
+    else return true;
 };
 
 Worm.prototype.canGoUpSlope = function(left){
@@ -245,7 +242,7 @@ Worm.prototype.computeSubStep = function (du) {
 
 
 
-var NOMINAL_GRAVITY = 0.12;
+var NOMINAL_GRAVITY = 0.2;
 
 Worm.prototype.computeGravity = function () {
     return g_useGravity ? NOMINAL_GRAVITY : 0;
@@ -268,6 +265,9 @@ Worm.prototype.computeThrustMag = function () {
     return thrust;
 };
 */
+
+var NOMINAL_JUMP = -5;
+
 Worm.prototype.applyAccel = function (du) {
     // u = original velocity
     var oldVelX = this.velX;
@@ -277,6 +277,11 @@ Worm.prototype.applyAccel = function (du) {
     // Let worm fall if he isn't on ground
     if(!this.isOnGround(this.cx, this.cy))
         this.velY += this.computeGravity() * du;
+
+    // Let the worm jump if its trying to, but only if it is close enough to the ground
+    if(eatKey(this.KEY_JUMP) && this.isOnGround(this.cx, this.cy+5)) {
+        this.velY = NOMINAL_JUMP * du;
+    }
 
     // v_ave = (u + v) / 2
     var aveVelX = (oldVelX + this.velX) / 2;
@@ -300,7 +305,7 @@ Worm.prototype.applyAccel = function (du) {
         this.cy += du * intervalVelY;
     }
 };
-
+/*
 Worm.prototype.maybeFireBullet = function () {
 
     if (keys[this.KEY_FIRE]) {
@@ -321,6 +326,7 @@ Worm.prototype.maybeFireBullet = function () {
     }
     
 };
+*/
 /*
 Worm.prototype.getRadius = function () {
     return (this.sprite.width / 2) * 0.9;
