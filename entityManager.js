@@ -28,7 +28,7 @@ var entityManager = {
 // "PRIVATE" DATA
 _worms   : [],
 _map : [],
-_bullet : [],
+_weapons : [],
 
 // "PRIVATE" METHODS
 
@@ -49,7 +49,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._worms];
+    this._categories = [this._map, this._worms, this._weapons];
 },
 
 init: function() {
@@ -63,8 +63,8 @@ destroyMap: function(cx, cy, r) {
     console.log(this._map[0]);
 },
 
-fireBullet: function(cx, cy, velX, velY, rotation) {
-    this._bullets.push(new Bullet({
+fireWeapon: function(cx, cy, velX, velY, rotation) {
+    this._weapons.push(new Weapon({
         cx   : cx,
         cy   : cy,
         velX : velX,
