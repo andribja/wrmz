@@ -47,6 +47,7 @@ Worm.prototype.KEY_ROTATEGUN_L   = 'W'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_R  = 'S'.charCodeAt(0);
 
 Worm.prototype.KEY_JUMP   = ' '.charCodeAt(0);
+Worm.prototype.KEY_FIRE   = 13;
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -143,7 +144,8 @@ Worm.prototype.update = function (du) {
 
     this.updateTarget(du);
     // Handle firing
-    //this.maybeFireBullet();
+
+    this.maybeFireWeapon();
 
     //  Register?
 
@@ -332,34 +334,34 @@ Worm.prototype.applyAccel = function (du) {
         this.cy += du * intervalVelY;
     }
 };
-/*
-Worm.prototype.maybeFireBullet = function () {
 
-    if (keys[this.KEY_FIRE]) {
+Worm.prototype.maybeFireWeapon = function () {
+
+    if (eatKey(this.KEY_FIRE)) {
     
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
-        var launchDist = this.getRadius() * 1.2;
+        var launchDist = this.height + 1.2;
         
         var relVel = this.launchVel;
         var relVelX = dX * relVel;
         var relVelY = dY * relVel;
 
-        entityManager.fireBullet(
+        entityManager.fireWeapon(
            this.cx + dX * launchDist, this.cy + dY * launchDist,
-           this.velX + relVelX, this.velY + relVelY,
+           relVelX, relVelY,
            this.rotation);
-           
+
     }
     
 };
-*/
+
 /*
 Worm.prototype.getRadius = function () {
     return (this.sprite.width / 2) * 0.9;
 };
 
-Worm.prototype.takeBulletHit = function () {
+Worm.prototype.takeWeaponHit = function () {
     this.warp();
 };
 
@@ -383,13 +385,13 @@ Worm.prototype.render = function (ctx) {
     var origScale = this.wormSprite.scale;
     // pass my scale into the sprite, for drawing
     this.wormSprite.scale = this._scale;
-    this.wormSprite.drawWrappedCentredAt(
+    this.wormSprite.drawCentredAt(
     ctx, this.cx, this.cy, 0
     );
     this.wormSprite.scale = origScale;
 
     this.targetSprite.scale = this._scale;
-    this.targetSprite.drawWrappedCentredAt(
+    this.targetSprite.drawCentredAt(
     ctx, this.targetCx, this.targetCy, 0
     );
     this.targetSprite.scale = origScale;

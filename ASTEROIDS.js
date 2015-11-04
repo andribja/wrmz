@@ -199,9 +199,8 @@ function preloadDone() {
     //g_sprites.rock  = new Sprite(g_images.rock);
     g_sprites.worm  = new Sprite(g_images.worm);
     g_sprites.target = new Sprite(g_images.target);
-
-    //g_sprites.bullet = new Sprite(g_images.ship);
-    //g_sprites.bullet.scale = 0.25;
+    g_sprites.weapon1 = new Sprite(g_images.target);
+    g_sprites.weapon1.scale = 0.5;
 
     entityManager.init();
     createInitialShips();

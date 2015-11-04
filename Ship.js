@@ -142,7 +142,7 @@ Ship.prototype.update = function (du) {
     }
 
     // Handle firing
-    this.maybeFireBullet();
+    this.maybeFireWeapon();
 
     // TODO: YOUR STUFF HERE! --- Warp if isColliding, otherwise Register
 
@@ -233,7 +233,7 @@ Ship.prototype.applyAccel = function (accelX, accelY, du) {
     this.cy += du * intervalVelY;
 };
 
-Ship.prototype.maybeFireBullet = function () {
+Ship.prototype.maybeFireWeapon = function () {
 
     if (keys[this.KEY_FIRE]) {
     
@@ -245,7 +245,7 @@ Ship.prototype.maybeFireBullet = function () {
         var relVelX = dX * relVel;
         var relVelY = dY * relVel;
 
-        entityManager.fireBullet(
+        entityManager.fireWeapon(
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            this.velX + relVelX, this.velY + relVelY,
            this.rotation);
@@ -258,7 +258,7 @@ Ship.prototype.getRadius = function () {
     return (this.sprite.width / 2) * 0.9;
 };
 
-Ship.prototype.takeBulletHit = function () {
+Ship.prototype.takeWeaponHit = function () {
     this.warp();
 };
 
