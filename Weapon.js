@@ -92,7 +92,7 @@ Weapon.prototype.render = function (ctx) {
         ctx.globalAlpha = this.lifeSpan / fadeThresh;
     }
 
-    g_sprites.weapon1.drawWrappedCentredAt(
+    g_sprites.weapon1.drawCentredAt(
         ctx, this.cx, this.cy, this.rotation
     );
 
