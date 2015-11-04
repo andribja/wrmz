@@ -56,8 +56,9 @@ function createInitialShips() {
 
 function createInitialWorms() {
     entityManager.generateWorm({
-        cx : 100,
-        cy : 100
+        cx : 700,
+        cy : 200
+        //cy : 450
     });
     
 }
@@ -97,7 +98,7 @@ function updateSimulation(du) {
 // GAME-SPECIFIC DIAGNOSTICS
 
 var g_allowMixedActions = true;
-var g_useGravity = false;
+var g_useGravity = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 

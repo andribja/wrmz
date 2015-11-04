@@ -47,8 +47,8 @@ Worm.prototype.KEY_FIRE   = ' '.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
-Worm.prototype.cx = 200;
-Worm.prototype.cy = 200;
+Worm.prototype.cx = 700;
+Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
 Worm.prototype.velY = 0;
 Worm.prototype.launchVel = 2;
@@ -128,6 +128,10 @@ Worm.prototype._moveToASafePlace = function () {
 
 Worm.prototype.update = function (du) {
 
+    //this.computeGravity();
+
+    this.applyAccel(du);
+    
     
     // Unregister and check for death?
 
@@ -143,8 +147,79 @@ Worm.prototype.update = function (du) {
 
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
-console.log(this.width);
-    // 
+    //console.log(this.width);
+    if(keys[this.KEY_LEFT]){
+        console.log("key left");
+        //if(this.isOnGround(this.cx-5, this.cy)){
+        var i = this.canGoUpSlope(true);
+        if(i > -Infinity){
+            this.cx -= 3;
+            this.cy -= i;
+        }
+        //}
+    }
+    if(keys[this.KEY_RIGHT]){
+        console.log("key right");
+        //if(this.isOnGround(this.cx+5, this.cy)){
+        var i = this.canGoUpSlope(false);
+        if(i > -Infinity){
+            this.cx += 3;
+            this.cy -= i;
+        }
+        //}
+    }
+
+};
+
+Worm.prototype.isOnGround = function(x, y){
+    // Get position of worms "box" 
+    var xMin = parseInt(x - this.width/2);
+    var xMax = parseInt(x + this.width/2);
+    var yBottom = parseInt(y + this.height/2);
+    var i = 0;
+
+    // If the bottom of the bounding box doesn't collide with the map
+    // We increase i, i is the number of transparent pixels on the bottom of the worm
+    for(var j = xMin; j <= xMax; j++){
+        if(entityManager._map[0].getAlphaAt(j, yBottom) == 0)
+            i++;
+    }
+    if(i > 7)
+        return false;
+    
+    else
+        return true;
+};
+
+Worm.prototype.canGoUpSlope = function(left){
+    var yBottom = parseInt(this.cy+this.height/2);
+    var yTop = parseInt(this.cy-this.height/2);
+    var i = 0; var k = 0; var x;
+
+    // See which side of the worm we need to check on 
+    if(left)
+        x = parseInt(this.cx - this.width/2);
+    else
+        x = parseInt(this.cx + this.width/2);
+
+    // Count pixels that arent transparent, first only close to the bottom of the worm
+    // Then on the whole side of the worm
+    for(var j = 0; j <= 5; j++){
+        if(entityManager._map[0].getAlphaAt(x, yBottom-j) != 0)
+            i++;
+    }
+    for(var j = yTop; j <= yBottom; j++){
+        if(entityManager._map[0].getAlphaAt(x, j) != 0)
+            k++;
+    }
+    
+    // We need to figure out which numbers are appropriate here
+    // For how many non-transparent pixels are on the side of the worn
+    // can the worm move?
+    if(i<=7 && k<=10){
+        return i;
+    }
+    return -Infinity;
 };
 
 /*
@@ -192,16 +267,16 @@ Worm.prototype.computeThrustMag = function () {
     
     return thrust;
 };
-
-Worm.prototype.applyAccel = function (accelX, accelY, du) {
-    
+*/
+Worm.prototype.applyAccel = function (du) {
     // u = original velocity
     var oldVelX = this.velX;
     var oldVelY = this.velY;
     
     // v = u + at
-    this.velX += accelX * du;
-    this.velY += accelY * du; 
+    // Let worm fall if he isn't on ground
+    if(!this.isOnGround(this.cx, this.cy))
+        this.velY += this.computeGravity() * du;
 
     // v_ave = (u + v) / 2
     var aveVelX = (oldVelX + this.velX) / 2;
@@ -213,29 +288,19 @@ Worm.prototype.applyAccel = function (accelX, accelY, du) {
     
     // s = s + v_ave * t
     var nextX = this.cx + intervalVelX * du;
-    var nextY = this.cy + intervalVelY * du;
-    
-    // bounce
-    if (g_useGravity) {
+    var nextY = this.cy + intervalVelY * du; 
 
-    var minY = g_sprites.Worm.height / 2;
-    var maxY = g_canvas.height - minY;
-
-    // Ignore the bounce if the Worm is already in
-    // the "border zone" (to avoid trapping them there)
-    if (this.cy > maxY || this.cy < minY) {
-        // do nothing
-    } else if (nextY > maxY || nextY < minY) {
-            this.velY = oldVelY * -0.9;
-            intervalVelY = this.velY;
-        }
+    // Land on the ground
+    if(this.isOnGround(nextX, nextY)){
+        this.velY = 0;
     }
-    
-    // s = s + v_ave * t
-    this.cx += du * intervalVelX;
-    this.cy += du * intervalVelY;
+    else{
+        // s = s + v_ave * t
+        this.cx += du * intervalVelX;
+        this.cy += du * intervalVelY;
+    }
 };
-*/
+
 Worm.prototype.maybeFireBullet = function () {
 
     if (keys[this.KEY_FIRE]) {
