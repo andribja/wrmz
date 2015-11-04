@@ -21,11 +21,15 @@ function Worm(descr) {
     //this.rememberResets();
     
     // Default sprite, if not otherwise specified
-    this.sprite = this.sprite || g_sprites.worm;
-    this.width = this.sprite.width;
-    this.height = this.sprite.height;
+    this.wormSprite = this.sprite || g_sprites.worm;
+    this.width = this.wormSprite.width;
+    this.height = this.wormSprite.height;
     // Set normal drawing scale, and warp state off
     this._scale = 1;
+
+    this.targetSprite = g_sprites.target;
+    this.targetCx = this.cx;
+    this.targetCy = this.cy - 20;
 };
 
 Worm.prototype = new Entity();
@@ -137,6 +141,7 @@ Worm.prototype.update = function (du) {
     // Move if buttons are being pressed
     this.maybeMove();
 
+    this.updateTarget(du);
     // Handle firing
     //this.maybeFireBullet();
 
@@ -217,6 +222,28 @@ Worm.prototype.canGoUpSlope = function(left){
         return i;
     }
     return -Infinity;
+};
+
+
+var NOMINAL_ROTATE_RATE = 0.1;
+
+Worm.prototype.updateTargetRotation = function (du) {
+    if (keys[this.KEY_ROTATEGUN_L]) {
+        this.rotation -= NOMINAL_ROTATE_RATE * du;
+    }
+    if (keys[this.KEY_ROTATEGUN_R]) {
+        this.rotation += NOMINAL_ROTATE_RATE * du;
+    }
+};
+
+Worm.prototype.updateTarget = function(du){
+    this.updateTargetRotation(du);
+
+    var distFromWorm = 40;
+    this.targetCx = +Math.sin(this.rotation)*distFromWorm + this.cx;
+    this.targetCy = -Math.cos(this.rotation)*distFromWorm + this.cy;
+
+    
 };
 
 /*
@@ -348,23 +375,23 @@ Worm.prototype.halt = function () {
     this.velY = 0;
 };
 
-var NOMINAL_ROTATE_RATE = 0.1;
 
-Worm.prototype.updateRotation = function (du) {
-    if (keys[this.KEY_ROTATEGUN_L]) {
-        this.rotation -= NOMINAL_ROTATE_RATE * du;
-    }
-    if (keys[this.KEY_ROTATEGUN_R]) {
-        this.rotation += NOMINAL_ROTATE_RATE * du;
-    }
-};
 */
+
+
 Worm.prototype.render = function (ctx) {
-    var origScale = this.sprite.scale;
+    var origScale = this.wormSprite.scale;
     // pass my scale into the sprite, for drawing
-    this.sprite.scale = this._scale;
-    this.sprite.drawWrappedCentredAt(
-    ctx, this.cx, this.cy, this.rotation
+    this.wormSprite.scale = this._scale;
+    this.wormSprite.drawWrappedCentredAt(
+    ctx, this.cx, this.cy, 0
     );
-    this.sprite.scale = origScale;
+    this.wormSprite.scale = origScale;
+
+    this.targetSprite.scale = this._scale;
+    this.targetSprite.drawWrappedCentredAt(
+    ctx, this.targetCx, this.targetCy, 0
+    );
+    this.targetSprite.scale = origScale;
+    
 };

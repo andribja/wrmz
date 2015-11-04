@@ -183,7 +183,8 @@ function requestPreloads() {
 
     var requiredImages = {
         map    : "images/world3.png",
-		worm   : "images/worm.png"
+		worm   : "images/worm.png",
+        target   : "images/target.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -197,6 +198,7 @@ function preloadDone() {
     //g_sprites.ship2 = new Sprite(g_images.ship2);
     //g_sprites.rock  = new Sprite(g_images.rock);
     g_sprites.worm  = new Sprite(g_images.worm);
+    g_sprites.target = new Sprite(g_images.target);
 
     //g_sprites.bullet = new Sprite(g_images.ship);
     //g_sprites.bullet.scale = 0.25;
