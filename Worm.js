@@ -6,12 +6,6 @@
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-/*
-0        1         2         3         4         5         6         7         8
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
-*/
-
-
 // A generic contructor which accepts an arbitrary descriptor object
 function Worm(descr) {
 
@@ -33,14 +27,6 @@ function Worm(descr) {
 };
 
 Worm.prototype = new Entity();
-/*
-Worm.prototype.rememberResets = function () {
-    // Remember my reset positions
-    this.reset_cx = this.cx;
-    this.reset_cy = this.cy;
-    this.reset_rotation = this.rotation;
-};
-*/
 Worm.prototype.KEY_LEFT = 'A'.charCodeAt(0);
 Worm.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_L   = 'W'.charCodeAt(0);
@@ -62,72 +48,6 @@ Worm.prototype.launchVel = 2;
 Worm.prototype.warpSound = new Audio(
     "sounds/WormWarp.ogg");
 
-Worm.prototype.warp = function () {
-
-    this._isWarping = true;
-    this._scaleDirn = -1;
-    this.warpSound.play();
-    
-    // Unregister me from my old posistion
-    // ...so that I can't be collided with while warping
-    spatialManager.unregister(this);
-};
-
-Worm.prototype._updateWarp = function (du) {
-
-    var SHRINK_RATE = 3 / SECS_TO_NOMINALS;
-    this._scale += this._scaleDirn * SHRINK_RATE * du;
-    
-    if (this._scale < 0.2) {
-    
-        this._moveToASafePlace();
-        this.halt();
-        this._scaleDirn = 1;
-        
-    } else if (this._scale > 1) {
-    
-        this._scale = 1;
-        this._isWarping = false;
-        
-        // Reregister me from my old posistion
-        // ...so that I can be collided with again
-        spatialManager.register(this);
-        
-    }
-};
-
-Worm.prototype._moveToASafePlace = function () {
-
-    // Move to a safe place some suitable distance away
-    var origX = this.cx,
-        origY = this.cy,
-        MARGIN = 40,
-        isSafePlace = false;
-
-    for (var attempts = 0; attempts < 100; ++attempts) {
-    
-        var warpDistance = 100 + Math.random() * g_canvas.width /2;
-        var warpDirn = Math.random() * consts.FULL_CIRCLE;
-        
-        this.cx = origX + warpDistance * Math.sin(warpDirn);
-        this.cy = origY - warpDistance * Math.cos(warpDirn);
-        
-        this.wrapPosition();
-        
-        // Don't go too near the edges, and don't move into a collision!
-        if (!util.isBetween(this.cx, MARGIN, g_canvas.width - MARGIN)) {
-            isSafePlace = false;
-        } else if (!util.isBetween(this.cy, MARGIN, g_canvas.height - MARGIN)) {
-            isSafePlace = false;
-        } else {
-            isSafePlace = !this.isColliding();
-        }
-
-        // Get out as soon as we find a safe place
-        if (isSafePlace) break;
-        
-    }
-};
 */
 
 Worm.prototype.update = function (du) {
@@ -270,52 +190,11 @@ Worm.prototype.updateTarget = function(du){
     
 };
 
-/*
-Worm.prototype.computeSubStep = function (du) {
-    
-    var thrust = this.computeThrustMag();
-
-    // Apply thrust directionally, based on our rotation
-    var accelX = +Math.sin(this.rotation) * thrust;
-    var accelY = -Math.cos(this.rotation) * thrust;
-    
-    accelY += this.computeGravity();
-
-    this.applyAccel(accelX, accelY, du);
-    
-    this.wrapPosition();
-    
-    if (thrust === 0 || g_allowMixedActions) {
-        this.updateRotation(du);
-    }
-};
-*/
-
-
-
 var NOMINAL_GRAVITY = 0.2;
 
 Worm.prototype.computeGravity = function () {
     return g_useGravity ? NOMINAL_GRAVITY : 0;
 };
-/*
-var NOMINAL_THRUST = +0.2;
-var NOMINAL_RETRO  = -0.1;
-
-Worm.prototype.computeThrustMag = function () {
-    
-    var thrust = 0;
-    
-    if (keys[this.KEY_THRUST]) {
-        thrust += NOMINAL_THRUST;
-    }
-    if (keys[this.KEY_RETRO]) {
-        thrust += NOMINAL_RETRO;
-    }
-    
-    return thrust;
-};
-*/
 
 var NOMINAL_JUMP = -5;
 
@@ -382,27 +261,23 @@ Worm.prototype.maybeFireWeapon = function () {
 };
 
 /*
+//Hugsanlega gera getBoundingBox
 Worm.prototype.getRadius = function () {
     return (this.sprite.width / 2) * 0.9;
 };
 
+//Breyta þessu falli
 Worm.prototype.takeWeaponHit = function () {
     this.warp();
 };
 
+// Þurfum að bæta inn this.reset_cx og cy ef við ætlum að nota þetta
 Worm.prototype.reset = function () {
     this.setPos(this.reset_cx, this.reset_cy);
     this.rotation = this.reset_rotation;
     
     this.halt();
 };
-
-Worm.prototype.halt = function () {
-    this.velX = 0;
-    this.velY = 0;
-};
-
-
 */
 
 
