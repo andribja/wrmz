@@ -36,6 +36,14 @@ need to tweak it if you do something "non-obvious" in yours.
 var g_canvas = document.getElementById("g_canvas");
 var g_ctx = g_canvas.getContext("2d");
 
+// Stretch canvas to window
+g_canvas.width = window.innerWidth - 16;
+window.addEventListener('resize', resizeListener);
+
+function resizeListener() {
+    g_canvas.width = window.innerWidth - 16;
+}
+
 /*
 0        1         2         3         4         5         6         7         8
 12345678901234567890123456789012345678901234567890123456789012345678901234567890

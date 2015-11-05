@@ -60,7 +60,6 @@ init: function() {
 
 destroyMap: function(cx, cy, r) {
     this._map[0].destroy(cx, cy, r);
-    console.log(this._map[0]);
 },
 
 fireWeapon: function(cx, cy, velX, velY, rotation, type) {
@@ -109,7 +108,6 @@ update: function(du) {
         }
     }
     
-
 },
 
 render: function(ctx) {

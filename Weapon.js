@@ -53,12 +53,13 @@ Weapon.prototype.lifeSpan = 3000 / 16.6;
 
 Weapon.prototype.update = function (du) {
     // TODO: YOUR STUFF HERE! --- Unregister and check for death
+    spatialManager.unregister(this);
     var t = this.fullLifeSpan - this.lifeSpan;
     this.lifeSpan -= du;
     //if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
-    if(this.cx > g_canvas.width || this.cx < 0 || 
-        this.cy > g_canvas.height)
+    if(this.cx > g_canvas.width - OFFSET_X || this.cx < 0 || 
+        this.cy > g_canvas.height - OFFSET_Y)
         return entityManager.KILL_ME_NOW;
 
     if(this.type === 'projectile') {
@@ -87,6 +88,7 @@ Weapon.prototype.update = function (du) {
     }
     
     // TODO: YOUR STUFF HERE! --- (Re-)Register
+    spatialManager.register(this);
 
 };
 
@@ -98,7 +100,7 @@ Weapon.prototype.takeWeaponHit = function () {
     this.kill();
     
     // Make a noise when I am zapped by another Weapon
-    this.zappedSound.play();
+    //this.zappedSound.play();
 };
 
 Weapon.prototype.render = function (ctx) {
@@ -109,7 +111,7 @@ Weapon.prototype.render = function (ctx) {
     }
 
     g_sprites.weapon1.drawCentredAt(
-        ctx, this.cx, this.cy, this.rotation
+        ctx, this.cx + OFFSET_X, this.cy + OFFSET_Y, this.rotation
     );
 
     ctx.globalAlpha = 1;

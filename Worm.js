@@ -389,13 +389,13 @@ Worm.prototype.render = function (ctx) {
     // pass my scale into the sprite, for drawing
     this.wormSprite.scale = this._scale;
     this.wormSprite.drawCentredAt(
-    ctx, this.cx, this.cy, 0
+    ctx, this.cx + OFFSET_X, this.cy + OFFSET_Y, 0
     );
     this.wormSprite.scale = origScale;
 
     this.targetSprite.scale = this._scale;
     this.targetSprite.drawCentredAt(
-    ctx, this.targetCx, this.targetCy, 0
+    ctx, this.targetCx + OFFSET_X, this.targetCy + OFFSET_Y, 0
     );
     this.targetSprite.scale = origScale;
     

@@ -11,6 +11,11 @@ Evil, ugly (but "necessary") globals, which everyone can use.
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
+// Offset parameters for scrolling
+var OFFSET_X = 0;
+var OFFSET_Y = 0;
+
+
 var g_canvas = document.getElementById("g_canvas");
 var g_ctx = g_canvas.getContext("2d");
 
