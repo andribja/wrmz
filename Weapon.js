@@ -46,6 +46,7 @@ Weapon.prototype.update = function (du) {
     var mapHit = this.checkIfHitMap();
     if(mapHit) {
         this.damageMap();
+        this.damageWorms();
         return entityManager.KILL_ME_NOW;
     }
 
@@ -93,6 +94,10 @@ Weapon.prototype.damageMap = function () {
     var cy = parseInt(this.cy);
     entityManager._map[0].destroy(cx, cy, this.damageRadius);
 };
+
+Weapon.prototype.damageWorms = function () {
+    entityManager.damageWorms(this.cx, this.cy, this.damageRadius);
+}
 
 Weapon.prototype.getRadius = function () {
     return 4;

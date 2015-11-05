@@ -42,6 +42,9 @@ Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
 Worm.prototype.velY = 0;
 Worm.prototype.launchVel = 2;
+Worm.prototype.health = 100;
+Worm.prototype.team = "green";
+Worm.prototype.isActive = "false";
 //Worm.prototype.numSubSteps = 1;
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -60,6 +63,7 @@ Worm.prototype.update = function (du) {
     // Unregister and check for death?
 
     // Move if buttons are being pressed
+    if(!this.isActive) return;
     this.maybeMove();
 
     this.updateTarget(du);
@@ -275,6 +279,17 @@ Worm.prototype.maybeFireWeapon = function () {
     
 };
 
+Worm.prototype.takeDamage = function(cx, cy, r) {
+    var d = util.dist(this.cx, this.cy, cx, cy);
+    if(d > r) return;
+    else this.health -= r-d;
+    if(this.health <= 0) this.death();
+};
+
+Worm.prototype.death = function() {
+    //TODO implement
+};
+
 /*
 //Hugsanlega gera getBoundingBox
 Worm.prototype.getRadius = function () {
@@ -310,5 +325,9 @@ Worm.prototype.render = function (ctx) {
     ctx, this.targetCx, this.targetCy, 0
     );
     this.targetSprite.scale = origScale;
-    
+    ctx.save();
+    ctx.fillStyle = this.team;
+    ctx.textAlign = 'center';
+    ctx.font = '15pt Arial Bold';
+    ctx.fillText(this.health,this.cx, this.cy-30); 
 };
