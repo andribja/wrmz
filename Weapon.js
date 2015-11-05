@@ -58,7 +58,7 @@ Weapon.prototype.update = function (du) {
     //if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
     if(this.cx > g_canvas.width || this.cx < 0 || 
-        this.cy > g_canvas.height || this.cy < 0)
+        this.cy > g_canvas.height)
         return entityManager.KILL_ME_NOW;
 
     if(this.type === 'projectile') {
