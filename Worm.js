@@ -329,5 +329,5 @@ Worm.prototype.render = function (ctx) {
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
-    ctx.fillText(this.health,this.cx, this.cy-30); 
+    ctx.fillText(this.health,this.cx + OFFSET_X, this.cy-30 + OFFSET_Y); 
 };

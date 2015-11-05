@@ -92,7 +92,7 @@ Weapon.prototype.checkIfHitMap = function () {
 Weapon.prototype.damageMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
-    entityManager._map[0].destroy(cx, cy, this.damageRadius);
+    entityManager.destroyMap(cx, cy, this.damageRadius);
 };
 
 Weapon.prototype.damageWorms = function () {
