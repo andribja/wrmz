@@ -65,10 +65,15 @@ function createInitialShips() {
 function createInitialWorms() {
     entityManager.generateWorm({
         cx : 700,
-        cy : 200
+        cy : 200,
+        isActive : true
         //cy : 450
     });
-    
+    entityManager.generateWorm({
+        cx: 400,
+        cy: 200,
+        isActive : false
+    });
 }
 
 // =============

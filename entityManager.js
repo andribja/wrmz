@@ -62,6 +62,12 @@ destroyMap: function(cx, cy, r) {
     this._map[0].destroy(cx, cy, r);
 },
 
+damageWorms: function(cx, cy, r) {
+    for(var i = 0; i < this._worms.length; i++) {
+        this._worms[i].takeDamage(cx, cy, r);
+    }
+},
+
 fireWeapon: function(cx, cy, velX, velY, rotation, type) {
     this._weapons.push(new Weapon({
         cx   : cx,

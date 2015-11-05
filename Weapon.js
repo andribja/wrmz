@@ -6,12 +6,6 @@
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-/*
-0        1         2         3         4         5         6         7         8
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
-*/
-
-
 // A generic contructor which accepts an arbitrary descriptor object
 function Weapon(descr) {
     // Common inherited setup logic from Entity
@@ -19,13 +13,6 @@ function Weapon(descr) {
     // Make a noise when I am created (i.e. fired)
     //this.fireSound.play();
     
-/*
-    // Diagnostics to check inheritance stuff
-    this._WeaponProperty = true;
-    console.dir(this);
-*/
-    this.fullLifeSpan = this.lifeSpan;
-
     if(this.type === 'projectile') {
         this.initAngle = this.rotation - Math.PI / 2;
         this.initX = this.cx;
@@ -42,30 +29,37 @@ Weapon.prototype = new Entity();
   //  "sounds/WeaponZapped.ogg");
     
 // Initial, inheritable, default values
+Weapon.prototype.damageRadius = 40;
+Weapon.prototype.t = 0;
+
 Weapon.prototype.rotation = 0;
 Weapon.prototype.cx = 200;
 Weapon.prototype.cy = 200;
 Weapon.prototype.velX = 1;
 Weapon.prototype.velY = 1;
 
-// Convert times from milliseconds to "nominal" time units.
-Weapon.prototype.lifeSpan = 3000 / 16.6;
 
 Weapon.prototype.update = function (du) {
-    // TODO: YOUR STUFF HERE! --- Unregister and check for death
-    spatialManager.unregister(this);
-    var t = this.fullLifeSpan - this.lifeSpan;
-    this.lifeSpan -= du;
-    //if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
+    // TODO: YOUR STUFF HERE! --- Unregister and check for death???
+    
+    // did it hit something?
+    var mapHit = this.checkIfHitMap();
+    if(mapHit) {
+        this.damageMap();
+        this.damageWorms();
+        return entityManager.KILL_ME_NOW;
+    }
 
-    if(this.cx > g_canvas.width - OFFSET_X || this.cx < 0 || 
-        this.cy > g_canvas.height - OFFSET_Y)
+    // has it left the frame?
+    if(this.cx > g_canvas.width + OFFSET_X || this.cx < 0 || 
+        this.cy > g_canvas.height + OFFSET_Y)
         return entityManager.KILL_ME_NOW;
 
+    this.t += du;
     if(this.type === 'projectile') {
-        this.cx = this.initX + this.initVel*t*Math.cos(this.initAngle);
-        this.cy = this.initY + this.initVel*t*Math.sin(this.initAngle) + 
-                    0.5*NOMINAL_GRAVITY*util.square(t);
+        this.cx = this.initX + this.initVel*this.t*Math.cos(this.initAngle);
+        this.cy = this.initY + this.initVel*this.t*Math.sin(this.initAngle) + 
+                    0.5*NOMINAL_GRAVITY*util.square(this.t);
     } else {
         this.cx += this.velX * du;
         this.cy += this.velY * du;
@@ -74,10 +68,8 @@ Weapon.prototype.update = function (du) {
         this.rotation = util.wrapRange(this.rotation, 0, consts.FULL_CIRCLE);
     }
 
-    //this.wrapPosition();
     
-    // TODO? NO, ACTUALLY, I JUST DID THIS BIT FOR YOU! :-)
-    //
+    /*
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
@@ -85,22 +77,30 @@ Weapon.prototype.update = function (du) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) canTakeHit.call(hitEntity); 
         return entityManager.KILL_ME_NOW;
-    }
+    }*/
     
-    // TODO: YOUR STUFF HERE! --- (Re-)Register
-    spatialManager.register(this);
+    // TODO: YOUR STUFF HERE! --- (Re-)Register?
 
 };
+
+Weapon.prototype.checkIfHitMap = function () {
+    var cx = parseInt(this.cx);
+    var cy = parseInt(this.cy);
+    if(entityManager._map[0].getAlphaAt(cx, cy) !== 0) return true;
+};
+
+Weapon.prototype.damageMap = function () {
+    var cx = parseInt(this.cx);
+    var cy = parseInt(this.cy);
+    entityManager._map[0].destroy(cx, cy, this.damageRadius);
+};
+
+Weapon.prototype.damageWorms = function () {
+    entityManager.damageWorms(this.cx, this.cy, this.damageRadius);
+}
 
 Weapon.prototype.getRadius = function () {
     return 4;
-};
-
-Weapon.prototype.takeWeaponHit = function () {
-    this.kill();
-    
-    // Make a noise when I am zapped by another Weapon
-    //this.zappedSound.play();
 };
 
 Weapon.prototype.render = function (ctx) {

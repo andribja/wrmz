@@ -6,12 +6,6 @@
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-/*
-0        1         2         3         4         5         6         7         8
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
-*/
-
-
 // A generic contructor which accepts an arbitrary descriptor object
 function Worm(descr) {
 
@@ -33,14 +27,6 @@ function Worm(descr) {
 };
 
 Worm.prototype = new Entity();
-/*
-Worm.prototype.rememberResets = function () {
-    // Remember my reset positions
-    this.reset_cx = this.cx;
-    this.reset_cy = this.cy;
-    this.reset_rotation = this.rotation;
-};
-*/
 Worm.prototype.KEY_LEFT = 'A'.charCodeAt(0);
 Worm.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_L   = 'W'.charCodeAt(0);
@@ -56,78 +42,15 @@ Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
 Worm.prototype.velY = 0;
 Worm.prototype.launchVel = 2;
+Worm.prototype.health = 100;
+Worm.prototype.team = "green";
+Worm.prototype.isActive = "false";
 //Worm.prototype.numSubSteps = 1;
 /*
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.warpSound = new Audio(
     "sounds/WormWarp.ogg");
 
-Worm.prototype.warp = function () {
-
-    this._isWarping = true;
-    this._scaleDirn = -1;
-    this.warpSound.play();
-    
-    // Unregister me from my old posistion
-    // ...so that I can't be collided with while warping
-    spatialManager.unregister(this);
-};
-
-Worm.prototype._updateWarp = function (du) {
-
-    var SHRINK_RATE = 3 / SECS_TO_NOMINALS;
-    this._scale += this._scaleDirn * SHRINK_RATE * du;
-    
-    if (this._scale < 0.2) {
-    
-        this._moveToASafePlace();
-        this.halt();
-        this._scaleDirn = 1;
-        
-    } else if (this._scale > 1) {
-    
-        this._scale = 1;
-        this._isWarping = false;
-        
-        // Reregister me from my old posistion
-        // ...so that I can be collided with again
-        spatialManager.register(this);
-        
-    }
-};
-
-Worm.prototype._moveToASafePlace = function () {
-
-    // Move to a safe place some suitable distance away
-    var origX = this.cx,
-        origY = this.cy,
-        MARGIN = 40,
-        isSafePlace = false;
-
-    for (var attempts = 0; attempts < 100; ++attempts) {
-    
-        var warpDistance = 100 + Math.random() * g_canvas.width /2;
-        var warpDirn = Math.random() * consts.FULL_CIRCLE;
-        
-        this.cx = origX + warpDistance * Math.sin(warpDirn);
-        this.cy = origY - warpDistance * Math.cos(warpDirn);
-        
-        this.wrapPosition();
-        
-        // Don't go too near the edges, and don't move into a collision!
-        if (!util.isBetween(this.cx, MARGIN, g_canvas.width - MARGIN)) {
-            isSafePlace = false;
-        } else if (!util.isBetween(this.cy, MARGIN, g_canvas.height - MARGIN)) {
-            isSafePlace = false;
-        } else {
-            isSafePlace = !this.isColliding();
-        }
-
-        // Get out as soon as we find a safe place
-        if (isSafePlace) break;
-        
-    }
-};
 */
 
 Worm.prototype.update = function (du) {
@@ -140,6 +63,7 @@ Worm.prototype.update = function (du) {
     // Unregister and check for death?
 
     // Move if buttons are being pressed
+    if(!this.isActive) return;
     this.maybeMove();
 
     this.updateTarget(du);
@@ -153,54 +77,48 @@ Worm.prototype.update = function (du) {
 
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
-    //console.log(this.width);
     if(keys[this.KEY_LEFT]){
-        console.log("key left");
-        //if(this.isOnGround(this.cx-5, this.cy)){
         var i = this.canGoUpSlope(true);
         if(i > -Infinity){
             this.cx -= 3;
             this.cy -= i;
         }
-        //}
     }
     if(keys[this.KEY_RIGHT]){
-        console.log("key right");
-        //if(this.isOnGround(this.cx+5, this.cy)){
         var i = this.canGoUpSlope(false);
         if(i > -Infinity){
             this.cx += 3;
             this.cy -= i;
         }
-        //}
     }
 
 };
 
-Worm.prototype.isOnGround = function(x, y){
+Worm.prototype.edgeCollidesWithMap = function(y){
     // Get position of worms "box" 
-    var xMin = parseInt(x - this.width/2);
-    var xMax = parseInt(x + this.width/2);
-    var yBottom = parseInt(y + this.height/2);
+    var xMin = parseInt(this.cx - this.width/2);
+    var xMax = parseInt(this.cx + this.width/2);
+    //var yBottom = parseInt(y + this.height/2);
     var i = 0;
 
     // If the bottom of the bounding box doesn't collide with the map
     // We increase i, i is the number of transparent pixels on the bottom of the worm
     for(var j = xMin; j <= xMax; j++){
-        if(entityManager._map[0].getAlphaAt(j, yBottom) == 0)
+        if(entityManager._map[0].getAlphaAt(j, y) == 0)
             i++;
     }
+
     if(i > 7) return false;
     
     else return true;
 };
 
 Worm.prototype.canGoUpSlope = function(left){
-    var yBottom = parseInt(this.cy+this.height/2);
-    var yTop = parseInt(this.cy-this.height/2);
+    var yBottom = parseInt(this.cy + this.height/2);
+    var yTop = parseInt(this.cy - this.height/2);
     var i = 0; var k = 0; var x;
 
-    // See which side of the worm we need to check on 
+    // See which side of the worm we need to check 
     if(left)
         x = parseInt(this.cx - this.width/2);
     else
@@ -226,6 +144,32 @@ Worm.prototype.canGoUpSlope = function(left){
     return -Infinity;
 };
 
+Worm.prototype.canJump = function(){
+    // Let the worm jump if its trying to, but only if it is close enough to the ground
+    var yBottom = parseInt(this.cy + 5 + this.height/2);
+    if(eatKey(this.KEY_JUMP) && this.edgeCollidesWithMap(yBottom)) {
+        return true;
+    }
+
+    //Check if worm hits anything if he jumps
+    //if(this.isOnGround)
+    
+    var yTop = parseInt(this.cy - this.height/2);
+    var xMin = parseInt(this.cx - this.width/2);
+    var xMax = parseInt(this.cx + this.width/2);
+    var j = 0;
+
+    for(var x = xMin; x <= xMax; x++){
+        if(entityManager._map[0].getAlphaAt(x, yTop) != 0){
+            j++;
+        }
+    }
+    //if(j>1)
+
+};
+
+//Worm.prototype.
+
 
 var NOMINAL_ROTATE_RATE = 0.1;
 
@@ -250,52 +194,11 @@ Worm.prototype.updateTarget = function(du){
     
 };
 
-/*
-Worm.prototype.computeSubStep = function (du) {
-    
-    var thrust = this.computeThrustMag();
-
-    // Apply thrust directionally, based on our rotation
-    var accelX = +Math.sin(this.rotation) * thrust;
-    var accelY = -Math.cos(this.rotation) * thrust;
-    
-    accelY += this.computeGravity();
-
-    this.applyAccel(accelX, accelY, du);
-    
-    this.wrapPosition();
-    
-    if (thrust === 0 || g_allowMixedActions) {
-        this.updateRotation(du);
-    }
-};
-*/
-
-
-
 var NOMINAL_GRAVITY = 0.2;
 
 Worm.prototype.computeGravity = function () {
     return g_useGravity ? NOMINAL_GRAVITY : 0;
 };
-/*
-var NOMINAL_THRUST = +0.2;
-var NOMINAL_RETRO  = -0.1;
-
-Worm.prototype.computeThrustMag = function () {
-    
-    var thrust = 0;
-    
-    if (keys[this.KEY_THRUST]) {
-        thrust += NOMINAL_THRUST;
-    }
-    if (keys[this.KEY_RETRO]) {
-        thrust += NOMINAL_RETRO;
-    }
-    
-    return thrust;
-};
-*/
 
 var NOMINAL_JUMP = -5;
 
@@ -306,11 +209,12 @@ Worm.prototype.applyAccel = function (du) {
     
     // v = u + at
     // Let worm fall if he isn't on ground
-    if(!this.isOnGround(this.cx, this.cy))
+    var yBottom = parseInt(this.cy + this.height/2);
+    if(!this.edgeCollidesWithMap(yBottom))
         this.velY += this.computeGravity() * du;
 
     // Let the worm jump if its trying to, but only if it is close enough to the ground
-    if(eatKey(this.KEY_JUMP) && this.isOnGround(this.cx, this.cy+5)) {
+    if(this.canJump()) {
         this.velY = NOMINAL_JUMP * du;
     }
 
@@ -322,18 +226,34 @@ Worm.prototype.applyAccel = function (du) {
     var intervalVelX = g_useAveVel ? aveVelX : this.velX;
     var intervalVelY = g_useAveVel ? aveVelY : this.velY;
     
+    
+
     // s = s + v_ave * t
     var nextX = this.cx + intervalVelX * du;
     var nextY = this.cy + intervalVelY * du; 
+    
+    var i=0;
+    for(var j = parseInt(nextX-this.width/2); j <= parseInt(nextX+this.width/2); j++){
+        if(entityManager._map[0].getAlphaAt(j, parseInt(nextY-this.height/2)) !== 0) {
+            i++;
+        }
+    } 
+    if (i>7) {
+        nextY = this.cy + NOMINAL_GRAVITY*du;
+        if (this.velY<0)this.velY = 0;
+    }
+
+    
 
     // Land on the ground
-    if(this.isOnGround(nextX, nextY)){
+    var yBottom = parseInt(nextY + this.height/2);
+    if(this.edgeCollidesWithMap(yBottom)){
         this.velY = 0;
     }
     else{
         // s = s + v_ave * t
-        this.cx += du * intervalVelX;
-        this.cy += du * intervalVelY;
+        this.cx = nextX;
+        this.cy = nextY;
     }
 };
 
@@ -359,28 +279,35 @@ Worm.prototype.maybeFireWeapon = function () {
     
 };
 
+Worm.prototype.takeDamage = function(cx, cy, r) {
+    var d = util.dist(this.cx, this.cy, cx, cy);
+    if(d > r) return;
+    else this.health -= r-d;
+    if(this.health <= 0) this.death();
+};
+
+Worm.prototype.death = function() {
+    //TODO implement
+};
+
 /*
+//Hugsanlega gera getBoundingBox
 Worm.prototype.getRadius = function () {
     return (this.sprite.width / 2) * 0.9;
 };
 
+//Breyta þessu falli
 Worm.prototype.takeWeaponHit = function () {
     this.warp();
 };
 
+// Þurfum að bæta inn this.reset_cx og cy ef við ætlum að nota þetta
 Worm.prototype.reset = function () {
     this.setPos(this.reset_cx, this.reset_cy);
     this.rotation = this.reset_rotation;
     
     this.halt();
 };
-
-Worm.prototype.halt = function () {
-    this.velX = 0;
-    this.velY = 0;
-};
-
-
 */
 
 
@@ -398,5 +325,9 @@ Worm.prototype.render = function (ctx) {
     ctx, this.targetCx + OFFSET_X, this.targetCy + OFFSET_Y, 0
     );
     this.targetSprite.scale = origScale;
-    
+    ctx.save();
+    ctx.fillStyle = this.team;
+    ctx.textAlign = 'center';
+    ctx.font = '15pt Arial Bold';
+    ctx.fillText(this.health,this.cx, this.cy-30); 
 };

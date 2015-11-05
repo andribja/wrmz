@@ -56,6 +56,9 @@ square: function(x) {
 
 // DISTANCES
 // =========
+dist: function(x1, y1, x2, y2) {
+    return Math.sqrt(this.distSq(x1, y1, x2, y2));
+},
 
 distSq: function(x1, y1, x2, y2) {
     return this.square(x2-x1) + this.square(y2-y1);
@@ -104,11 +107,11 @@ fillBox: function (ctx, x, y, w, h, style) {
 },
 
 getPixelIndex: function(imgData, x, y) {
-    return y * imgData.width * 4 + x * 4;
+    return parseInt(y) * imgData.width * 4 + parseInt(x) * 4;
 },
 
 setPixelData: function(imgData, x, y, r, g, b, a) {
-    var i = this.getPixelIndex(imgData, x, y);
+    var i = this.getPixelIndex(imgData, parseInt(x), parseInt(y));
 
     imgData.data[i] = r;
     imgData.data[i+1] = g;
