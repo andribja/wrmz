@@ -30,6 +30,7 @@ Weapon.prototype = new Entity();
     
 // Initial, inheritable, default values
 Weapon.prototype.damageRadius = 40;
+Weapon.prototype.t = 0;
 
 Weapon.prototype.rotation = 0;
 Weapon.prototype.cx = 200;
@@ -40,7 +41,7 @@ Weapon.prototype.velY = 1;
 
 Weapon.prototype.update = function (du) {
     // TODO: YOUR STUFF HERE! --- Unregister and check for death???
-
+    
     // did it hit something?
     var mapHit = this.checkIfHitMap();
     if(mapHit) {
@@ -53,10 +54,11 @@ Weapon.prototype.update = function (du) {
         this.cy > g_canvas.height)
         return entityManager.KILL_ME_NOW;
 
+    this.t += du;
     if(this.type === 'projectile') {
-        this.cx = this.initX + this.initVel*t*Math.cos(this.initAngle);
-        this.cy = this.initY + this.initVel*t*Math.sin(this.initAngle) + 
-                    0.5*NOMINAL_GRAVITY*util.square(t);
+        this.cx = this.initX + this.initVel*this.t*Math.cos(this.initAngle);
+        this.cy = this.initY + this.initVel*this.t*Math.sin(this.initAngle) + 
+                    0.5*NOMINAL_GRAVITY*util.square(this.t);
     } else {
         this.cx += this.velX * du;
         this.cy += this.velY * du;
