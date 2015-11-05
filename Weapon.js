@@ -51,8 +51,8 @@ Weapon.prototype.update = function (du) {
     }
 
     // has it left the frame?
-    if(this.cx > g_canvas.width + OFFSET_X || this.cx < 0 || 
-        this.cy > g_canvas.height + OFFSET_Y)
+    if(this.cx + OFFSET_X > g_canvas.width || this.cx < 0 || 
+        this.cy + OFFSET_Y > g_canvas.height)
         return entityManager.KILL_ME_NOW;
 
     this.t += du;
