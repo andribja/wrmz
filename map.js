@@ -12,6 +12,10 @@ function Map(descr) {
 
 Map.prototype = new Entity();
 
+Map.prototype.isLand = function(x, y) {
+    return this.getAlphaAt(x, y) == 0;
+}
+
 Map.prototype.getAlphaAt = function(x, y) {
     var i =  y * g_canvas.width * 4 + x * 4 + 3;
 
@@ -27,6 +31,16 @@ Map.prototype.setAlphaAt = function(x, y, alpha) {
 Map.prototype.render = function(ctx) {
     ctx.putImageData(this.imageData, 0, 0);
 };
+
+Map.prototype.collidesWithMap = function(cx, cy, r) {
+    var theta;
+    for(theta = 0; theta < 2*Math.PI; theta += Math.PI/12) {
+        var y = r*Math.sin(theta);
+        var x = r*Math.cos(theta);
+        if(this.isLand(x,y)) return true;
+    }
+    return false;
+}
 
 Map.prototype.destroy = function(cx, cy, r) {
     for(var y=cy-r; y<cy+r; y++) {
