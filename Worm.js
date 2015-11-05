@@ -153,54 +153,48 @@ Worm.prototype.update = function (du) {
 
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
-    //console.log(this.width);
     if(keys[this.KEY_LEFT]){
-        console.log("key left");
-        //if(this.isOnGround(this.cx-5, this.cy)){
         var i = this.canGoUpSlope(true);
         if(i > -Infinity){
             this.cx -= 3;
             this.cy -= i;
         }
-        //}
     }
     if(keys[this.KEY_RIGHT]){
-        console.log("key right");
-        //if(this.isOnGround(this.cx+5, this.cy)){
         var i = this.canGoUpSlope(false);
         if(i > -Infinity){
             this.cx += 3;
             this.cy -= i;
         }
-        //}
     }
 
 };
 
-Worm.prototype.isOnGround = function(x, y){
+Worm.prototype.edgeCollidesWithMap = function(y){
     // Get position of worms "box" 
-    var xMin = parseInt(x - this.width/2);
-    var xMax = parseInt(x + this.width/2);
-    var yBottom = parseInt(y + this.height/2);
+    var xMin = parseInt(this.cx - this.width/2);
+    var xMax = parseInt(this.cx + this.width/2);
+    //var yBottom = parseInt(y + this.height/2);
     var i = 0;
 
     // If the bottom of the bounding box doesn't collide with the map
     // We increase i, i is the number of transparent pixels on the bottom of the worm
     for(var j = xMin; j <= xMax; j++){
-        if(entityManager._map[0].getAlphaAt(j, yBottom) == 0)
+        if(entityManager._map[0].getAlphaAt(j, y) == 0)
             i++;
     }
+
     if(i > 7) return false;
     
     else return true;
 };
 
 Worm.prototype.canGoUpSlope = function(left){
-    var yBottom = parseInt(this.cy+this.height/2);
-    var yTop = parseInt(this.cy-this.height/2);
+    var yBottom = parseInt(this.cy + this.height/2);
+    var yTop = parseInt(this.cy - this.height/2);
     var i = 0; var k = 0; var x;
 
-    // See which side of the worm we need to check on 
+    // See which side of the worm we need to check 
     if(left)
         x = parseInt(this.cx - this.width/2);
     else
@@ -225,6 +219,32 @@ Worm.prototype.canGoUpSlope = function(left){
     }
     return -Infinity;
 };
+
+Worm.prototype.canJump = function(){
+    // Let the worm jump if its trying to, but only if it is close enough to the ground
+    var yBottom = parseInt(this.cy + 5 + this.height/2);
+    if(eatKey(this.KEY_JUMP) && this.edgeCollidesWithMap(yBottom)) {
+        return true;
+    }
+
+    //Check if worm hits anything if he jumps
+    //if(this.isOnGround)
+    
+    var yTop = parseInt(this.cy - this.height/2);
+    var xMin = parseInt(this.cx - this.width/2);
+    var xMax = parseInt(this.cx + this.width/2);
+    var j = 0;
+
+    for(var x = xMin; x <= xMax; x++){
+        if(entityManager._map[0].getAlphaAt(x, yTop) != 0){
+            j++;
+        }
+    }
+    //if(j>1)
+
+};
+
+//Worm.prototype.
 
 
 var NOMINAL_ROTATE_RATE = 0.1;
@@ -304,11 +324,12 @@ Worm.prototype.applyAccel = function (du) {
     
     // v = u + at
     // Let worm fall if he isn't on ground
-    if(!this.isOnGround(this.cx, this.cy))
+    var yBottom = parseInt(this.cy + this.height/2);
+    if(!this.edgeCollidesWithMap(yBottom))
         this.velY += this.computeGravity() * du;
 
     // Let the worm jump if its trying to, but only if it is close enough to the ground
-    if(eatKey(this.KEY_JUMP) && this.isOnGround(this.cx, this.cy+5)) {
+    if(this.canJump()) {
         this.velY = NOMINAL_JUMP * du;
     }
 
@@ -325,7 +346,8 @@ Worm.prototype.applyAccel = function (du) {
     var nextY = this.cy + intervalVelY * du; 
 
     // Land on the ground
-    if(this.isOnGround(nextX, nextY)){
+    var yBottom = parseInt(nextY + this.height/2);
+    if(this.edgeCollidesWithMap(yBottom)){
         this.velY = 0;
     }
     else{
