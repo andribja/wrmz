@@ -236,6 +236,8 @@ Worm.prototype.updateTargetRotation = function (du) {
     if (keys[this.KEY_ROTATEGUN_R]) {
         this.rotation += NOMINAL_ROTATE_RATE * du;
     }
+
+    this.rotation = util.wrapRange(this.rotation, 0, consts.FULL_CIRCLE);
 };
 
 Worm.prototype.updateTarget = function(du){
@@ -350,7 +352,8 @@ Worm.prototype.maybeFireWeapon = function () {
         entityManager.fireWeapon(
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            relVelX, relVelY,
-           this.rotation);
+           this.rotation,
+           'projectile');
 
     }
     

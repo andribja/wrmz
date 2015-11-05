@@ -6,6 +6,8 @@ function Map(descr) {
 
     this.sprite.drawAt(g_ctx, 0, 0);
     this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
+
+    spatialManager.register(this)
 }
 
 Map.prototype = new Entity();

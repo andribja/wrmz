@@ -63,14 +63,17 @@ destroyMap: function(cx, cy, r) {
     console.log(this._map[0]);
 },
 
-fireWeapon: function(cx, cy, velX, velY, rotation) {
+fireWeapon: function(cx, cy, velX, velY, rotation, type) {
     this._weapons.push(new Weapon({
         cx   : cx,
         cy   : cy,
         velX : velX,
         velY : velY,
 
-        rotation : rotation
+        rotation : rotation,
+
+        type : type,
+        initVel : 10
     }));
 },
 

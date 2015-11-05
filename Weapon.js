@@ -24,7 +24,13 @@ function Weapon(descr) {
     this._WeaponProperty = true;
     console.dir(this);
 */
+    this.fullLifeSpan = this.lifeSpan;
 
+    if(this.type === 'projectile') {
+        this.initAngle = this.rotation - Math.PI / 2;
+        this.initX = this.cx;
+        this.initY = this.cy;
+    }
 }
 
 Weapon.prototype = new Entity();
@@ -47,17 +53,27 @@ Weapon.prototype.lifeSpan = 3000 / 16.6;
 
 Weapon.prototype.update = function (du) {
     // TODO: YOUR STUFF HERE! --- Unregister and check for death
+    var t = this.fullLifeSpan - this.lifeSpan;
     this.lifeSpan -= du;
-    if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
+    //if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
-    this.cx += this.velX * du;
-    this.cy += this.velY * du;
+    if(this.cx > g_canvas.width || this.cx < 0 || 
+        this.cy > g_canvas.height || this.cy < 0)
+        return entityManager.KILL_ME_NOW;
 
-    this.rotation += 1 * du;
-    this.rotation = util.wrapRange(this.rotation,
-                                   0, consts.FULL_CIRCLE);
+    if(this.type === 'projectile') {
+        this.cx = this.initX + this.initVel*t*Math.cos(this.initAngle);
+        this.cy = this.initY + this.initVel*t*Math.sin(this.initAngle) + 
+                    0.5*NOMINAL_GRAVITY*util.square(t);
+    } else {
+        this.cx += this.velX * du;
+        this.cy += this.velY * du;
 
-    this.wrapPosition();
+        this.rotation += 1 * du;
+        this.rotation = util.wrapRange(this.rotation, 0, consts.FULL_CIRCLE);
+    }
+
+    //this.wrapPosition();
     
     // TODO? NO, ACTUALLY, I JUST DID THIS BIT FOR YOU! :-)
     //
