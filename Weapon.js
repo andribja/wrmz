@@ -42,6 +42,8 @@ Weapon.prototype = new Entity();
   //  "sounds/WeaponZapped.ogg");
     
 // Initial, inheritable, default values
+Weapon.prototype.damageRadius = 40;
+
 Weapon.prototype.rotation = 0;
 Weapon.prototype.cx = 200;
 Weapon.prototype.cy = 200;
@@ -53,6 +55,14 @@ Weapon.prototype.lifeSpan = 3000 / 16.6;
 
 Weapon.prototype.update = function (du) {
     // TODO: YOUR STUFF HERE! --- Unregister and check for death
+
+    // did it hit something?
+    var mapHit = this.checkIfHitMap();
+    if(mapHit) {
+        this.damageMap();
+        return entityManager.KILL_ME_NOW;
+    }
+
     var t = this.fullLifeSpan - this.lifeSpan;
     this.lifeSpan -= du;
     //if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
@@ -90,17 +100,29 @@ Weapon.prototype.update = function (du) {
 
 };
 
+Weapon.prototype.checkIfHitMap = function () {
+    var cx = parseInt(this.cx);
+    var cy = parseInt(this.cy);
+    if(entityManager._map[0].getAlphaAt(cx, cy) !== 0) return true;
+};
+
+Weapon.prototype.damageMap = function () {
+    var cx = parseInt(this.cx);
+    var cy = parseInt(this.cy);
+    entityManager._map[0].destroy(cx, cy, this.damageRadius);
+};
+
 Weapon.prototype.getRadius = function () {
     return 4;
 };
-
+/*
 Weapon.prototype.takeWeaponHit = function () {
     this.kill();
     
     // Make a noise when I am zapped by another Weapon
-    this.zappedSound.play();
+    //this.zappedSound.play();
 };
-
+*/
 Weapon.prototype.render = function (ctx) {
     var fadeThresh = Weapon.prototype.lifeSpan / 3;
 
