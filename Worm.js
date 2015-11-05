@@ -222,9 +222,24 @@ Worm.prototype.applyAccel = function (du) {
     var intervalVelX = g_useAveVel ? aveVelX : this.velX;
     var intervalVelY = g_useAveVel ? aveVelY : this.velY;
     
+    
+
     // s = s + v_ave * t
     var nextX = this.cx + intervalVelX * du;
     var nextY = this.cy + intervalVelY * du; 
+    
+    var i=0;
+    for(var j = parseInt(nextX-this.width/2); j <= parseInt(nextX+this.width/2); j++){
+        if(entityManager._map[0].getAlphaAt(j, parseInt(nextY-this.height/2)) !== 0) {
+            i++;
+        }
+    } 
+    if (i>7) {
+        nextY = this.cy + NOMINAL_GRAVITY*du;
+        if (this.velY<0)this.velY = 0;
+    }
+
+    
 
     // Land on the ground
     var yBottom = parseInt(nextY + this.height/2);
@@ -233,8 +248,8 @@ Worm.prototype.applyAccel = function (du) {
     }
     else{
         // s = s + v_ave * t
-        this.cx += du * intervalVelX;
-        this.cy += du * intervalVelY;
+        this.cx = nextX;
+        this.cy = nextY;
     }
 };
 
