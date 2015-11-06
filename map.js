@@ -22,7 +22,7 @@ function Map(descr) {
 Map.prototype = new Entity();
 
 Map.prototype.isLand = function(x, y) {
-    return this.getAlphaAt(x, y) == 0;
+    return this.getAlphaAt(x, y) !== 0;
 };
 
 Map.prototype.getAlphaAt = function(x, y) {
@@ -51,19 +51,31 @@ Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
     return false;
 }
 
-Map.prototype.vertLineCollidesWithMap = function(x, y1, y2) {
+Map.prototype.vertLineCollidesWithMap = function(x0, y1, y2) {
+    var yMin = parseInt(Math.min(y1,y2));
+    var yMax = parseInt(Math.max(y1,y2));
+    var x = parseInt(x0);
     var y;
-    for(y = Math.min(y1,y2); y < Math.max(y1,y2); y++) {
+    var i;
+    for(y = yMin; y <= yMax; y++) {
         if(this.isLand(x, y)) return true;
     }
     return false;
 }
 
-Map.prototype.horiLineCollidesWithMap = function(x1, x2, y) {
+Map.prototype.horiLineCollidesWithMap = function(x1, x2, y0) {
+    var xMin = parseInt(Math.min(x1,x2));
+    var xMax = parseInt(Math.max(x1,x2));
+    var y = parseInt(y0);
     var x;
-    for(x = Math.min(x1,x2); x < Math.max(x1,x2); x++) {
-        if(this.isLand(x, y)) return true;
+    var i = 0;
+    for(x = xMin; x <= xMax; x++) {
+        if(this.isLand(x,y)) i++;
     }
+    // i is the number of pixles on the line, that are colliding with the map
+    // 13 px or more mean that more than 65% of the top/bottom of the worm is colliding with te map
+    // (we might need to change this later)
+    if(i>13) return true;
     return false;
 }
 

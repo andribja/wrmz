@@ -11,16 +11,16 @@ function Worm(descr) {
 
     // Common inherited setup logic from Entity
     this.setup(descr);
-
-    //this.rememberResets();
     
-    // Default sprite, if not otherwise specified
+    // Default worm sprite, if not otherwise specified
     this.wormSprite = this.sprite || g_sprites.worm;
     this.width = this.wormSprite.width;
     this.height = this.wormSprite.height;
-    // Set normal drawing scale, and warp state off
+
+    // Set normal drawing scale
     this._scale = 1;
 
+    // Create a target
     this.targetSprite = g_sprites.target;
     this.targetCx = this.cx;
     this.targetCy = this.cy - 20;
@@ -31,7 +31,6 @@ Worm.prototype.KEY_LEFT = 'A'.charCodeAt(0);
 Worm.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_L   = 'W'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_R  = 'S'.charCodeAt(0);
-
 Worm.prototype.KEY_JUMP   = ' '.charCodeAt(0);
 Worm.prototype.KEY_FIRE   = 13;
 
@@ -45,93 +44,73 @@ Worm.prototype.launchVel = 2;
 Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.isActive = "false";
-//Worm.prototype.numSubSteps = 1;
+
 /*
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.warpSound = new Audio(
     "sounds/WormWarp.ogg");
-
 */
 
 Worm.prototype.update = function (du) {
 
-    //this.computeGravity();
-
+    // ToDo: Unregister and check for death?
+    
     this.applyAccel(du);
-    
-    
-    // Unregister and check for death?
 
     // Move if buttons are being pressed
     if(!this.isActive) return;
     this.maybeMove();
 
+    // Update the weapon's aim
     this.updateTarget(du);
+    
     // Handle firing
-
     this.maybeFireWeapon();
 
-    //  Register?
-
+    // ToDo: Register?
 };
 
 
 Worm.prototype.applyAccel = function (du) {
-    // u = original velocity
+    // original velocity
     var oldVelX = this.velX;
     var oldVelY = this.velY;
     
-    // v = u + at
-    // Make worm fall down if he isn't on ground
-    var yBottom = parseInt(this.cy + this.height/2);
-    if(!this.edgeCollidesWithMap(yBottom))
+    // Activate gravity if worm's not standing on solid ground
+    if(!this.horizontalEdgeCollidesWithMap(this.cx-this.width/2, this.cx+this.width/2, this.cy+this.height/2))
         this.velY += this.computeGravity() * du;
 
-    // v_ave = (u + v) / 2
+    // calculate the average velocity
     var aveVelX = (oldVelX + this.velX) / 2;
     var aveVelY = (oldVelY + this.velY) / 2;
     
-    // Decide whether to use the average or not (average is best!)
-    var intervalVelX = g_useAveVel ? aveVelX : this.velX;
-    var intervalVelY = g_useAveVel ? aveVelY : this.velY;
+    // Apply the velocity to see where the worm will move next
+    var nextX = this.cx + aveVelX * du;
+    var nextY = this.cy + aveVelY * du; 
     
-    // s = s + v_ave * t
-    var nextX = this.cx + intervalVelX * du;
-    var nextY = this.cy + intervalVelY * du; 
-    
+    // next position of the worm's bounding box
+    var nextLx = nextX - this.width/2;
+    var nextRx = nextX + this.width/2;
+    var nextTopY = nextY - this.height/2;
+    var nextBottomY = nextY + this.height/2;
 
-    var i=0;
-    for(var j = parseInt(nextX-this.width/2); j <= parseInt(nextX+this.width/2); j++){
-        if(entityManager._map[0].getAlphaAt(j, parseInt(nextY-this.height/2)) !== 0) {
-            i++;
-        }
-    } 
-    if (i>7) {
+    // prevent worm from jumping up into the map
+    if (this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextTopY)) {
+        // it whill hit something, stop moving upwards
         nextY = this.cy + NOMINAL_GRAVITY*du;
         if (this.velY<0)this.velY = 0;
     }
 
-/*
-    var xLeft = nextX - this.width/2;
-    var xRight = nextX - this.width/2;
-    var yBottom = nextY + this.height/2;
-    console.log("collides? "+this.horizontalEdgeCollidesWithMap(xLeft, xRight, yBottom));
-    if(this.horizontalEdgeCollidesWithMap(xLeft, xRight, yBottom)){
-        this.velY = 0;
-        
-    }*/
-
     // Land on the ground
-    var yBottom = parseInt(nextY + this.height/2);
-    if(this.edgeCollidesWithMap(yBottom)){
+    if(this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextBottomY)){
         this.velY = 0;
     }
-    else{
-        // s = s + v_ave * t
-        this.cx = nextX;
-        this.cy = nextY;
-    }
+
+    // now move for real
+    this.cx = nextX;
+    this.cy = nextY;
 };
+
 
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
@@ -156,32 +135,20 @@ Worm.prototype.maybeMove = function() {
 
 };
 
+
 var NOMINAL_JUMP = -5;
 
 Worm.prototype.maybeJump = function(){
-    // Let the worm jump, only if it is close enough to the ground
-    var yBottom = parseInt(this.cy + 5 + this.height/2);
+    var yBottom = this.cy + 5 + this.height/2;
+    var xLeft = this.cx - this.width/2;
+    var xRight = this.cx + this.width/2;
 
-    if(this.edgeCollidesWithMap(yBottom)) {
+    // The worm can only jump if it is close enough to the ground
+    if(this.horizontalEdgeCollidesWithMap(xLeft, xRight, yBottom)) {
         this.velY = NOMINAL_JUMP;
     }
-
-    //Check if worm hits anything if he jumps
-    //if(this.isOnGround)
-    /*
-    var yTop = parseInt(this.cy - this.height/2);
-    var xMin = parseInt(this.cx - this.width/2);
-    var xMax = parseInt(this.cx + this.width/2);
-    var j = 0;
-
-    for(var x = xMin; x <= xMax; x++){
-        if(entityManager._map[0].getAlphaAt(x, yTop) != 0){
-            j++;
-        }
-    }
-    //if(j>1)
-*/
 };
+
 
 Worm.prototype.verticalEdgeCollidesWithMap = function(x, y1, y2){
     //check if the line between (x,y1) and (x,y2) collides with the map 
@@ -190,31 +157,14 @@ Worm.prototype.verticalEdgeCollidesWithMap = function(x, y1, y2){
 
 Worm.prototype.horizontalEdgeCollidesWithMap = function(x1, x2, y){
     //check if the line between (x1,y) and (x2,y) collides with the map 
-    console.log(entityManager._map[0].horiLineCollidesWithMap(x1, x2, y));
     return entityManager._map[0].horiLineCollidesWithMap(x1, x2, y);
 };
 
 
-Worm.prototype.edgeCollidesWithMap = function(y){
-    // Get position of worms "box" 
-    var xMin = parseInt(this.cx - this.width/2);
-    var xMax = parseInt(this.cx + this.width/2);
-    //var yBottom = parseInt(y + this.height/2);
-    var i = 0;
-
-    // If the bottom of the bounding box doesn't collide with the map
-    // We increase i, i is the number of transparent pixels on the bottom of the worm
-    for(var j = xMin; j <= xMax; j++){
-        if(entityManager._map[0].getAlphaAt(j, y) == 0)
-            i++;
-    }
-
-    if(i > 7) return false;
-    
-    else return true;
-};
-
 Worm.prototype.canGoUpSlope = function(left){
+    
+    // ToDo: reyna að breyta þannig að við notum föllin úr map
+
     var yBottom = parseInt(this.cy + this.height/2);
     var yTop = parseInt(this.cy - this.height/2);
     var i = 0; var k = 0; var x;
@@ -265,9 +215,8 @@ Worm.prototype.updateTarget = function(du){
     var distFromWorm = 40;
     this.targetCx = +Math.sin(this.rotation)*distFromWorm + this.cx;
     this.targetCy = -Math.cos(this.rotation)*distFromWorm + this.cy;
-
-    
 };
+
 
 var NOMINAL_GRAVITY = 0.2;
 
@@ -276,14 +225,13 @@ Worm.prototype.computeGravity = function () {
 };
 
 
-
 Worm.prototype.maybeFireWeapon = function () {
 
     if (eatKey(this.KEY_FIRE)) {
     
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
-        var launchDist = this.height + 1.2;
+        var launchDist = this.width + 1.2;
         
         var relVel = this.launchVel;
         var relVelX = dX * relVel;
@@ -299,10 +247,11 @@ Worm.prototype.maybeFireWeapon = function () {
     
 };
 
+
 Worm.prototype.takeDamage = function(cx, cy, r) {
     var d = util.dist(this.cx, this.cy, cx, cy);
     if(d > r) return;
-    else this.health -= r-d;
+    else this.health -= Math.ceil(r-d);
     if(this.health <= 0) this.death();
 };
 
