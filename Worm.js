@@ -75,6 +75,64 @@ Worm.prototype.update = function (du) {
 
 };
 
+
+Worm.prototype.applyAccel = function (du) {
+    // u = original velocity
+    var oldVelX = this.velX;
+    var oldVelY = this.velY;
+    
+    // v = u + at
+    // Make worm fall down if he isn't on ground
+    var yBottom = parseInt(this.cy + this.height/2);
+    if(!this.edgeCollidesWithMap(yBottom))
+        this.velY += this.computeGravity() * du;
+
+    // v_ave = (u + v) / 2
+    var aveVelX = (oldVelX + this.velX) / 2;
+    var aveVelY = (oldVelY + this.velY) / 2;
+    
+    // Decide whether to use the average or not (average is best!)
+    var intervalVelX = g_useAveVel ? aveVelX : this.velX;
+    var intervalVelY = g_useAveVel ? aveVelY : this.velY;
+    
+    // s = s + v_ave * t
+    var nextX = this.cx + intervalVelX * du;
+    var nextY = this.cy + intervalVelY * du; 
+    
+
+    var i=0;
+    for(var j = parseInt(nextX-this.width/2); j <= parseInt(nextX+this.width/2); j++){
+        if(entityManager._map[0].getAlphaAt(j, parseInt(nextY-this.height/2)) !== 0) {
+            i++;
+        }
+    } 
+    if (i>7) {
+        nextY = this.cy + NOMINAL_GRAVITY*du;
+        if (this.velY<0)this.velY = 0;
+    }
+
+/*
+    var xLeft = nextX - this.width/2;
+    var xRight = nextX - this.width/2;
+    var yBottom = nextY + this.height/2;
+    console.log("collides? "+this.horizontalEdgeCollidesWithMap(xLeft, xRight, yBottom));
+    if(this.horizontalEdgeCollidesWithMap(xLeft, xRight, yBottom)){
+        this.velY = 0;
+        
+    }*/
+
+    // Land on the ground
+    var yBottom = parseInt(nextY + this.height/2);
+    if(this.edgeCollidesWithMap(yBottom)){
+        this.velY = 0;
+    }
+    else{
+        // s = s + v_ave * t
+        this.cx = nextX;
+        this.cy = nextY;
+    }
+};
+
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
@@ -92,7 +150,50 @@ Worm.prototype.maybeMove = function() {
         }
     }
 
+    if(eatKey(this.KEY_JUMP)) {
+        this.maybeJump();
+    }
+
 };
+
+var NOMINAL_JUMP = -5;
+
+Worm.prototype.maybeJump = function(){
+    // Let the worm jump, only if it is close enough to the ground
+    var yBottom = parseInt(this.cy + 5 + this.height/2);
+
+    if(this.edgeCollidesWithMap(yBottom)) {
+        this.velY = NOMINAL_JUMP;
+    }
+
+    //Check if worm hits anything if he jumps
+    //if(this.isOnGround)
+    /*
+    var yTop = parseInt(this.cy - this.height/2);
+    var xMin = parseInt(this.cx - this.width/2);
+    var xMax = parseInt(this.cx + this.width/2);
+    var j = 0;
+
+    for(var x = xMin; x <= xMax; x++){
+        if(entityManager._map[0].getAlphaAt(x, yTop) != 0){
+            j++;
+        }
+    }
+    //if(j>1)
+*/
+};
+
+Worm.prototype.verticalEdgeCollidesWithMap = function(x, y1, y2){
+    //check if the line between (x,y1) and (x,y2) collides with the map 
+    return entityManager._map[0].vertLineCollidesWithMap(x, y1, y2);
+};
+
+Worm.prototype.horizontalEdgeCollidesWithMap = function(x1, x2, y){
+    //check if the line between (x1,y) and (x2,y) collides with the map 
+    console.log(entityManager._map[0].horiLineCollidesWithMap(x1, x2, y));
+    return entityManager._map[0].horiLineCollidesWithMap(x1, x2, y);
+};
+
 
 Worm.prototype.edgeCollidesWithMap = function(y){
     // Get position of worms "box" 
@@ -144,32 +245,6 @@ Worm.prototype.canGoUpSlope = function(left){
     return -Infinity;
 };
 
-Worm.prototype.canJump = function(){
-    // Let the worm jump if its trying to, but only if it is close enough to the ground
-    var yBottom = parseInt(this.cy + 5 + this.height/2);
-    if(eatKey(this.KEY_JUMP) && this.edgeCollidesWithMap(yBottom)) {
-        return true;
-    }
-
-    //Check if worm hits anything if he jumps
-    //if(this.isOnGround)
-    
-    var yTop = parseInt(this.cy - this.height/2);
-    var xMin = parseInt(this.cx - this.width/2);
-    var xMax = parseInt(this.cx + this.width/2);
-    var j = 0;
-
-    for(var x = xMin; x <= xMax; x++){
-        if(entityManager._map[0].getAlphaAt(x, yTop) != 0){
-            j++;
-        }
-    }
-    //if(j>1)
-
-};
-
-//Worm.prototype.
-
 
 var NOMINAL_ROTATE_RATE = 0.1;
 
@@ -200,62 +275,7 @@ Worm.prototype.computeGravity = function () {
     return g_useGravity ? NOMINAL_GRAVITY : 0;
 };
 
-var NOMINAL_JUMP = -5;
 
-Worm.prototype.applyAccel = function (du) {
-    // u = original velocity
-    var oldVelX = this.velX;
-    var oldVelY = this.velY;
-    
-    // v = u + at
-    // Let worm fall if he isn't on ground
-    var yBottom = parseInt(this.cy + this.height/2);
-    if(!this.edgeCollidesWithMap(yBottom))
-        this.velY += this.computeGravity() * du;
-
-    // Let the worm jump if its trying to, but only if it is close enough to the ground
-    if(this.canJump()) {
-        this.velY = NOMINAL_JUMP * du;
-    }
-
-    // v_ave = (u + v) / 2
-    var aveVelX = (oldVelX + this.velX) / 2;
-    var aveVelY = (oldVelY + this.velY) / 2;
-    
-    // Decide whether to use the average or not (average is best!)
-    var intervalVelX = g_useAveVel ? aveVelX : this.velX;
-    var intervalVelY = g_useAveVel ? aveVelY : this.velY;
-    
-    
-
-    // s = s + v_ave * t
-    var nextX = this.cx + intervalVelX * du;
-    var nextY = this.cy + intervalVelY * du; 
-    
-    var i=0;
-    for(var j = parseInt(nextX-this.width/2); j <= parseInt(nextX+this.width/2); j++){
-        if(entityManager._map[0].getAlphaAt(j, parseInt(nextY-this.height/2)) !== 0) {
-            i++;
-        }
-    } 
-    if (i>7) {
-        nextY = this.cy + NOMINAL_GRAVITY*du;
-        if (this.velY<0)this.velY = 0;
-    }
-
-    
-
-    // Land on the ground
-    var yBottom = parseInt(nextY + this.height/2);
-    if(this.edgeCollidesWithMap(yBottom)){
-        this.velY = 0;
-    }
-    else{
-        // s = s + v_ave * t
-        this.cx = nextX;
-        this.cy = nextY;
-    }
-};
 
 Worm.prototype.maybeFireWeapon = function () {
 
