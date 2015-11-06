@@ -4,17 +4,14 @@ function Map(descr) {
 
     this.sprite = g_sprites['map'];
 
-    this.fullWidth = this.sprite.width;
-    var oldWidth = g_canvas.width;
-
+    FULL_WIDTH = this.sprite.width;
+    FULL_HEIGHT = this.sprite.height;
+    
     // Get a quick snapshot of the full image to store it's data
-    g_canvas.width = this.fullWidth;
+    g_canvas.width = FULL_WIDTH;
+    g_canvas.height = FULL_HEIGHT;
     this.sprite.drawAt(g_ctx, 0, 0);
     this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
-
-    // Just display the desired view
-    g_canvas.width = oldWidth;
-    this.sprite.drawAt(g_ctx, 0, 0);
 
     //spatialManager.register(this)
 }
@@ -89,15 +86,27 @@ Map.prototype.destroy = function(cx, cy, r) {
 };
 
 Map.prototype.update = function(du) {
+    var px = 10;
 
+    // Scroll left
     if(eatKey(37))
-        this.scroll(10);
+        this.scroll(px, 0);
 
+    // Scroll right
     if(eatKey(39))
-        this.scroll(-10);
+        this.scroll(-px, 0);
+
+    // Scroll up
+    if(eatKey(38))
+        this.scroll(0, px);
+
+    // Scroll down
+    if(eatKey(40))
+        this.scroll(0, -px);
 };
 
-Map.prototype.scroll = function(pixels) {
+Map.prototype.scroll = function(dx, dy) {
 
-    OFFSET_X = util.clampRange(OFFSET_X + pixels, g_canvas.width - this.fullWidth, 0);
+    OFFSET_X = util.clampRange(OFFSET_X + dx, g_canvas.width - FULL_WIDTH, 0);
+    OFFSET_Y = util.clampRange(OFFSET_Y + dy, g_canvas.height - FULL_HEIGHT, 0);
 };

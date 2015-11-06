@@ -119,6 +119,19 @@ setPixelData: function(imgData, x, y, r, g, b, a) {
 
     if(a)
         imgData.data[i+3] = a;
+},
+
+resizeCanvas: function(canvas, maxWidth, maxHeight) {
+    var width = maxWidth;
+    var height = maxHeight;
+    if(window.innerWidth - 16 < maxWidth)
+        width = window.innerWidth - 16;
+
+    if(window.innerHeight - 16 < maxHeight)
+        height = window.innerHeight - 16;
+
+    canvas.width = width;
+    canvas.height = height;
 }
 
 };

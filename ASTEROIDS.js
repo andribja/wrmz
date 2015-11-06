@@ -36,12 +36,11 @@ need to tweak it if you do something "non-obvious" in yours.
 var g_canvas = document.getElementById("g_canvas");
 var g_ctx = g_canvas.getContext("2d");
 
-// Stretch canvas to window
-g_canvas.width = window.innerWidth - 16;
+// Stretch canvas to window on resize
 window.addEventListener('resize', resizeListener);
 
-function resizeListener() {
-    g_canvas.width = window.innerWidth - 16;
+function resizeListener(e) {
+    util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 /*
@@ -220,6 +219,9 @@ function preloadDone() {
     createInitialWorms();
 
     main.init();
+
+    // Stretch the canvas to the window
+    util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 // =================
