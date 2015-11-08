@@ -108,9 +108,14 @@ Map.prototype.update = function(du) {
 // Negative dx scrolls to the right
 // Negative dy scrolls down
 Map.prototype.scroll = function(dx, dy) {
+    console.log("OFFSET_X before: " + OFFSET_X);
+    console.log("OFFSET_Y before: " + OFFSET_Y);
 
     OFFSET_X = util.clampRange(OFFSET_X + dx, g_canvas.width - FULL_WIDTH, 0);
     OFFSET_Y = util.clampRange(OFFSET_Y + dy, g_canvas.height - FULL_HEIGHT, 0);
+
+    console.log("OFFSET_X after: " + OFFSET_X);
+    console.log("OFFSET_Y after: " + OFFSET_Y);
 };
 
 Map.prototype.focusOn = function(cx, cy) {

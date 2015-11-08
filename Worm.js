@@ -67,6 +67,9 @@ Worm.prototype.update = function (du) {
     // Handle firing
     this.maybeFireWeapon();
 
+    if(this.cy >= g_canvas.height)
+        this.death();
+
     // ToDo: Register?
 };
 
@@ -98,7 +101,7 @@ Worm.prototype.applyAccel = function (du) {
     if (this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextTopY)) {
         // it whill hit something, stop moving upwards
         nextY = this.cy + NOMINAL_GRAVITY*du;
-        if (this.velY<0)this.velY = 0;
+        if (this.velY<0) this.velY = 0;
     }
 
     // Land on the ground
@@ -115,26 +118,51 @@ Worm.prototype.applyAccel = function (du) {
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
+        this.wormSprite = g_sprites.wormFlipped;
         var i = this.canGoUpSlope(true);
         if(i > -Infinity){
             this.cx -= 3;
             this.cy -= i;
         }
+        //If the worm is close to the left edge of the canvas we refocus
+        // Is buggy, needs fixing
+        if(this.isCloseToEdgeOfCanvas(true, this.getXPositionOnCanvas())){
+            console.log("this.cx, this.cy: " + this.cx + ", " + this.cy);
+            entityManager._map[0].focusOn(this.cx, this.cy); 
+        }
     }
     if(keys[this.KEY_RIGHT]){
+        this.wormSprite = g_sprites.worm;
         var i = this.canGoUpSlope(false);
         if(i > -Infinity){
             this.cx += 3;
             this.cy -= i;
         }
+        //If the worm is close to the right edge of the canvas we refocus
+        //This seems to work fine
+        if(this.isCloseToEdgeOfCanvas(false, this.getXPositionOnCanvas()))
+            entityManager._map[0].focusOn(this.cx, this.cy);   
     }
 
     if(eatKey(this.KEY_JUMP)) {
         this.maybeJump();
     }
-
 };
 
+Worm.prototype.getXPositionOnCanvas = function(){
+    var x = this.cx + OFFSET_X;
+    return x;
+};
+
+Worm.prototype.isCloseToEdgeOfCanvas = function(left, x){
+    var right = !left;
+    if(left && x < 100)
+        return true;
+    else if(right && x + 100 > g_canvas.width)
+        return true;   
+    else 
+        return false;
+};
 
 var NOMINAL_JUMP = -5;
 
@@ -149,7 +177,6 @@ Worm.prototype.maybeJump = function(){
     }
 };
 
-
 Worm.prototype.verticalEdgeCollidesWithMap = function(x, y1, y2){
     //check if the line between (x,y1) and (x,y2) collides with the map 
     return entityManager._map[0].vertLineCollidesWithMap(x, y1, y2);
@@ -163,7 +190,7 @@ Worm.prototype.horizontalEdgeCollidesWithMap = function(x1, x2, y){
 
 Worm.prototype.canGoUpSlope = function(left){
     
-    // ToDo: reyna að breyta þannig að við notum föllin úr map
+    // ToDo: reyna að breyta þannig að við notum föllin úr map 1/2
 
     var yBottom = parseInt(this.cy + this.height/2);
     var yTop = parseInt(this.cy - this.height/2);
@@ -181,16 +208,14 @@ Worm.prototype.canGoUpSlope = function(left){
         if(entityManager._map[0].getAlphaAt(x, yBottom-j) != 0)
             i++;
     }
-    for(var j = yTop; j <= yBottom; j++){
-        if(entityManager._map[0].getAlphaAt(x, j) != 0)
-            k++;
-    }
+
+    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-7, yTop);
     
     // We need to figure out which numbers are appropriate here
-    // For how many non-transparent pixels are on the side of the worn
+    // For how many non-transparent pixels are on the side of the worm
     // can the worm move?
-    if(i<=7 && k<=10){
-        return i;
+    if(i <= 7 && !wholeEdgeCollides){
+        return true;
     }
     return -Infinity;
 };
@@ -210,6 +235,8 @@ Worm.prototype.updateTargetRotation = function (du) {
 };
 
 Worm.prototype.updateTarget = function(du){
+    if(this.cx === entityManager._worms[1])
+        console.log("updateTarget");
     this.updateTargetRotation(du);
 
     var distFromWorm = 40;
@@ -257,6 +284,8 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 
 Worm.prototype.death = function() {
     //TODO implement
+
+    //Unregister? 
 };
 
 /*

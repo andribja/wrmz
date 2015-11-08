@@ -196,6 +196,7 @@ function requestPreloads() {
     var requiredImages = {
         map    : "images/world3.png",
 		worm   : "images/worm.png",
+        wormFlipped: "images/wormFlipped.png",
         target   : "images/target.png"
     };
 
@@ -210,6 +211,7 @@ function preloadDone() {
     //g_sprites.ship2 = new Sprite(g_images.ship2);
     //g_sprites.rock  = new Sprite(g_images.rock);
     g_sprites.worm  = new Sprite(g_images.worm);
+    g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 
     g_sprites.target = new Sprite(g_images.target);
     g_sprites.weapon1 = new Sprite(g_images.target);
     g_sprites.weapon1.scale = 0.5;
