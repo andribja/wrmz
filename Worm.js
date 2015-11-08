@@ -282,7 +282,7 @@ Worm.prototype.maybeFireWeapon = function () {
 Worm.prototype.takeDamage = function(cx, cy, r) {
     var d = util.dist(this.cx, this.cy, cx, cy);
     if(d > r) return;
-    else this.health -= r-d;
+    else this.health -= Math.ceil(r-d);
     if(this.health <= 0) this.death();
 };
 
