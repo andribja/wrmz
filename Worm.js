@@ -150,7 +150,7 @@ Worm.prototype.maybeMove = function() {
 };
 
 Worm.prototype.getXPositionOnCanvas = function(){
-    var x = this.cx + OFFSET_X;
+    var x = this.cx - OFFSET_X;
     return x;
 };
 
@@ -313,18 +313,18 @@ Worm.prototype.render = function (ctx) {
     var origScale = this.wormSprite.scale;
     // pass my scale into the sprite, for drawing
     this.wormSprite.scale = this._scale;
-    this.wormSprite.drawCentredAt(ctx, this.cx + OFFSET_X, 
-                                    this.cy + OFFSET_Y, 0);
+    this.wormSprite.drawCentredAt(ctx, this.cx - OFFSET_X, 
+                                    this.cy - OFFSET_Y, 0);
     this.wormSprite.scale = origScale;
 
     this.targetSprite.scale = this._scale;
-    this.targetSprite.drawCentredAt(ctx, this.targetCx + OFFSET_X, 
-                                    this.targetCy + OFFSET_Y, 0);
+    this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
+                                    this.targetCy - OFFSET_Y, 0);
     this.targetSprite.scale = origScale;
     
     ctx.save();
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
-    ctx.fillText(this.health,this.cx + OFFSET_X, this.cy-30 + OFFSET_Y);
+    ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
 };
