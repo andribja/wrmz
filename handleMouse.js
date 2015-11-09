@@ -23,7 +23,11 @@ function handleMouse(evt) {
     var button = evt.buttons === undefined ? evt.which : evt.buttons;
     if (!button) return;
     
-    entityManager.destroyMap(g_mouseX, g_mouseY, 50);
+    // Use ctrl+click to focus
+    if(keys[17])
+	    entityManager._map[0].focusOn(g_mouseX, g_mouseY);
+	else
+    	entityManager.destroyMap(g_mouseX - OFFSET_X, g_mouseY - OFFSET_Y, 50);
 }
 
 // Handle "down" and "move" events the same way.

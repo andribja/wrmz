@@ -104,6 +104,34 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
+},
+
+getPixelIndex: function(imgData, x, y) {
+    return parseInt(y) * imgData.width * 4 + parseInt(x) * 4;
+},
+
+setPixelData: function(imgData, x, y, r, g, b, a) {
+    var i = this.getPixelIndex(imgData, parseInt(x), parseInt(y));
+
+    imgData.data[i] = r;
+    imgData.data[i+1] = g;
+    imgData.data[i+2] = b;
+
+    if(a)
+        imgData.data[i+3] = a;
+},
+
+resizeCanvas: function(canvas, maxWidth, maxHeight) {
+    var width = maxWidth;
+    var height = maxHeight;
+    if(window.innerWidth - 16 < maxWidth)
+        width = window.innerWidth - 16;
+
+    if(window.innerHeight - 16 < maxHeight)
+        height = window.innerHeight - 16;
+
+    canvas.width = width;
+    canvas.height = height;
 }
 
 };

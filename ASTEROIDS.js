@@ -36,6 +36,13 @@ need to tweak it if you do something "non-obvious" in yours.
 var g_canvas = document.getElementById("g_canvas");
 var g_ctx = g_canvas.getContext("2d");
 
+// Stretch canvas to window on resize
+window.addEventListener('resize', resizeListener);
+
+function resizeListener(e) {
+    util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
+}
+
 /*
 0        1         2         3         4         5         6         7         8
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
@@ -189,6 +196,7 @@ function requestPreloads() {
     var requiredImages = {
         map    : "images/world3.png",
 		worm   : "images/worm.png",
+        wormFlipped: "images/wormFlipped.png",
         target   : "images/target.png"
     };
 
@@ -203,6 +211,7 @@ function preloadDone() {
     //g_sprites.ship2 = new Sprite(g_images.ship2);
     //g_sprites.rock  = new Sprite(g_images.rock);
     g_sprites.worm  = new Sprite(g_images.worm);
+    g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 
     g_sprites.target = new Sprite(g_images.target);
     g_sprites.weapon1 = new Sprite(g_images.target);
     g_sprites.weapon1.scale = 0.5;
@@ -212,6 +221,9 @@ function preloadDone() {
     createInitialWorms();
 
     main.init();
+
+    // Stretch the canvas to the window
+    util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 // =================

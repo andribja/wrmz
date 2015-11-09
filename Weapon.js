@@ -51,8 +51,8 @@ Weapon.prototype.update = function (du) {
     }
 
     // has it left the frame?
-    if(this.cx > g_canvas.width || this.cx < 0 || 
-        this.cy > g_canvas.height)
+    if(this.cx + OFFSET_X > g_canvas.width || this.cx < 0 || 
+        this.cy + OFFSET_Y > g_canvas.height)
         return entityManager.KILL_ME_NOW;
 
     this.t += du;
@@ -92,7 +92,7 @@ Weapon.prototype.checkIfHitMap = function () {
 Weapon.prototype.damageMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
-    entityManager._map[0].destroy(cx, cy, this.damageRadius);
+    entityManager.destroyMap(cx, cy, this.damageRadius);
 };
 
 Weapon.prototype.damageWorms = function () {
@@ -111,7 +111,7 @@ Weapon.prototype.render = function (ctx) {
     }
 
     g_sprites.weapon1.drawCentredAt(
-        ctx, this.cx, this.cy, this.rotation
+        ctx, this.cx + OFFSET_X, this.cy + OFFSET_Y, this.rotation
     );
 
     ctx.globalAlpha = 1;

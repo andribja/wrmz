@@ -60,7 +60,6 @@ init: function() {
 
 destroyMap: function(cx, cy, r) {
     this._map[0].destroy(cx, cy, r);
-    console.log(this._map[0]);
 },
 
 damageWorms: function(cx, cy, r) {
@@ -115,7 +114,6 @@ update: function(du) {
         }
     }
     
-
 },
 
 render: function(ctx) {

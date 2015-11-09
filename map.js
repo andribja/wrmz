@@ -4,32 +4,38 @@ function Map(descr) {
 
     this.sprite = g_sprites['map'];
 
+    FULL_WIDTH = this.sprite.width;
+    FULL_HEIGHT = this.sprite.height;
+    
+    // Get a quick snapshot of the full image to store it's data
+    g_canvas.width = FULL_WIDTH;
+    g_canvas.height = FULL_HEIGHT;
     this.sprite.drawAt(g_ctx, 0, 0);
     this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
 
-    spatialManager.register(this)
+    //spatialManager.register(this)
 }
 
 Map.prototype = new Entity();
 
 Map.prototype.isLand = function(x, y) {
-    return this.getAlphaAt(x, y) == 0;
-}
+    return this.getAlphaAt(x, y) !== 0;
+};
 
 Map.prototype.getAlphaAt = function(x, y) {
-    var i =  parseInt(y) * g_canvas.width * 4 + parseInt(x) * 4 + 3;
+    var i =  util.getPixelIndex(this.imageData, x, y) + 3;
 
     return this.imageData.data[i];
 };
 
 Map.prototype.setAlphaAt = function(x, y, alpha) {
-    var i =  parseInt(y) * g_canvas.width * 4 + parseInt(x) * 4 + 3;
+    var i =  util.getPixelIndex(this.imageData, x, y) + 3;
     
     this.imageData.data[i] = alpha;
 };
 
 Map.prototype.render = function(ctx) {
-    ctx.putImageData(this.imageData, 0, 0);
+    ctx.putImageData(this.imageData, OFFSET_X, OFFSET_Y);
 };
 
 Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
@@ -42,19 +48,31 @@ Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
     return false;
 }
 
-Map.prototype.vertLineCollidesWithMap = function(x, y1, y2) {
+Map.prototype.vertLineCollidesWithMap = function(x0, y1, y2) {
+    var yMin = parseInt(Math.min(y1,y2));
+    var yMax = parseInt(Math.max(y1,y2));
+    var x = parseInt(x0);
     var y;
-    for(y = Math.min(y1,y2); y < Math.max(y1,y2); y++) {
+    var i;
+    for(y = yMin; y <= yMax; y++) {
         if(this.isLand(x, y)) return true;
     }
     return false;
 }
 
-Map.prototype.horiLineCollidesWithMap = function(x1, x2, y) {
+Map.prototype.horiLineCollidesWithMap = function(x1, x2, y0) {
+    var xMin = parseInt(Math.min(x1,x2));
+    var xMax = parseInt(Math.max(x1,x2));
+    var y = parseInt(y0);
     var x;
-    for(x = Math.min(x1,x2); x < Math.max(x1,x2); x++) {
-        if(this.isLand(x, y)) return true;
+    var i = 0;
+    for(x = xMin; x <= xMax; x++) {
+        if(this.isLand(x,y)) i++;
     }
+    // i is the number of pixles on the line, that are colliding with the map
+    // 13 px or more mean that more than 65% of the top/bottom of the worm is colliding with te map
+    // (we might need to change this later)
+    if(i>13) return true;
     return false;
 }
 
@@ -65,9 +83,41 @@ Map.prototype.destroy = function(cx, cy, r) {
                 this.setAlphaAt(x, y, 0);
         }
     }
-    console.log(cx, cy, r);
 };
 
 Map.prototype.update = function(du) {
+    var px = 10;
 
+    // Scroll left
+    if(eatKey(37))
+        this.scroll(px, 0);
+
+    // Scroll right
+    if(eatKey(39))
+        this.scroll(-px, 0);
+
+    // Scroll up
+    if(eatKey(38))
+        this.scroll(0, px);
+
+    // Scroll down
+    if(eatKey(40))
+        this.scroll(0, -px);
+};
+
+// Negative dx scrolls to the right
+// Negative dy scrolls down
+Map.prototype.scroll = function(dx, dy) {
+    console.log("OFFSET_X before: " + OFFSET_X);
+    console.log("OFFSET_Y before: " + OFFSET_Y);
+
+    OFFSET_X = util.clampRange(OFFSET_X + dx, g_canvas.width - FULL_WIDTH, 0);
+    OFFSET_Y = util.clampRange(OFFSET_Y + dy, g_canvas.height - FULL_HEIGHT, 0);
+
+    console.log("OFFSET_X after: " + OFFSET_X);
+    console.log("OFFSET_Y after: " + OFFSET_Y);
+};
+
+Map.prototype.focusOn = function(cx, cy) {
+    this.scroll(g_canvas.width/2 - cx, g_canvas.height/2 - cy); 
 };
