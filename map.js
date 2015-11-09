@@ -35,7 +35,7 @@ Map.prototype.setAlphaAt = function(x, y, alpha) {
 };
 
 Map.prototype.render = function(ctx) {
-    ctx.putImageData(this.imageData, OFFSET_X, OFFSET_Y);
+    ctx.putImageData(this.imageData, -OFFSET_X, -OFFSET_Y);
 };
 
 Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
@@ -90,34 +90,39 @@ Map.prototype.update = function(du) {
 
     // Scroll left
     if(eatKey(37))
-        this.scroll(px, 0);
+        this.scroll(-px, 0);
 
     // Scroll right
     if(eatKey(39))
-        this.scroll(-px, 0);
+        this.scroll(px, 0);
 
     // Scroll up
     if(eatKey(38))
-        this.scroll(0, px);
+        this.scroll(0, -px);
 
     // Scroll down
     if(eatKey(40))
-        this.scroll(0, -px);
+        this.scroll(0, px);
 };
 
-// Negative dx scrolls to the right
-// Negative dy scrolls down
+// Negative dx scrolls to the left
+// Negative dy scrolls up
 Map.prototype.scroll = function(dx, dy) {
-    console.log("OFFSET_X before: " + OFFSET_X);
-    console.log("OFFSET_Y before: " + OFFSET_Y);
+    console.log("they see me scrollin", dx, dy)
+    // console.log("OFFSET_X before: " + OFFSET_X);
+    // console.log("OFFSET_Y before: " + OFFSET_Y);
 
-    OFFSET_X = util.clampRange(OFFSET_X + dx, g_canvas.width - FULL_WIDTH, 0);
-    OFFSET_Y = util.clampRange(OFFSET_Y + dy, g_canvas.height - FULL_HEIGHT, 0);
+    OFFSET_X = util.clampRange(OFFSET_X + dx, 0, FULL_WIDTH - g_canvas.width);
+    OFFSET_Y = util.clampRange(OFFSET_Y + dy, 0, FULL_HEIGHT - g_canvas.height);
 
-    console.log("OFFSET_X after: " + OFFSET_X);
-    console.log("OFFSET_Y after: " + OFFSET_Y);
+    // console.log("OFFSET_X after: " + OFFSET_X);
+    // console.log("OFFSET_Y after: " + OFFSET_Y);
 };
 
 Map.prototype.focusOn = function(cx, cy) {
-    this.scroll(g_canvas.width/2 - cx, g_canvas.height/2 - cy); 
+
+    var scrollX = cx - g_canvas.width/2 - OFFSET_X;
+    var scrollY = cy - g_canvas.height/2 - OFFSET_Y;
+
+    this.scroll(scrollX, scrollY); 
 };

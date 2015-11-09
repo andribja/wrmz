@@ -13,6 +13,7 @@ var util = {
 // ======
 
 clampRange: function(value, lowBound, highBound) {
+    console.log(value, lowBound, highBound);
     if (value < lowBound) {
 	value = lowBound;
     } else if (value > highBound) {
@@ -124,11 +125,25 @@ setPixelData: function(imgData, x, y, r, g, b, a) {
 resizeCanvas: function(canvas, maxWidth, maxHeight) {
     var width = maxWidth;
     var height = maxHeight;
-    if(window.innerWidth - 16 < maxWidth)
-        width = window.innerWidth - 16;
 
-    if(window.innerHeight - 16 < maxHeight)
-        height = window.innerHeight - 16;
+    var innerWidth = window.innerWidth - 16;
+    var innerHeight = window.innerHeight - 16;
+
+    if(innerWidth <= maxWidth) {
+        while(OFFSET_X > FULL_WIDTH - innerWidth)
+            OFFSET_X--;
+
+        width = innerWidth;
+    } else
+        OFFSET_X = 0;
+
+    if(innerHeight <= maxHeight) {
+        while(OFFSET_Y > FULL_HEIGHT - innerHeight)
+            OFFSET_Y--;
+        
+        height = innerHeight;
+    } else
+        OFFSET_Y = 0;
 
     canvas.width = width;
     canvas.height = height;
