@@ -118,7 +118,7 @@ Worm.prototype.applyAccel = function (du) {
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
-        this.wormSprite = g_sprites.wormFlipped;
+        this.wormSprite = g_sprites.worm;
         var i = this.canGoUpSlope(true);
         if(i > -Infinity){
             this.cx -= 3;
@@ -132,7 +132,7 @@ Worm.prototype.maybeMove = function() {
         }
     }
     if(keys[this.KEY_RIGHT]){
-        this.wormSprite = g_sprites.worm;
+        this.wormSprite = g_sprites.wormFlipped;
         var i = this.canGoUpSlope(false);
         if(i > -Infinity){
             this.cx += 3;
@@ -204,12 +204,12 @@ Worm.prototype.canGoUpSlope = function(left){
 
     // Count pixels that arent transparent, first only close to the bottom of the worm
     // Then on the whole side of the worm
-    for(var j = 0; j <= 5; j++){
+    for(var j = 0; j <= 7; j++){
         if(entityManager._map[0].getAlphaAt(x, yBottom-j) != 0)
             i++;
     }
 
-    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-7, yTop);
+    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-10, yTop);
     
     // We need to figure out which numbers are appropriate here
     // For how many non-transparent pixels are on the side of the worm
