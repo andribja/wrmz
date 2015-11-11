@@ -225,8 +225,8 @@ function preloadDone() {
     g_sprites.worm  = new Sprite(g_images.worm);
     g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 
     g_sprites.target = new Sprite(g_images.target);
-    g_sprites.weapon1 = new Sprite(g_images.target);
-    g_sprites.weapon1.scale = 0.5;
+    g_sprites.Bazooka = new Sprite(g_images.target);
+    g_sprites.Bazooka.scale = 0.5;
 
     entityManager.init();
     createInitialShips();

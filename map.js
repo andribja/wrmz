@@ -13,6 +13,7 @@ function Map(descr) {
     this.sprite.drawAt(g_ctx, 0, 0);
     this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
 
+    this.shakeEffectTimer = -1;
     //spatialManager.register(this)
 }
 
@@ -35,7 +36,14 @@ Map.prototype.setAlphaAt = function(x, y, alpha) {
 };
 
 Map.prototype.render = function(ctx) {
-    ctx.putImageData(this.imageData, -OFFSET_X, -OFFSET_Y);
+    var dx = 0;
+    var dy = 0;
+    if(this.shakeEffectTimer > 0) {
+        dx = Math.random()*15*this.shakeEffectTimer;
+        dy = Math.random()*15*this.shakeEffectTimer;
+    }
+    
+    ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
 };
 
 Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
@@ -83,6 +91,10 @@ Map.prototype.destroy = function(cx, cy, r) {
                 this.setAlphaAt(x, y, 0);
         }
     }
+
+    // Shake map when it takes damage
+    this.shakeEffectTimer = 0.9;
+    entityManager.shakeEffectTimer = 0.9;
 };
 
 Map.prototype.update = function(du) {
@@ -103,6 +115,9 @@ Map.prototype.update = function(du) {
     // Scroll down
     if(eatKey(40))
         this.scroll(0, px);
+
+    // The map shakes for a bit when it takes damage
+    this.shakeEffectTimer -= du/SECS_TO_NOMINALS;
 };
 
 // Negative dx scrolls to the left

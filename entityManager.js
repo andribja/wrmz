@@ -31,6 +31,7 @@ _map : [],
 _weapons : [],
 _activeWorm: 0,
 _timer : 60,
+shakeEffectTimer: -1,
 
 // "PRIVATE" METHODS
 
@@ -77,16 +78,18 @@ damageWorms: function(cx, cy, r) {
     }
 },
 
-fireWeapon: function(cx, cy, velX, velY, rotation, type) {
-    this._weapons.push(new Weapon({
+fireWeapon: function(cx, cy, velX, velY, rotation, weapon) {
+    // the worm's weapon is passed to the function as a string
+    // this is a fix so the appropriate weapon can be created
+    var fn = window[weapon];
+
+    this._weapons.push(new fn({
         cx   : cx,
         cy   : cy,
         velX : velX,
         velY : velY,
 
         rotation : rotation,
-
-        type : type,
         initVel : 10
     }));
 },
@@ -128,9 +131,18 @@ update: function(du) {
         this.selectNextWorm();
         this._timer = 60;
     }
+
+    this.shakeEffectTimer -=du/SECS_TO_NOMINALS;
 },
 
 render: function(ctx) {
+    ctx.save();
+    console.log(this.shakeEffectTimer);
+    if(this.shakeEffectTimer > 0){
+        var dx = Math.random()*4*this.shakeEffectTimer;
+        var dy = Math.random()*10*this.shakeEffectTimer;
+        ctx.translate(dx, dy);
+    }
 
     var debugX = 10, debugY = 100;
 
@@ -150,6 +162,8 @@ render: function(ctx) {
         }
         debugY += 10;
     }
+
+    ctx.restore();
 
     ctx.save();
     ctx.font = '20pt Arial Bold';
