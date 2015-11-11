@@ -96,7 +96,7 @@ strokeCircle: function (ctx, x, y, r, style) {
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
 
-    ctx.strokeStyle = oldStyle;
+    ctx.strokeStyle = oldStyle; 
 },
 
 fillCircle: function (ctx, x, y, r) {

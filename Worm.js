@@ -62,14 +62,15 @@ Worm.prototype.update = function (du) {
     this.updateTarget(du);
  
     // Move if buttons are being pressed
-    if(!this.isActive) return;
-    this.maybeMove();
-   
-    // Handle firing
-    this.maybeFireWeapon();
+    if(this.isActive) {
+        this.maybeMove();
+       
+        // Handle firing
+        this.maybeFireWeapon();
 
-    if(this.cy >= g_canvas.height)
-        this.death();
+        if(this.cy >= g_canvas.height)
+            this.death();
+    }
     
     // ToDo: Register?
     spatialManager.register(this);

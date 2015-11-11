@@ -108,14 +108,14 @@ render: function(ctx) {
         var e = this._entities[ID];
         
         if(e.getRadius())
-            util.strokeCircle(ctx, e.cx, e.cy, e.getRadius(), 'red');
+            util.strokeCircle(ctx, e.cx - OFFSET_X, e.cy - OFFSET_Y, e.getRadius(), 'red');
 
         if(e.getBoundingBox()) {
             var box = e.getBoundingBox();
             var h = box.height;
             var w = box.width;
 
-            util.strokeBox(ctx, e.cx - w/2, e.cy - h/2, w, h, 'red');
+            util.strokeBox(ctx, e.cx - w/2 - OFFSET_X, e.cy - h/2 - OFFSET_Y, w, h, 'red');
         }
 
     }
