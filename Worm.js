@@ -43,7 +43,8 @@ Worm.prototype.velY = 0;
 Worm.prototype.launchVel = 2;
 Worm.prototype.health = 100;
 Worm.prototype.team = "green";
-Worm.prototype.isActive = "false";
+Worm.prototype.timeLeft = 0;
+Worm.prototype.isActive = false;
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -57,20 +58,19 @@ Worm.prototype.update = function (du) {
     
     this.applyAccel(du);
 
+    // Update the weapon's aim
+    this.updateTarget(du);
+ 
     // Move if buttons are being pressed
-    if(this.isActive) {
-        this.maybeMove();
+    if(!this.isActive) return;
+    this.maybeMove();
+   
+    // Handle firing
+    this.maybeFireWeapon();
 
-        // Update the weapon's aim
-        this.updateTarget(du);
-        
-        // Handle firing
-        this.maybeFireWeapon();
-
-        if(this.cy >= g_canvas.height)
-            this.death();
-    }
-
+    if(this.cy >= g_canvas.height)
+        this.death();
+    
     // ToDo: Register?
     spatialManager.register(this);
 };
@@ -120,7 +120,7 @@ Worm.prototype.applyAccel = function (du) {
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
-        this.wormSprite = g_sprites.wormFlipped;
+        this.wormSprite = g_sprites.worm;
         var i = this.canGoUpSlope(true);
         if(i > -Infinity){
             this.cx -= 3;
@@ -134,7 +134,7 @@ Worm.prototype.maybeMove = function() {
         }
     }
     if(keys[this.KEY_RIGHT]){
-        this.wormSprite = g_sprites.worm;
+        this.wormSprite = g_sprites.wormFlipped;
         var i = this.canGoUpSlope(false);
         if(i > -Infinity){
             this.cx += 3;
@@ -206,12 +206,12 @@ Worm.prototype.canGoUpSlope = function(left){
 
     // Count pixels that arent transparent, first only close to the bottom of the worm
     // Then on the whole side of the worm
-    for(var j = 0; j <= 5; j++){
+    for(var j = 0; j <= 7; j++){
         if(entityManager._map[0].getAlphaAt(x, yBottom-j) != 0)
             i++;
     }
 
-    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-7, yTop);
+    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-10, yTop);
     
     // We need to figure out which numbers are appropriate here
     // For how many non-transparent pixels are on the side of the worm
@@ -326,15 +326,16 @@ Worm.prototype.render = function (ctx) {
     this.wormSprite.drawCentredAt(ctx, this.cx - OFFSET_X, 
                                     this.cy - OFFSET_Y, 0);
     this.wormSprite.scale = origScale;
-
-    this.targetSprite.scale = this._scale;
-    this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
-                                    this.targetCy - OFFSET_Y, 0);
-    this.targetSprite.scale = origScale;
-    
+    if(this.isActive) {
+        this.targetSprite.scale = this._scale;
+        this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
+                                        this.targetCy - OFFSET_Y, 0);
+        this.targetSprite.scale = origScale;
+    }
     ctx.save();
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
+    ctx.restore();
 };

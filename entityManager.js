@@ -29,6 +29,8 @@ var entityManager = {
 _worms   : [],
 _map : [],
 _weapons : [],
+_activeWorm: 0,
+_timer : 60,
 
 // "PRIVATE" METHODS
 
@@ -56,6 +58,12 @@ init: function() {
     this.generateMap();
     //this._generateRocks();
     //this._generateShip();
+},
+
+selectNextWorm: function() {
+    this._worms[this._activeWorm].isActive = false;
+    this._worms[++this._activeWorm % this._worms.length].isActive = true;
+    console.log("currently active: worm " + this._activeWorm);
 },
 
 destroyMap: function(cx, cy, r) {
@@ -113,7 +121,12 @@ update: function(du) {
             }
         }
     }
-    
+    if(this._timer > 0) {
+        this._timer -= du/SECS_TO_NOMINALS;
+    } else {
+        this.selectNextWorm();
+        this._timer = 60;
+    }
 },
 
 render: function(ctx) {
@@ -136,6 +149,12 @@ render: function(ctx) {
         }
         debugY += 10;
     }
+
+    ctx.save();
+    ctx.font = '20pt Arial Bold';
+    ctx.fillText(Math.ceil(this._timer), 20, 40);
+    ctx.restore();
+    
 }
 
 }

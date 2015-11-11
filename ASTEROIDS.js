@@ -65,13 +65,25 @@ function createInitialWorms() {
     entityManager.generateWorm({
         cx : 700,
         cy : 200,
-        isActive : true
+        isActive : true,
         //cy : 450
     });
     entityManager.generateWorm({
+        cx:1100,
+        cy: 100,
+        isActive : false,
+        team : "red"
+    });
+    entityManager.generateWorm({
         cx: 400,
-        cy: 200,
+        cy: 100,
         isActive : false
+    });
+    entityManager.generateWorm({
+        cx:1300,
+        cy: 100,
+        isActive : false,
+        team : "red"
     });
 }
 
