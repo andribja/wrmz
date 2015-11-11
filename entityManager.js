@@ -62,7 +62,8 @@ init: function() {
 
 selectNextWorm: function() {
     this._worms[this._activeWorm].isActive = false;
-    this._worms[++this._activeWorm % this._worms.length].isActive = true;
+    this._activeWorm = ++this._activeWorm % this._worms.length;
+    this._worms[this._activeWorm].isActive = true;
     console.log("currently active: worm " + this._activeWorm);
 },
 
