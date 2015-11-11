@@ -48,16 +48,54 @@ unregister: function(entity) {
     delete this._entities[spatialID];
 },
 
-findEntityInRange: function(posX, posY, radius) {
+findEntityInRange: function(obj) {
+    var posX = obj.getPos().posX;
+    var posY = obj.getPos().posY;
 
     for(var ID in this._entities) {
         var collidingEntity = this._entities[ID];
         var pos = collidingEntity.getPos();
+
+        // Is my bounding object a circle?
+        if(obj.getRadius) {
+
+            // Am I colliding with another circle
+            if(collidingEntity.getRadius()) {
+                var distSq = util.distSq(posX, posY, pos.posX, pos.posY);
+
+                if(distSq <= util.square(obj.getRadius() + collidingEntity.getRadius())) {
+                    return collidingEntity;
+                }
+            }
+
+            // Am I colliding with a box?
+            if(collidingEntity.getBoundingBox()) {
+                var box = collidingEntity.getBoundingBox();
+                var distSq = util.distSq(posX, posY, pos.posX, pos.posY);
+                var dist = Math.sqrt(distSq) - obj.getRadius();
+
+                var dx = posX - pos.posX;
+                var dy = posY - pos.posY;
+
+                var theta = Math.atan(dy, dx);
+
+                var dxx = dist * Math.cos(theta);
+                var dyy = dist * Math.sin(theta);
+
+                if(Math.abs(dxx) <= box.width/2 && Math.abs(dyy) <= box.height/2) {
+                    return  collidingEntity;
+                }
+
+            }
+        };
+
+        /*
         var distSq = util.distSq(posX, posY, pos.posX, pos.posY);
 
         if(distSq <= util.square(radius + collidingEntity.getRadius())) {
             return collidingEntity;
         }
+        */
     }
 
 },
@@ -69,7 +107,17 @@ render: function(ctx) {
     for (var ID in this._entities) {
         var e = this._entities[ID];
         
-        util.strokeCircle(ctx, e.cx, e.cy, e.getRadius());
+        if(e.getRadius())
+            util.strokeCircle(ctx, e.cx - OFFSET_X, e.cy - OFFSET_Y, e.getRadius(), 'red');
+
+        if(e.getBoundingBox()) {
+            var box = e.getBoundingBox();
+            var h = box.height;
+            var w = box.width;
+
+            util.strokeBox(ctx, e.cx - w/2 - OFFSET_X, e.cy - h/2 - OFFSET_Y, w, h, 'red');
+        }
+
     }
     ctx.strokeStyle = oldStyle;
 }

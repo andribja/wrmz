@@ -53,8 +53,8 @@ Worm.prototype.warpSound = new Audio(
 */
 
 Worm.prototype.update = function (du) {
-
     // ToDo: Unregister and check for death?
+    spatialManager.unregister(this);
     
     this.applyAccel(du);
 
@@ -62,16 +62,18 @@ Worm.prototype.update = function (du) {
     this.updateTarget(du);
  
     // Move if buttons are being pressed
-    if(!this.isActive) return;
-    this.maybeMove();
-   
-    // Handle firing
-    this.maybeFireWeapon();
+    if(this.isActive) {
+        this.maybeMove();
+       
+        // Handle firing
+        this.maybeFireWeapon();
 
-    if(this.cy >= g_canvas.height)
-        this.death();
+        if(this.cy >= g_canvas.height)
+            this.death();
+    }
     
     // ToDo: Register?
+    spatialManager.register(this);
 };
 
 
@@ -309,6 +311,14 @@ Worm.prototype.reset = function () {
 };
 */
 
+Worm.prototype.getBoundingBox = function() {
+    var box = {};
+
+    box.height = this.height;
+    box.width = this.width;
+
+    return box;
+};
 
 Worm.prototype.render = function (ctx) {
     var origScale = this.wormSprite.scale;

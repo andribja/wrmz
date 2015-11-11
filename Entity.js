@@ -59,6 +59,10 @@ Entity.prototype.getRadius = function () {
     return 0;
 };
 
+Entity.prototype.getBoundingBox = function() {
+    return 0;
+}
+
 Entity.prototype.getSpatialID = function () {
     return this._spatialID;
 };
@@ -69,9 +73,7 @@ Entity.prototype.kill = function () {
 
 Entity.prototype.findHitEntity = function () {
     var pos = this.getPos();
-    return spatialManager.findEntityInRange(
-        pos.posX, pos.posY, this.getRadius()
-    );
+    return spatialManager.findEntityInRange(this);
 };
 
 // This is just little "convenience wrapper"
