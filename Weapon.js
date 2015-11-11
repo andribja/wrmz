@@ -41,6 +41,7 @@ Weapon.prototype.velY = 1;
 
 Weapon.prototype.update = function (du) {
     // TODO: YOUR STUFF HERE! --- Unregister and check for death???
+    spatialManager.unregister(this);
     
     // did it hit something?
     var mapHit = this.checkIfHitMap();
@@ -69,17 +70,20 @@ Weapon.prototype.update = function (du) {
     }
 
     
-    /*
+    
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
     if (hitEntity) {
         var canTakeHit = hitEntity.takeWeaponHit;
-        if (canTakeHit) canTakeHit.call(hitEntity); 
+        if (canTakeHit) 
+            canTakeHit.call(hitEntity); 
+        
         return entityManager.KILL_ME_NOW;
-    }*/
+    }
     
     // TODO: YOUR STUFF HERE! --- (Re-)Register?
+    spatialManager.register(this);
 
 };
 

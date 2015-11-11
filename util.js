@@ -88,10 +88,15 @@ clearCanvas: function (ctx) {
     ctx.fillStyle = prevfillStyle;
 },
 
-strokeCircle: function (ctx, x, y, r) {
+strokeCircle: function (ctx, x, y, r, style) {
+    var oldStyle = ctx.strokeStyle;
+    ctx.strokeStyle = style;
+
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
+
+    ctx.strokeStyle = oldStyle;
 },
 
 fillCircle: function (ctx, x, y, r) {
@@ -105,6 +110,13 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
+},
+
+strokeBox: function(ctx, x, y, w, h, style) {
+    var oldStyle = ctx.fillStyle;
+    ctx.strokeStyle = style;
+    ctx.strokeRect(x, y, w, h);
+    ctx.strokeStyle = oldStyle;
 },
 
 getPixelIndex: function(imgData, x, y) {
