@@ -21,8 +21,8 @@ var g_ctx = g_canvas.getContext("2d");
 var FULL_WIDTH = g_canvas.width;
 var FULL_HEIGHT = g_canvas.height;
 
-var bg_canvas = document.getElementById("bg_canvas");
-var bg_ctx = bg_canvas.getContext("2d");
+//var bg_canvas = document.getElementById("bg_canvas");
+//var bg_ctx = bg_canvas.getContext("2d");
 
 // The "nominal interval" is the one that all of our time-based units are
 // calibrated to e.g. a velocity unit is "pixels per nominal interval"

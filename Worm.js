@@ -43,7 +43,8 @@ Worm.prototype.velY = 0;
 Worm.prototype.launchVel = 2;
 Worm.prototype.health = 100;
 Worm.prototype.team = "green";
-Worm.prototype.isActive = "false";
+Worm.prototype.timeLeft = 0;
+Worm.prototype.isActive = false;
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -69,7 +70,7 @@ Worm.prototype.update = function (du) {
 
     if(this.cy >= g_canvas.height)
         this.death();
-
+    
     // ToDo: Register?
 };
 
@@ -327,4 +328,5 @@ Worm.prototype.render = function (ctx) {
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
+    ctx.restore();
 };
