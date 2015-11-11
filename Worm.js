@@ -57,13 +57,13 @@ Worm.prototype.update = function (du) {
     
     this.applyAccel(du);
 
+    // Update the weapon's aim
+    this.updateTarget(du);
+ 
     // Move if buttons are being pressed
     if(!this.isActive) return;
     this.maybeMove();
-
-    // Update the weapon's aim
-    this.updateTarget(du);
-    
+   
     // Handle firing
     this.maybeFireWeapon();
 
@@ -316,12 +316,12 @@ Worm.prototype.render = function (ctx) {
     this.wormSprite.drawCentredAt(ctx, this.cx - OFFSET_X, 
                                     this.cy - OFFSET_Y, 0);
     this.wormSprite.scale = origScale;
-
-    this.targetSprite.scale = this._scale;
-    this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
-                                    this.targetCy - OFFSET_Y, 0);
-    this.targetSprite.scale = origScale;
-    
+    if(this.isActive) {
+        this.targetSprite.scale = this._scale;
+        this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
+                                        this.targetCy - OFFSET_Y, 0);
+        this.targetSprite.scale = origScale;
+    }
     ctx.save();
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
