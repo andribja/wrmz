@@ -14,17 +14,33 @@
 
 // Construct a "sprite" from the given `image`,
 //
-function Sprite(image) {
-    this.image = image;
+function Sprite(image, sx, sy, width, height) {
+    this. image = image;
 
-    this.width = image.width;
-    this.height = image.height;
+    if(arguments.length > 1) {
+        this.sx = sx;
+        this.sy = sy;
+        this.width = width;
+        this.height = height;
+    } else {
+        this.sx = 0;
+        this.sy = 0;
+        this.width = image.width;
+        this.height = image.height;
+    }
+
     this.scale = 1;
 }
 
+Sprite.prototype.setup = function(descr) {
+    // Apply all setup properies from the (optional) descriptor
+    for (var property in descr) {
+        this[property] = descr[property];
+    }
+};
+
 Sprite.prototype.drawAt = function (ctx, x, y) {
-    ctx.drawImage(this.image, 
-                  x, y);
+    ctx.drawImage(this.image, x, y);
 };
 
 Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
@@ -40,8 +56,10 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
     
     // drawImage expects "top-left" coords, so we offset our destination
     // coords accordingly, to draw our sprite centred at the origin
-    ctx.drawImage(this.image, 
-                  -w/2, -h/2);
+    //ctx.drawImage(this.image, -w/2, -h/2);
+
+    ctx.drawImage(this.image, this.sx, this.sy, this.width, this.height,
+                    -w/2, -h/2, this.width, this.height);
     
     ctx.restore();
 };  

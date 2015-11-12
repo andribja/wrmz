@@ -209,11 +209,14 @@ function requestPreloads() {
         map    : "images/world3.png",
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
-        target   : "images/target.png"
+        target   : "images/target.png",
+        explosion : "images/explosion.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
 }
+
+
 
 var g_sprites = {};
 
