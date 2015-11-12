@@ -76,6 +76,8 @@ destroyMap: function(cx, cy, r) {
 damageWorms: function(cx, cy, r) {
     for(var i = 0; i < this._worms.length; i++) {
         this._worms[i].takeDamage(cx, cy, r);
+        console.log("damaging worm #"+i+"at: "+this._worms[i].cx+" , "+this._worms[i].cy);
+        this._worms[i].shockWave(cx, cy, r);
     }
 },
 
@@ -83,7 +85,6 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon) {
     // the worm's weapon is passed to the function as a string
     // this is a fix so the appropriate weapon can be created
     var fn = window[weapon];
-
     this._weapons.push(new fn({
         cx   : cx,
         cy   : cy,

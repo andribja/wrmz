@@ -45,7 +45,7 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
-Worm.prototype.availableWeapons = ['Bazooka'];
+Worm.prototype.availableWeapons = ['Bazooka','Grenade'];
 Worm.prototype.currentWeapon = 'Bazooka';
 
 /*
@@ -55,6 +55,9 @@ Worm.prototype.warpSound = new Audio(
 */
 
 Worm.prototype.update = function (du) {
+    // choose current weapon
+    // ToDo
+
     // ToDo: Unregister and check for death?
     spatialManager.unregister(this);
     
@@ -112,6 +115,12 @@ Worm.prototype.applyAccel = function (du) {
     // Land on the ground
     if(this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextBottomY)){
         this.velY = 0;
+    }
+
+    // Don't walk through walls
+    if(this.verticalEdgeCollidesWithMap(nextLx, nextBottomY, nextTopY) ||
+        this.verticalEdgeCollidesWithMap(nextRx, nextBottomY, nextTopY)){
+        this.velX = 0;
     }
 
     // now move for real
@@ -279,6 +288,33 @@ Worm.prototype.maybeFireWeapon = function () {
     
 };
 
+Worm.prototype.shockWave = function(cx, cy, r) {
+    /*
+    // ToDo: fix this, doesn't quite work yet
+
+    //calculate the x and y components of the vector from the center of the explosion to the worm
+    var xDist=this.cx-cx; 
+    var yDist=this.cy-cy; 
+
+    var explosionForce = 1000;
+
+    var dist = util.dist(cx, this.cx, cy, this.cy);
+   
+    //use those distances to find the angle of the vextor between the worm and the explosion
+    var angle = Math.atan2(yDist,xDist);
+
+    //find the x-,and -y components of the vector
+    var vectorX = Math.cos(angle);
+    var vectorY = Math.sin(angle);
+        this.velX=vectorX*explosionForce/dist;
+        if(vectorY<0) this.velY=vectorY*explosionForce/dist; //don't sink into the ground
+        console.log("x,y dist= "+xDist+" , "+yDist);
+        console.log("dist= "+dist);
+        console.log("angle= "+angle);
+        console.log("force vector= "+vectorX+" , "+vectorY);
+*/
+    
+}
 
 Worm.prototype.takeDamage = function(cx, cy, r) {
     var d = util.dist(this.cx, this.cy, cx, cy);

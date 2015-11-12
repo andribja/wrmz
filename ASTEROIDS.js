@@ -230,6 +230,8 @@ function preloadDone() {
     g_sprites.target = new Sprite(g_images.target);
     g_sprites.Bazooka = new Sprite(g_images.target);
     g_sprites.Bazooka.scale = 0.5;
+    g_sprites.Grenade = new Sprite(g_images.target);
+    g_sprites.Grenade.scale = 0.5;
 
     entityManager.init();
     createInitialShips();
