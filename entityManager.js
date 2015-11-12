@@ -32,6 +32,7 @@ _weapons : [],
 _activeWorm: 0,
 _timer : 60,
 shakeEffectTimer: -1,
+_animations: [],
 
 // "PRIVATE" METHODS
 
@@ -52,7 +53,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._worms, this._weapons];
+    this._categories = [this._map, this._worms, this._weapons, this._animations];
 },
 
 init: function() {
@@ -118,6 +119,16 @@ update: function(du) {
             if (status === this.KILL_ME_NOW) {
                 // remove the dead guy, and shuffle the others down to
                 // prevent a confusing gap from appearing in the array
+                
+                if(!(aCategory[i] instanceof Animation)) {
+                    var animation = new Animation(g_images.explosion, 4, 4);
+                    animation.setPos(aCategory[i].getPos());
+                    animation.setSpeed(0.5);
+                    animation.setScale(2);
+
+                    this._animations.push(animation);
+                }
+
                 aCategory.splice(i,1);
             }
             else {
@@ -137,6 +148,7 @@ update: function(du) {
 
 render: function(ctx) {
     ctx.save();
+
     if(this.shakeEffectTimer > 0){
         var dx = Math.random()*4*this.shakeEffectTimer;
         var dy = Math.random()*10*this.shakeEffectTimer;
@@ -163,6 +175,10 @@ render: function(ctx) {
     }
 
     ctx.restore();
+
+    if(this.doAnimation) {
+
+    }
 
     ctx.save();
     ctx.font = '20pt Arial Bold';
