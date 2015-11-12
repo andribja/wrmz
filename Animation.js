@@ -9,6 +9,7 @@ function Animation(image, rows, cols) {
 	this.rows = rows;
 	this.cols = cols;
 	this.speed = 1;
+	this.scale = 1;
 
 	this.width = this.image.width / this.cols;
 	this.height = this.image.height / this.rows;
@@ -30,6 +31,10 @@ Animation.prototype.setPos = function(pos) {
 
 Animation.prototype.setSpeed = function(speed) {
 	this.speed = speed;
+};
+
+Animation.prototype.setScale = function(scale) {
+	this.scale = scale;
 };
 
 Animation.prototype.createFrames = function() {
@@ -55,6 +60,7 @@ Animation.prototype.createFrames = function() {
 
 Animation.prototype.render = function(ctx) {
 	var cell = this.frames[Math.floor(this.frameCounter)];
+	cell.scale = this.scale;
 
 	cell.drawCentredAt(ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y);
 };

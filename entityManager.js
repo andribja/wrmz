@@ -124,6 +124,7 @@ update: function(du) {
                     var animation = new Animation(g_images.explosion, 4, 4);
                     animation.setPos(aCategory[i].getPos());
                     animation.setSpeed(0.5);
+                    animation.setScale(2);
 
                     this._animations.push(animation);
                 }
