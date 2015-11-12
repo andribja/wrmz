@@ -31,6 +31,7 @@ _worms2  : [],
 _map : [],
 _weapons : [],
 _activeWorm: 0,
+_initTimer : 60,
 _timer : 60,
 shakeEffectTimer: -1,
 _animations: [],
@@ -95,6 +96,8 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon) {
         rotation : rotation,
         initVel : 10
     }));
+    this._timer = this._initTimer;
+    this.selectNextWorm();
 },
 
 fireAirstrike: function(cx) {
@@ -110,6 +113,8 @@ fireAirstrike: function(cx) {
             initVel : 0.03
         }));
     }
+    this._timer = this._initTimer;
+    this._selectNextWorm();
 },
 
 generateWorm : function(descr) {
@@ -156,9 +161,8 @@ update: function(du) {
         this._timer -= du/SECS_TO_NOMINALS;
     } else {
         this.selectNextWorm();
-        this._timer = 60;
+        this._timer = this._initTimer;
     }
-
     this.shakeEffectTimer -=du/SECS_TO_NOMINALS;
 },
 
