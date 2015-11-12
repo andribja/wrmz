@@ -189,7 +189,8 @@ function requestPreloads() {
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
         target   : "images/target.png",
-        explosion : "images/explosion.png"
+        explosion : "images/explosion.png",
+        grenade : "images/grenade.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -209,8 +210,7 @@ function preloadDone() {
     g_sprites.target = new Sprite(g_images.target);
     g_sprites.Bazooka = new Sprite(g_images.target);
     g_sprites.Bazooka.scale = 0.5;
-    g_sprites.Grenade = new Sprite(g_images.target);
-    g_sprites.Grenade.scale = 0.5;
+    g_sprites.Grenade = new Sprite(g_images.grenade);
 
     entityManager.init();
     createInitialShips();

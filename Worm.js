@@ -34,6 +34,9 @@ Worm.prototype.KEY_ROTATEGUN_R  = 'W'.charCodeAt(0);
 Worm.prototype.KEY_JUMP   = ' '.charCodeAt(0);
 Worm.prototype.KEY_FIRE   = 13;
 
+Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
+Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
+
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
 Worm.prototype.cx = 700;
@@ -45,8 +48,7 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
-Worm.prototype.availableWeapons = ['Bazooka','Grenade'];
-Worm.prototype.currentWeapon = 'Bazooka';
+Worm.prototype.currentWeapon = 'Grenade';
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -56,7 +58,9 @@ Worm.prototype.warpSound = new Audio(
 
 Worm.prototype.update = function (du) {
     // choose current weapon
-    // ToDo
+    if(this.isActive) {
+        this.chooseWeapon();  
+    } 
 
     // ToDo: Unregister and check for death?
     spatialManager.unregister(this);
@@ -356,6 +360,11 @@ Worm.prototype.getBoundingBox = function() {
     box.width = this.width;
 
     return box;
+};
+
+Worm.prototype.chooseWeapon = function() {
+    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = 'Bazooka';
+    if(keys[this.KEY_GRENADE]) this.currentWeapon = 'Grenade';
 };
 
 Worm.prototype.render = function (ctx) {

@@ -18,6 +18,8 @@ function Grenade(descr) {
     this.initY = this.cy;
     
     this.sprite = g_sprites.Grenade;
+    this.width = this.sprite.width; 
+    this.height = this.sprite.height; 
 }
 
 Grenade.prototype = new Weapon();
@@ -45,6 +47,7 @@ Grenade.prototype.update = function (du) {
         return entityManager.KILL_ME_NOW;
     }
 
+    this.applyGravity(du);
  
  /*
     // Handle collisions
@@ -61,4 +64,38 @@ Grenade.prototype.update = function (du) {
     
     spatialManager.register(this);
 
+};
+
+Grenade.prototype.applyGravity = function (du) {
+    this.velY += this.computeGravity() * du;
+
+    var nextY = this.cy + this.velY * du; 
+    
+    var nextBottomY = nextY + this.height/2;
+
+    // Land on the ground
+    if(entityManager._map[0].horiLineCollidesWithMap(this.cx-this.width/2, this.cx+this.width/2, nextBottomY-3)){
+        this.velY = 0;
+    }
+
+    this.cy = this.cy + this.velY * du;
+};
+
+var NOMINAL_GRAVITY = 0.2;
+
+Grenade.prototype.computeGravity = function () {
+    return g_useGravity ? NOMINAL_GRAVITY : 0;
+};
+
+Grenade.prototype.render = function(ctx) {
+    this.sprite.drawCentredAt(
+        ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
+    );
+
+    ctx.save();
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    ctx.font = '15pt Arial Bold';
+    ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
+    ctx.restore();
 };
