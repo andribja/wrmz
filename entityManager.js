@@ -137,7 +137,6 @@ update: function(du) {
 
 render: function(ctx) {
     ctx.save();
-    console.log(this.shakeEffectTimer);
     if(this.shakeEffectTimer > 0){
         var dx = Math.random()*4*this.shakeEffectTimer;
         var dy = Math.random()*10*this.shakeEffectTimer;
