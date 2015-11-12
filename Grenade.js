@@ -100,3 +100,7 @@ Grenade.prototype.render = function(ctx) {
     ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
     ctx.restore();
 };
+
+Grenade.prototype.getRadius = function() {
+    return this.sprite.width / 2;
+}

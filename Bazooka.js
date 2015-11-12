@@ -33,7 +33,15 @@ Bazooka.prototype.damageRadius = 40;
 Bazooka.prototype.t = 0;
 
 Bazooka.prototype.update = function (du) {
-console.log("updating Bazooka");
+    //console.log("updating Bazooka");
+
+    // Keep track of my time alive to allow for a small
+    // grace period when initially fired
+    if(this.age === undefined)
+        this.age = 0;
+
+    this.age++;
+
     spatialManager.unregister(this);
     
     // did it hit something?
@@ -59,7 +67,7 @@ console.log("updating Bazooka");
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
-    if (hitEntity) {
+    if (hitEntity && this.age > 3*du) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) 
             canTakeHit.call(hitEntity); 
@@ -67,7 +75,10 @@ console.log("updating Bazooka");
         return entityManager.KILL_ME_NOW;
     }
     
-    
     spatialManager.register(this);
 
 };
+
+Bazooka.prototype.getRadius = function() {
+    return this.sprite.width / 2 * this.sprite.scale;
+}
