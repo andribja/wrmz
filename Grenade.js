@@ -31,6 +31,7 @@ Grenade.prototype = new Weapon();
   //  "sounds/GrenadeZapped.ogg");
     
 // Initial, inheritable, default values
+Grenade.prototype.name = 'Grenade';
 Grenade.prototype.damageRadius = 40;
 Grenade.prototype.t = 5;
 

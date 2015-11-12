@@ -24,6 +24,8 @@ function Worm(descr) {
     this.targetSprite = g_sprites.target;
     this.targetCx = this.cx;
     this.targetCy = this.cy - 20;
+
+    this.currentWeapon = new Bazooka();
 };
 
 Worm.prototype = new Entity();
@@ -48,7 +50,6 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
-Worm.prototype.currentWeapon = 'Grenade';
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -273,8 +274,8 @@ Worm.prototype.computeGravity = function () {
 Worm.prototype.maybeFireWeapon = function () {
 
     if (eatKey(this.KEY_FIRE)) {
-    
-        var dX = +Math.sin(this.rotation);
+        this.currentWeapon.fire(this.cx, this.cy, this.rotation); 
+        /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;
         
@@ -286,7 +287,7 @@ Worm.prototype.maybeFireWeapon = function () {
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            relVelX, relVelY,
            this.rotation,
-           this.currentWeapon);
+           this.currentWeapon);*/
 
     }
     
