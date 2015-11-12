@@ -99,6 +99,10 @@ Map.prototype.destroy = function(cx, cy, r) {
 
 Map.prototype.update = function(du) {
     var px = 10;
+    if(g_mouseAim) {
+        this.focusOn(g_mouseX + OFFSET_X, g_mouseY + OFFSET_Y);
+        return;
+    }
 
     // Scroll left
     if(eatKey(37))

@@ -38,6 +38,7 @@ Worm.prototype.KEY_FIRE   = 13;
 
 Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
 Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
+Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -145,10 +146,11 @@ Worm.prototype.maybeMove = function() {
         }
         //If the worm is close to the left edge of the canvas we refocus
         // Is buggy, needs fixing
-        if(this.isCloseToEdgeOfCanvas(true, this.getXPositionOnCanvas())){
-            console.log("this.cx, this.cy: " + this.cx + ", " + this.cy);
+        //if(this.isCloseToEdgeOfCanvas(true, this.getXPositionOnCanvas())){
+        //    console.log("this.cx, this.cy: " + this.cx + ", " + this.cy);
+        if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy); 
-        }
+        //}
     }
     if(keys[this.KEY_RIGHT]){
         this.wormSprite = g_sprites.wormFlipped;
@@ -159,7 +161,8 @@ Worm.prototype.maybeMove = function() {
         }
         //If the worm is close to the right edge of the canvas we refocus
         //This seems to work fine
-        if(this.isCloseToEdgeOfCanvas(false, this.getXPositionOnCanvas()))
+        //if(this.isCloseToEdgeOfCanvas(false, this.getXPositionOnCanvas()))
+        if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy);   
     }
 
@@ -364,8 +367,9 @@ Worm.prototype.getBoundingBox = function() {
 };
 
 Worm.prototype.chooseWeapon = function() {
-    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = 'Bazooka';
-    if(keys[this.KEY_GRENADE]) this.currentWeapon = 'Grenade';
+    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = new Bazooka();
+    if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
+    if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
 };
 
 Worm.prototype.render = function (ctx) {
