@@ -20,7 +20,11 @@ function Animation(image, rows, cols) {
 Animation.prototype.update = function(ctx) {
 	this.frameCounter += this.speed;
 
-	if(Math.floor(this.frameCounter) === 16) 
+	if(this.continuous) {
+		this.frameCounter = this.frameCounter % this.frames.length;
+	} 
+
+	if(Math.floor(this.frameCounter) === this.frames.length) 
 		return -1;
 };
 
