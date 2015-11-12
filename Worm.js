@@ -29,8 +29,8 @@ function Worm(descr) {
 Worm.prototype = new Entity();
 Worm.prototype.KEY_LEFT = 'A'.charCodeAt(0);
 Worm.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
-Worm.prototype.KEY_ROTATEGUN_L   = 'W'.charCodeAt(0);
-Worm.prototype.KEY_ROTATEGUN_R  = 'S'.charCodeAt(0);
+Worm.prototype.KEY_ROTATEGUN_L   = 'S'.charCodeAt(0);
+Worm.prototype.KEY_ROTATEGUN_R  = 'W'.charCodeAt(0);
 Worm.prototype.KEY_JUMP   = ' '.charCodeAt(0);
 Worm.prototype.KEY_FIRE   = 13;
 
@@ -45,6 +45,8 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
+Worm.prototype.availableWeapons = ['Bazooka'];
+Worm.prototype.currentWeapon = 'Bazooka';
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -261,7 +263,7 @@ Worm.prototype.maybeFireWeapon = function () {
     
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
-        var launchDist = this.width + 1.2;
+        var launchDist = 10;
         
         var relVel = this.launchVel;
         var relVelX = dX * relVel;
@@ -271,7 +273,7 @@ Worm.prototype.maybeFireWeapon = function () {
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            relVelX, relVelY,
            this.rotation,
-           'projectile');
+           this.currentWeapon);
 
     }
     

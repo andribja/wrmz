@@ -1,5 +1,5 @@
 // ======
-// Weapon
+// Bazooka
 // ======
 
 "use strict";
@@ -7,40 +7,40 @@
 /* jshint browser: true, devel: true, globalstrict: true */
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Weapon(descr) {
+function Bazooka(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
     //this.fireSound.play();
     
-    if(this.type === 'projectile') {
-        this.initAngle = this.rotation - Math.PI / 2;
-        this.initX = this.cx;
-        this.initY = this.cy;
-    }
+    
+    this.initAngle = this.rotation - Math.PI / 2;
+    this.initX = this.cx;
+    this.initY = this.cy;
+    
 }
 
-Weapon.prototype = new Entity();
+Bazooka.prototype = new Entity();
 
 // HACKED-IN AUDIO (no preloading)
-//Weapon.prototype.fireSound = new Audio(
- //   "sounds/WeaponFire.ogg");
-//Weapon.prototype.zappedSound = new Audio(
-  //  "sounds/WeaponZapped.ogg");
+//Bazooka.prototype.fireSound = new Audio(
+ //   "sounds/BazookaFire.ogg");
+//Bazooka.prototype.zappedSound = new Audio(
+  //  "sounds/BazookaZapped.ogg");
     
 // Initial, inheritable, default values
-Weapon.prototype.damageRadius = 40;
-Weapon.prototype.t = 0;
+Bazooka.prototype.damageRadius = 40;
+Bazooka.prototype.t = 0;
 
-Weapon.prototype.rotation = 0;
-Weapon.prototype.cx = 200;
-Weapon.prototype.cy = 200;
-Weapon.prototype.velX = 1;
-Weapon.prototype.velY = 1;
+Bazooka.prototype.rotation = 0;
+Bazooka.prototype.cx = 200;
+Bazooka.prototype.cy = 200;
+Bazooka.prototype.velX = 1;
+Bazooka.prototype.velY = 1;
 
 
-Weapon.prototype.update = function (du) {
-    // TODO: YOUR STUFF HERE! --- Unregister and check for death???
+Bazooka.prototype.update = function (du) {
+
     spatialManager.unregister(this);
     
     // did it hit something?
@@ -57,19 +57,10 @@ Weapon.prototype.update = function (du) {
         return entityManager.KILL_ME_NOW;
 
     this.t += du;
-    if(this.type === 'projectile') {
-        this.cx = this.initX + this.initVel*this.t*Math.cos(this.initAngle);
-        this.cy = this.initY + this.initVel*this.t*Math.sin(this.initAngle) + 
+    this.cx = this.initX + this.initVel*this.t*Math.cos(this.initAngle);
+    this.cy = this.initY + this.initVel*this.t*Math.sin(this.initAngle) + 
                     0.5*NOMINAL_GRAVITY*util.square(this.t);
-    } else {
-        this.cx += this.velX * du;
-        this.cy += this.velY * du;
-
-        this.rotation += 1 * du;
-        this.rotation = util.wrapRange(this.rotation, 0, consts.FULL_CIRCLE);
-    }
-
-    
+  
     
     // Handle collisions
     //
@@ -82,39 +73,39 @@ Weapon.prototype.update = function (du) {
         return entityManager.KILL_ME_NOW;
     }
     
-    // TODO: YOUR STUFF HERE! --- (Re-)Register?
+    
     spatialManager.register(this);
 
 };
 
-Weapon.prototype.checkIfHitMap = function () {
+Bazooka.prototype.checkIfHitMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
     if(entityManager._map[0].getAlphaAt(cx, cy) !== 0) return true;
 };
 
-Weapon.prototype.damageMap = function () {
+Bazooka.prototype.damageMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
     entityManager.destroyMap(cx, cy, this.damageRadius);
 };
 
-Weapon.prototype.damageWorms = function () {
+Bazooka.prototype.damageWorms = function () {
     entityManager.damageWorms(this.cx, this.cy, this.damageRadius);
 }
 
-Weapon.prototype.getRadius = function () {
+Bazooka.prototype.getRadius = function () {
     return 4;
 };
 
-Weapon.prototype.render = function (ctx) {
-    var fadeThresh = Weapon.prototype.lifeSpan / 3;
+Bazooka.prototype.render = function (ctx) {
+    var fadeThresh = Bazooka.prototype.lifeSpan / 3;
 
     if (this.lifeSpan < fadeThresh) {
         ctx.globalAlpha = this.lifeSpan / fadeThresh;
     }
 
-    g_sprites.weapon1.drawCentredAt(
+    g_sprites.Bazooka.drawCentredAt(
         ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
     );
 
