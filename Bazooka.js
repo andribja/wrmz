@@ -16,6 +16,8 @@ function Bazooka(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
+
+    this.sprite = g_sprites.Bazooka;
 }
 
 Bazooka.prototype = new Weapon();
@@ -68,19 +70,4 @@ console.log("updating Bazooka");
     
     spatialManager.register(this);
 
-};
-
-Bazooka.prototype.render = function (ctx) {
-    console.log("rendering Bazooka");
-    var fadeThresh = Bazooka.prototype.lifeSpan / 3;
-
-    if (this.lifeSpan < fadeThresh) {
-        ctx.globalAlpha = this.lifeSpan / fadeThresh;
-    }
-
-    g_sprites.Bazooka.drawCentredAt(
-        ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
-    );
-
-    ctx.globalAlpha = 1;
 };

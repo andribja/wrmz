@@ -17,6 +17,7 @@ function Grenade(descr) {
     this.initX = this.cx;
     this.initY = this.cy;
     
+    this.sprite = g_sprites.Grenade;
 }
 
 Grenade.prototype = new Weapon();
@@ -60,18 +61,4 @@ Grenade.prototype.update = function (du) {
     
     spatialManager.register(this);
 
-};
-
-Grenade.prototype.render = function (ctx) {
-    var fadeThresh = Grenade.prototype.lifeSpan / 3;
-
-    if (this.lifeSpan < fadeThresh) {
-        ctx.globalAlpha = this.lifeSpan / fadeThresh;
-    }
-
-    g_sprites.Grenade.drawCentredAt(
-        ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
-    );
-
-    ctx.globalAlpha = 1;
 };

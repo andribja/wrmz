@@ -47,14 +47,9 @@ Weapon.prototype.damageMap = function () {
 Weapon.prototype.damageWorms = function () {
     entityManager.damageWorms(this.cx, this.cy, this.damageRadius);
 }
-/* vil sennilega ekki hafa þetta hér
+
 Weapon.prototype.render = function (ctx) {
-    
-//kannski hægt að teikna með þessu?
-    g_sprites.Weapon.drawCentredAt(
+    this.sprite.drawCentredAt(
         ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
     );
-
-    
 };
-*/
