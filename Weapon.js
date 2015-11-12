@@ -23,6 +23,8 @@ Weapon.prototype = new Entity();
 // Initial, inheritable, default values
 Weapon.prototype.damageRadius = 40;
 Weapon.prototype.t = 0;
+Weapon.prototype.KEY_FIRE = 13;
+Weapon.prototype.launchVel = 2;
 
 Weapon.prototype.setup = function (descr) {
 
@@ -31,6 +33,26 @@ Weapon.prototype.setup = function (descr) {
         this[property] = descr[property];
     }
 };
+
+Weapon.fire = function(rotation) {
+    if (eatKey(this.KEY_FIRE)) {
+    
+        var dX = +Math.sin(this.rotation);
+        var dY = -Math.cos(this.rotation);
+        var launchDist = 10;
+        
+        var relVel = this.launchVel;
+        var relVelX = dX * relVel;
+        var relVelY = dY * relVel;
+
+        entityManager.fireWeapon(
+           this.cx + dX * launchDist, this.cy + dY * launchDist,
+           relVelX, relVelY,
+           this.rotation,
+           this.currentWeapon);
+
+    }
+}
 
 Weapon.prototype.checkIfHitMap = function () {
     var cx = parseInt(this.cx);
