@@ -88,14 +88,14 @@ Grenade.prototype.computeGravity = function () {
 };
 
 Grenade.prototype.render = function(ctx) {
-    this.sprite.drawCentredAt(
-        ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
-    );
+    
+    Weapon.prototype.render.call(this, ctx);
 
+    // Draw countdown
     ctx.save();
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
-    ctx.font = '15pt Arial Bold';
-    ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
+    ctx.font = '10pt Arial Bold';
+    ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-20 - OFFSET_Y);
     ctx.restore();
 };

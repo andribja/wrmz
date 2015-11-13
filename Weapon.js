@@ -24,14 +24,6 @@ Weapon.prototype = new Entity();
 Weapon.prototype.damageRadius = 40;
 Weapon.prototype.t = 0;
 
-Weapon.prototype.setup = function (descr) {
-
-    // Apply all setup properies from the (optional) descriptor
-    for (var property in descr) {
-        this[property] = descr[property];
-    }
-};
-
 Weapon.prototype.checkIfHitMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
