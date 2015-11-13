@@ -24,6 +24,8 @@ function Worm(descr) {
     this.targetSprite = g_sprites.target;
     this.targetCx = this.cx;
     this.targetCy = this.cy - 20;
+
+    this.currentWeapon = new Bazooka();
 };
 
 Worm.prototype = new Entity();
@@ -36,6 +38,7 @@ Worm.prototype.KEY_FIRE   = 13;
 
 Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
 Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
+Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -48,7 +51,6 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
-Worm.prototype.currentWeapon = 'Grenade';
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -144,10 +146,11 @@ Worm.prototype.maybeMove = function() {
         }
         //If the worm is close to the left edge of the canvas we refocus
         // Is buggy, needs fixing
-        if(this.isCloseToEdgeOfCanvas(true, this.getXPositionOnCanvas())){
-            console.log("this.cx, this.cy: " + this.cx + ", " + this.cy);
+        //if(this.isCloseToEdgeOfCanvas(true, this.getXPositionOnCanvas())){
+        //    console.log("this.cx, this.cy: " + this.cx + ", " + this.cy);
+        if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy); 
-        }
+        //}
     }
     if(keys[this.KEY_RIGHT]){
         this.wormSprite = g_sprites.wormFlipped;
@@ -158,7 +161,8 @@ Worm.prototype.maybeMove = function() {
         }
         //If the worm is close to the right edge of the canvas we refocus
         //This seems to work fine
-        if(this.isCloseToEdgeOfCanvas(false, this.getXPositionOnCanvas()))
+        //if(this.isCloseToEdgeOfCanvas(false, this.getXPositionOnCanvas()))
+        if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy);   
     }
 
@@ -273,8 +277,8 @@ Worm.prototype.computeGravity = function () {
 Worm.prototype.maybeFireWeapon = function () {
 
     if (eatKey(this.KEY_FIRE)) {
-    
-        var dX = +Math.sin(this.rotation);
+        this.currentWeapon.fire(this.cx, this.cy, this.rotation); 
+        /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;
         
@@ -286,7 +290,7 @@ Worm.prototype.maybeFireWeapon = function () {
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            relVelX, relVelY,
            this.rotation,
-           this.currentWeapon);
+           this.currentWeapon);*/
 
     }
     
@@ -363,8 +367,9 @@ Worm.prototype.getBoundingBox = function() {
 };
 
 Worm.prototype.chooseWeapon = function() {
-    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = 'Bazooka';
-    if(keys[this.KEY_GRENADE]) this.currentWeapon = 'Grenade';
+    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = new Bazooka();
+    if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
+    if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
 };
 
 Worm.prototype.render = function (ctx) {

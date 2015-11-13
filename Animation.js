@@ -4,12 +4,14 @@
 // It receives a spritesheet image, how many rows and columns
 // the spritesheet contains and processes it accordingly
 
-function Animation(image, rows, cols) {
-	this.image = image;
-	this.rows = rows;
-	this.cols = cols;
+function Animation(descr) {
+	// Default these variables, may be overwritten
 	this.speed = 1;
 	this.scale = 1;
+
+	for(var property in descr) {
+		this[property] = descr[property];
+	}
 
 	this.width = this.image.width / this.cols;
 	this.height = this.image.height / this.rows;

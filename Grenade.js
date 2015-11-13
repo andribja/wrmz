@@ -31,6 +31,7 @@ Grenade.prototype = new Weapon();
   //  "sounds/GrenadeZapped.ogg");
     
 // Initial, inheritable, default values
+Grenade.prototype.name = 'Grenade';
 Grenade.prototype.damageRadius = 40;
 Grenade.prototype.t = 5;
 
@@ -99,3 +100,7 @@ Grenade.prototype.render = function(ctx) {
     ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-20 - OFFSET_Y);
     ctx.restore();
 };
+
+Grenade.prototype.getRadius = function() {
+    return this.sprite.width / 2;
+}

@@ -152,14 +152,6 @@ function processDiagnostics() {
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 
-    if (eatKey(KEY_HALT)) entityManager.haltShips();
-
-    if (eatKey(KEY_RESET)) entityManager.resetShips();
-
-    if (eatKey(KEY_0)) entityManager.toggleRocks();
-
-    if (eatKey(KEY_K)) entityManager.killNearestShip(
-        g_mouseX, g_mouseY);
 }
 
 
@@ -219,6 +211,7 @@ function preloadDone() {
     g_sprites.Bazooka = new Sprite(g_images.target);
     g_sprites.Bazooka.scale = 0.5;
     g_sprites.Grenade = new Sprite(g_images.grenade);
+    g_sprites.Airstrike = new Sprite(g_images.grenade);
 
     entityManager.init();
     createInitialShips();

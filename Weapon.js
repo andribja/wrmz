@@ -21,8 +21,38 @@ Weapon.prototype = new Entity();
   //  "sounds/WeaponZapped.ogg");
     
 // Initial, inheritable, default values
+Weapon.prototype.name = 'Bazooka';
 Weapon.prototype.damageRadius = 40;
 Weapon.prototype.t = 0;
+Weapon.prototype.KEY_FIRE = 13;
+Weapon.prototype.launchVel = 2;
+
+Weapon.prototype.setup = function (descr) {
+
+    // Apply all setup properies from the (optional) descriptor
+    for (var property in descr) {
+        this[property] = descr[property];
+    }
+};
+
+Weapon.prototype.fire = function(cx, cy, rotation) {
+    //if (eatKey(this.KEY_FIRE)) {
+    
+        var dX = +Math.sin(rotation);
+        var dY = -Math.cos(rotation);
+        var launchDist = 10;
+        
+        var relVel = this.launchVel;
+        var relVelX = dX * relVel;
+        var relVelY = dY * relVel;
+
+        entityManager.fireWeapon(
+           cx + dX * launchDist, cy + dY * launchDist,
+           relVelX, relVelY,
+           rotation,
+           this.name);
+    //}
+}
 
 Weapon.prototype.checkIfHitMap = function () {
     var cx = parseInt(this.cx);

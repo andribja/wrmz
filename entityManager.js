@@ -27,6 +27,7 @@ var entityManager = {
 
 // "PRIVATE" DATA
 _worms   : [],
+_worms2  : [],
 _map : [],
 _weapons : [],
 _activeWorm: 0,
@@ -53,7 +54,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._worms, this._weapons, this._animations];
+    this._categories = [this._map, this._worms2, this._worms, this._weapons, this._animations];
 },
 
 init: function() {
@@ -96,6 +97,20 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon) {
     }));
 },
 
+fireAirstrike: function(cx) {
+    var fn = window['Airstrike'];
+    for(var i = 0; i < 5; i++) {
+        this._weapons.push(new fn({
+            cx   : cx+(i-2)*20,
+            cy   : 0,
+            velX : 0.2,
+            velY : 0.2,
+
+            rotation : 0,
+            initVel : 0.03
+        }));
+    }
+},
 
 generateWorm : function(descr) {
     this._worms.push(new Worm(descr));
@@ -122,10 +137,16 @@ update: function(du) {
                 // prevent a confusing gap from appearing in the array
                 
                 if(!(aCategory[i] instanceof Animation)) {
-                    var animation = new Animation(g_images.explosion, 4, 4);
-                    animation.setPos(aCategory[i].getPos());
-                    animation.setSpeed(0.5);
-                    animation.setScale(2);
+                    var pos = aCategory[i].getPos();
+                    var animation = new Animation({
+                        image: g_images.explosion,
+                        rows: 4,
+                        cols: 4,
+                        cx: pos.posX,
+                        cy: pos.posY,
+                        speed: 0.5,
+                        scale: 2
+                    });
 
                     this._animations.push(animation);
                 }

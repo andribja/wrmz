@@ -1,5 +1,5 @@
 // ======
-// Bazooka
+// Weapon
 // ======
 
 "use strict";
@@ -7,8 +7,8 @@
 /* jshint browser: true, devel: true, globalstrict: true */
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Bazooka(descr) {
-     // Common inherited setup logic from Weapon
+function Airstrike(descr) {
+    // Common inherited setup logic from Entity
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
     //this.fireSound.play();
@@ -20,28 +20,24 @@ function Bazooka(descr) {
     this.sprite = g_sprites.Bazooka;
 }
 
-Bazooka.prototype = new Weapon();
+Airstrike.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Bazooka.prototype.fireSound = new Audio(
- //   "sounds/BazookaFire.ogg");
-//Bazooka.prototype.zappedSound = new Audio(
-  //  "sounds/BazookaZapped.ogg");
+//Weapon.prototype.fireSound = new Audio(
+ //   "sounds/WeaponFire.ogg");
+//Weapon.prototype.zappedSound = new Audio(
+  //  "sounds/WeaponZapped.ogg");
     
 // Initial, inheritable, default values
-Bazooka.prototype.damageRadius = 40;
-Bazooka.prototype.t = 0;
+Airstrike.prototype.damageRadius = 40;
+Airstrike.prototype.t = 0;
 
-Bazooka.prototype.update = function (du) {
-    //console.log("updating Bazooka");
+Airstrike.prototype.fire = function(cx, cy, rotation) {
+    g_mouseAim = true;
+}
 
-    // Keep track of my time alive to allow for a small
-    // grace period when initially fired
-    if(this.age === undefined)
-        this.age = 0;
-
-    this.age++;
-
+Airstrike.prototype.update = function (du) {
+    console.log("updating Airstrike");
     spatialManager.unregister(this);
     
     // did it hit something?
@@ -67,7 +63,7 @@ Bazooka.prototype.update = function (du) {
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
-    if (hitEntity && this.age > 3*du) {
+    if (hitEntity) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) 
             canTakeHit.call(hitEntity); 
@@ -75,10 +71,7 @@ Bazooka.prototype.update = function (du) {
         return entityManager.KILL_ME_NOW;
     }
     
+    
     spatialManager.register(this);
 
 };
-
-Bazooka.prototype.getRadius = function() {
-    return this.sprite.width / 2 * this.sprite.scale;
-}
