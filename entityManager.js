@@ -137,10 +137,16 @@ update: function(du) {
                 // prevent a confusing gap from appearing in the array
                 
                 if(!(aCategory[i] instanceof Animation)) {
-                    var animation = new Animation(g_images.explosion, 4, 4);
-                    animation.setPos(aCategory[i].getPos());
-                    animation.setSpeed(0.5);
-                    animation.setScale(2);
+                    var pos = aCategory[i].getPos();
+                    var animation = new Animation({
+                        image: g_images.explosion,
+                        rows: 4,
+                        cols: 4,
+                        cx: pos.posX,
+                        cy: pos.posY,
+                        speed: 0.5,
+                        scale: 2
+                    });
 
                     this._animations.push(animation);
                 }
