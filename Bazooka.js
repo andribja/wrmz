@@ -70,7 +70,7 @@ Bazooka.prototype.update = function (du) {
     if (hitEntity && this.age > 3*du) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) 
-            canTakeHit.call(hitEntity); 
+            hitEntity.takeDamage(this.cx, this.cy, this.damageRadius) 
         
         return entityManager.KILL_ME_NOW;
     }

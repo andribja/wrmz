@@ -64,6 +64,12 @@ init: function() {
 },
 
 selectNextWorm: function() {
+    //Fix
+    if(this._worms.length <= 0){
+        console.log("Game over!");
+        keys[KEY_QUIT] = true;
+        return;
+    } 
     this._worms[this._activeWorm].isActive = false;
     this._activeWorm = ++this._activeWorm % this._worms.length;
     this._worms[this._activeWorm].isActive = true;
@@ -123,6 +129,10 @@ generateMap : function(descr) {
 
 update: function(du) {
 
+    if(this._worms.length + this._worms2.length === 1){
+        console.log("Congratulations, you win!");
+        keys[KEY_QUIT] = true;
+    }
     for (var c = 0; c < this._categories.length; ++c) {
 
         var aCategory = this._categories[c];
@@ -133,9 +143,10 @@ update: function(du) {
             var status = aCategory[i].update(du);
 
             if (status === this.KILL_ME_NOW) {
+                console.log("Kill me now");
                 // remove the dead guy, and shuffle the others down to
-                // prevent a confusing gap from appearing in the array
-                
+                // posrevent a confusing gap from appearing in the array
+
                 if(!(aCategory[i] instanceof Animation)) {
                     var pos = aCategory[i].getPos();
                     var animation = new Animation({
@@ -149,6 +160,12 @@ update: function(du) {
                     });
 
                     this._animations.push(animation);
+                }
+
+                if(aCategory[i] instanceof Worm && aCategory[i].isDeadNow && aCategory[i].isActive){
+                    aCategory[i].wormSprite = g_sprites.Tombstone;
+                    this._timer = 0;
+                    spatialManager.unregister(aCategory[i]);
                 }
 
                 aCategory.splice(i,1);

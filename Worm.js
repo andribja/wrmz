@@ -51,6 +51,7 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
+Worm.prototype.takeWeaponHit = true;
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -59,6 +60,11 @@ Worm.prototype.warpSound = new Audio(
 */
 
 Worm.prototype.update = function (du) {
+    if(this.isDeadNow) {
+        console.log("isDeadNow");
+        return -1;
+    }
+
     // choose current weapon
     if(this.isActive) {
         this.chooseWeapon();  
@@ -139,7 +145,7 @@ Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
         this.wormSprite = g_sprites.worm;
-        var i = this.canGoUpSlope(true);
+        var i = this.canGoUpSlope(true, this.cx - 3);
         if(i > -Infinity){
             this.cx -= 3;
             this.cy -= i;
@@ -154,7 +160,7 @@ Worm.prototype.maybeMove = function() {
     }
     if(keys[this.KEY_RIGHT]){
         this.wormSprite = g_sprites.wormFlipped;
-        var i = this.canGoUpSlope(false);
+        var i = this.canGoUpSlope(false, this.cx + 3);
         if(i > -Infinity){
             this.cx += 3;
             this.cy -= i;
@@ -210,34 +216,36 @@ Worm.prototype.horizontalEdgeCollidesWithMap = function(x1, x2, y){
 };
 
 
-Worm.prototype.canGoUpSlope = function(left){
+Worm.prototype.canGoUpSlope = function(left, nextX){
     
     // ToDo: reyna að breyta þannig að við notum föllin úr map 1/2
 
     var yBottom = parseInt(this.cy + this.height/2);
     var yTop = parseInt(this.cy - this.height/2);
-    var i = 0; var k = 0; var x;
+    var i = 0; var k = 0; var x; 
 
     // See which side of the worm we need to check 
     if(left)
-        x = parseInt(this.cx - this.width/2);
+        x = parseInt(nextX - this.width/2);
+        //x = parseInt(this.cx - this.width/2);
     else
-        x = parseInt(this.cx + this.width/2);
+        x = parseInt(nextX + this.width/2);
+        //x = parseInt(this.cx + this.width/2);
 
     // Count pixels that arent transparent, first only close to the bottom of the worm
     // Then on the whole side of the worm
-    for(var j = 0; j <= 7; j++){
+    for(var j = 0; j <= 10; j++){
         if(entityManager._map[0].getAlphaAt(x, yBottom-j) != 0)
             i++;
     }
 
-    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-10, yTop);
+    var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-12, yTop);
     
     // We need to figure out which numbers are appropriate here
     // For how many non-transparent pixels are on the side of the worm
     // can the worm move?
-    if(i <= 7 && !wholeEdgeCollides){
-        return true;
+    if(i <= 10 && !wholeEdgeCollides){
+        return i;
     }
     return -Infinity;
 };
@@ -265,7 +273,6 @@ Worm.prototype.updateTarget = function(du){
     this.targetCx = +Math.sin(this.rotation)*distFromWorm + this.cx;
     this.targetCy = -Math.cos(this.rotation)*distFromWorm + this.cy;
 };
-
 
 var NOMINAL_GRAVITY = 0.2;
 
@@ -333,19 +340,24 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 
 Worm.prototype.death = function() {
     //TODO implement
+    this.wormSprite = g_sprites.Tombstone;
+    this.isDeadNow = true;
 
-    //Unregister? 
+    //spatialManager.unregister(this);
 };
+
+Worm.prototype.collidesWith = function(x, y){
+
+};
+
+/*Worm.prototype.takeWeaponHit = function () {
+    //this.takeDamage(this.cx, this.cy, r);
+};*/
 
 /*
 //Hugsanlega gera getBoundingBox
 Worm.prototype.getRadius = function () {
     return (this.sprite.width / 2) * 0.9;
-};
-
-//Breyta þessu falli
-Worm.prototype.takeWeaponHit = function () {
-    this.warp();
 };
 
 // Þurfum að bæta inn this.reset_cx og cy ef við ætlum að nota þetta
