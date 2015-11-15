@@ -1,5 +1,5 @@
 // ======
-// Grenade
+// Dynamite
 // ======
 
 "use strict";
@@ -7,7 +7,7 @@
 /* jshint browser: true, devel: true, globalstrict: true */
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Grenade(descr) {
+function Dynamite(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
@@ -17,25 +17,25 @@ function Grenade(descr) {
     this.initX = this.cx;
     this.initY = this.cy;
     
-    this.sprite = g_sprites.Grenade;
+    this.sprite = g_sprites.Dynamite;
     this.width = this.sprite.width; 
     this.height = this.sprite.height; 
 }
 
-Grenade.prototype = new Weapon();
+Dynamite.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Grenade.prototype.fireSound = new Audio(
- //   "sounds/GrenadeFire.ogg");
-//Grenade.prototype.zappedSound = new Audio(
-  //  "sounds/GrenadeZapped.ogg");
+//Dynamite.prototype.fireSound = new Audio(
+ //   "sounds/DynamiteFire.ogg");
+//Dynamite.prototype.zappedSound = new Audio(
+  //  "sounds/DynamiteZapped.ogg");
     
 // Initial, inheritable, default values
-Grenade.prototype.name = 'Grenade';
-Grenade.prototype.damageRadius = 40;
-Grenade.prototype.t = 5;
+Dynamite.prototype.name = 'Dynamite';
+Dynamite.prototype.damageRadius = 40;
+Dynamite.prototype.t = 5;
 
-Grenade.prototype.update = function (du) {
+Dynamite.prototype.update = function (du) {
 
     spatialManager.unregister(this);
     
@@ -67,7 +67,7 @@ Grenade.prototype.update = function (du) {
 
 };
 
-Grenade.prototype.applyGravity = function (du) {
+Dynamite.prototype.applyGravity = function (du) {
     this.velY += this.computeGravity() * du;
 
     var nextY = this.cy + this.velY * du; 
@@ -84,11 +84,11 @@ Grenade.prototype.applyGravity = function (du) {
 
 var NOMINAL_GRAVITY = 0.2;
 
-Grenade.prototype.computeGravity = function () {
+Dynamite.prototype.computeGravity = function () {
     return g_useGravity ? NOMINAL_GRAVITY : 0;
 };
 
-Grenade.prototype.render = function(ctx) {
+Dynamite.prototype.render = function(ctx) {
     
     Weapon.prototype.render.call(this, ctx);
 
@@ -101,6 +101,6 @@ Grenade.prototype.render = function(ctx) {
     ctx.restore();
 };
 
-Grenade.prototype.getRadius = function() {
+Dynamite.prototype.getRadius = function() {
     return this.sprite.width / 2;
 }

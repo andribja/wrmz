@@ -186,13 +186,13 @@ update: function(du) {
 },
 
 render: function(ctx) {
-    ctx.save();
+    /*ctx.save();
 
     if(this.shakeEffectTimer > 0){
         var dx = Math.random()*4*this.shakeEffectTimer;
         var dy = Math.random()*10*this.shakeEffectTimer;
         ctx.translate(dx, dy);
-    }
+    }*/
 
     var debugX = 10, debugY = 100;
 
@@ -213,7 +213,7 @@ render: function(ctx) {
         debugY += 10;
     }
 
-    ctx.restore();
+    //ctx.restore();
 
     if(this.doAnimation) {
 

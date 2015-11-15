@@ -33,8 +33,6 @@ Bazooka.prototype.damageRadius = 40;
 Bazooka.prototype.t = 0;
 
 Bazooka.prototype.update = function (du) {
-    //console.log("updating Bazooka");
-
     // Keep track of my time alive to allow for a small
     // grace period when initially fired
     if(this.age === undefined)
@@ -46,7 +44,6 @@ Bazooka.prototype.update = function (du) {
     
     // did it hit something?
     var mapHit = this.checkIfHitMap();
-    console.log(mapHit);
     if(mapHit) {
         this.damageMap();
         this.damageWorms();

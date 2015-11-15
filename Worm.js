@@ -39,6 +39,7 @@ Worm.prototype.KEY_FIRE   = 13;
 Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
 Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
 Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
+Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -52,6 +53,11 @@ Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
 Worm.prototype.takeWeaponHit = true;
+
+// TEMPORARY ----
+Worm.prototype.shockWaveX=0;
+Worm.prototype.shockWaveY=0;
+//--------------
 
 /*
 // HACKED-IN AUDIO (no preloading)
@@ -92,7 +98,6 @@ Worm.prototype.update = function (du) {
     // ToDo: Register?
     spatialManager.register(this);
 };
-
 
 Worm.prototype.applyAccel = function (du) {
     // original velocity
@@ -306,7 +311,7 @@ Worm.prototype.maybeFireWeapon = function () {
 Worm.prototype.shockWave = function(cx, cy, r) {
     /*
     // ToDo: fix this, doesn't quite work yet
-
+//console.log("(cx,cy)= "+cx+" , "+cy);
     //calculate the x and y components of the vector from the center of the explosion to the worm
     var xDist=this.cx-cx; 
     var yDist=this.cy-cy; 
@@ -322,13 +327,15 @@ Worm.prototype.shockWave = function(cx, cy, r) {
     var vectorX = Math.cos(angle);
     var vectorY = Math.sin(angle);
         this.velX=vectorX*explosionForce/dist;
-        if(vectorY<0) this.velY=vectorY*explosionForce/dist; //don't sink into the ground
-        console.log("x,y dist= "+xDist+" , "+yDist);
-        console.log("dist= "+dist);
-        console.log("angle= "+angle);
-        console.log("force vector= "+vectorX+" , "+vectorY);
+        //if(vectorY<0) 
+        this.velY=vectorY*explosionForce/dist; //don't sink into the ground
+       // console.log("x,y dist= "+xDist+" , "+yDist);
+       // console.log("dist= "+dist);
+       // console.log("angle= "+angle);
+       // console.log("force vector= "+vectorX+" , "+vectorY);
+       this.shockWaveX=Math.abs(this.velX);
+       this.shockWaveX=Math.abs(this.velY);
 */
-    
 }
 
 Worm.prototype.takeDamage = function(cx, cy, r) {
@@ -382,6 +389,7 @@ Worm.prototype.chooseWeapon = function() {
     if(keys[this.KEY_BAZOOKA]) this.currentWeapon = new Bazooka();
     if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
     if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
+    if(keys[this.KEY_DYNAMITE]) this.currentWeapon = new Dynamite();
 };
 
 Worm.prototype.render = function (ctx) {
@@ -402,5 +410,15 @@ Worm.prototype.render = function (ctx) {
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
+/* temporary-------
+ctx.beginPath();
+ctx.fillStyle='black';
+ctx.lineWidth=10;
+ctx.moveTo(this.cx-OFFSET_X,this.cy-OFFSET_Y);
+ctx.lineTo(this.cx+this.shockWaveX*50-OFFSET_X,this.cy+this.shockWaveY*50-OFFSET_Y);
+ctx.stroke();
+//----------------*/
     ctx.restore();
+
+
 };
