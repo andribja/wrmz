@@ -190,7 +190,8 @@ function requestPreloads() {
         wormFlipped: "images/wormFlipped.png",
         target   : "images/target.png",
         explosion : "images/explosion.png",
-        grenade : "images/grenade.png"
+        grenade : "images/grenade.png",
+        dynamite : "images/dynamite.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -212,6 +213,7 @@ function preloadDone() {
     g_sprites.Bazooka.scale = 0.5;
     g_sprites.Grenade = new Sprite(g_images.grenade);
     g_sprites.Airstrike = new Sprite(g_images.grenade);
+    g_sprites.Dynamite = new Sprite(g_images.dynamite);
 
     entityManager.init();
     createInitialShips();
