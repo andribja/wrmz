@@ -60,24 +60,24 @@ function createInitialShips() {
 // ====================
 
 function createInitialWorms() {
-    entityManager.generateWorm({
+    entityManager.addWormTeam1({
         cx : 700,
         cy : 200,
         isActive : true,
         //cy : 450
     });
-    entityManager.generateWorm({
+    entityManager.addWormTeam2({
         cx:1100,
         cy: 100,
         isActive : false,
         team : "red"
     });
-    entityManager.generateWorm({
+    entityManager.addWormTeam1({
         cx: 400,
         cy: 100,
         isActive : false
     });
-    entityManager.generateWorm({
+    entityManager.addWormTeam2({
         cx:1300,
         cy: 100,
         isActive : false,
@@ -114,7 +114,6 @@ function updateSimulation(du) {
     processDiagnostics();
     
     entityManager.update(du);
-
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -124,7 +123,7 @@ var g_useGravity = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-var KEY_MIXED   = keyCode('M');;
+var KEY_MIXED   = keyCode('M');
 var KEY_GRAVITY = keyCode('G');
 var KEY_AVE_VEL = keyCode('V');
 var KEY_SPATIAL = keyCode('X');

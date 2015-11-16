@@ -40,6 +40,7 @@ Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
 Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
 Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
+Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -52,7 +53,9 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
+Worm.prototype.shotPower = 0;
 Worm.prototype.takeWeaponHit = true;
+//Worm.prototype.isStoned = false;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -88,6 +91,12 @@ Worm.prototype.update = function (du) {
     if(this.isActive) {
         this.maybeMove();
        
+        // Count the seconds the FIRE key has been pressed, max 2
+        if(keys[this.KEY_FIRE]) {
+            this.shotPower += du/SECS_TO_NOMINALS;
+            if(this.shotPower > 2) this.shotPower = 2;
+        }
+
         // Handle firing
         this.maybeFireWeapon();
 
@@ -288,8 +297,12 @@ Worm.prototype.computeGravity = function () {
 
 Worm.prototype.maybeFireWeapon = function () {
 
-    if (eatKey(this.KEY_FIRE)) {
-        this.currentWeapon.fire(this.cx, this.cy, this.rotation); 
+    // Fire if the FIRE key has been pressed and released
+    if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
+        this.currentWeapon.fire(this.cx, this.cy, this.rotation, this.shotPower); 
+
+        // make sure we don't fire again until the FIRE key has been pressed another time
+        this.shotPower = 0;
         /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;
@@ -347,10 +360,9 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 
 Worm.prototype.death = function() {
     
-    this.wormSprite = g_sprites.Tombstone;
     this.isDeadNow = true;
-
-    //spatialManager.unregister(this);
+    entityManager.generateTombstone(this.cx, this.cy);
+    spatialManager.unregister(this);
 };
 
 /*
@@ -382,6 +394,7 @@ Worm.prototype.chooseWeapon = function() {
     if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
     if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
     if(keys[this.KEY_DYNAMITE]) this.currentWeapon = new Dynamite();
+    if(keys[this.KEY_SHOTGUN]) this.currentWeapon = new Shotgun();
 };
 
 Worm.prototype.render = function (ctx) {
