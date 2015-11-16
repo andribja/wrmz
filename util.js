@@ -13,7 +13,7 @@ var util = {
 // ======
 
 clampRange: function(value, lowBound, highBound) {
-    console.log(value, lowBound, highBound);
+    //console.log(value, lowBound, highBound);
     if (value < lowBound) {
 	value = lowBound;
     } else if (value > highBound) {

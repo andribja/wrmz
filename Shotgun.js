@@ -1,5 +1,5 @@
 // ======
-// Bazooka
+// Shotgun
 // ======
 
 "use strict";
@@ -7,7 +7,7 @@
 /* jshint browser: true, devel: true, globalstrict: true */
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Bazooka(descr) {
+function Shotgun(descr) {
      // Common inherited setup logic from Weapon
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
@@ -17,22 +17,30 @@ function Bazooka(descr) {
     this.initX = this.cx;
     this.initY = this.cy;
 
-    this.sprite = g_sprites.Bazooka;
+    this.sprite = g_sprites.Shotgun;
 }
 
-Bazooka.prototype = new Weapon();
+Shotgun.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Bazooka.prototype.fireSound = new Audio(
- //   "sounds/BazookaFire.ogg");
-//Bazooka.prototype.zappedSound = new Audio(
-  //  "sounds/BazookaZapped.ogg");
+//Shotgun.prototype.fireSound = new Audio(
+ //   "sounds/ShotgunFire.ogg");
+//Shotgun.prototype.zappedSound = new Audio(
+  //  "sounds/ShotgunZapped.ogg");
     
 // Initial, inheritable, default values
-Bazooka.prototype.damageRadius = 40;
-Bazooka.prototype.t = 0;
+Shotgun.prototype.damageRadius = 10;
+Shotgun.prototype.t = 0;
 
-Bazooka.prototype.update = function (du) {
+Shotgun.prototype.fire = function(cx, cy, rotation) {
+    Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/24);
+    //Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/48);
+    Weapon.prototype.fire.call(this, cx, cy, rotation);
+    //Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/48);
+    Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/24);
+}
+
+Shotgun.prototype.update = function (du) {
     // Keep track of my time alive to allow for a small
     // grace period when initially fired
     if(this.age === undefined)
@@ -57,14 +65,13 @@ Bazooka.prototype.update = function (du) {
 
     this.t += du;
     this.cx = this.initX + this.initVel*this.t*Math.cos(this.initAngle);
-    this.cy = this.initY + this.initVel*this.t*Math.sin(this.initAngle) + 
-                    0.5*NOMINAL_GRAVITY*util.square(this.t);
+    this.cy = this.initY + this.initVel*this.t*Math.sin(this.initAngle); 
   
     
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
-    if (hitEntity && this.age > 3*du && !(hitEntity instanceof Bazooka)) {
+    if (hitEntity && this.age > 3*du) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) 
             hitEntity.takeDamage(this.cx, this.cy, this.damageRadius) 
@@ -76,6 +83,6 @@ Bazooka.prototype.update = function (du) {
 
 };
 
-Bazooka.prototype.getRadius = function() {
+Shotgun.prototype.getRadius = function() {
     return this.sprite.width / 2 * this.sprite.scale;
 }

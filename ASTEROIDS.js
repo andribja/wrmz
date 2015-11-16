@@ -62,24 +62,24 @@ function createInitialShips() {
 // ====================
 
 function createInitialWorms() {
-    entityManager.generateWorm({
+    entityManager.addWormTeam1({
         cx : 700,
         cy : 200,
         isActive : true,
         //cy : 450
     });
-    entityManager.generateWorm({
+    entityManager.addWormTeam2({
         cx:1100,
         cy: 100,
         isActive : false,
         team : "red"
     });
-    entityManager.generateWorm({
+    entityManager.addWormTeam1({
         cx: 400,
         cy: 100,
         isActive : false
     });
-    entityManager.generateWorm({
+    entityManager.addWormTeam2({
         cx:1300,
         cy: 100,
         isActive : false,
@@ -190,6 +190,7 @@ function requestPreloads() {
         target   : "images/target.png",
         explosion : "images/explosion.png",
         grenade : "images/grenade.png",
+        tombstone : "images/tombstone.png",
         dynamite : "images/dynamite.png"
     };
 
@@ -212,6 +213,7 @@ function preloadDone() {
     g_sprites.Bazooka.scale = 0.5;
     g_sprites.Grenade = new Sprite(g_images.grenade);
     g_sprites.Airstrike = new Sprite(g_images.grenade);
+    g_sprites.Tombstone = new Sprite(g_images.tombstone);
     g_sprites.Dynamite = new Sprite(g_images.dynamite);
 
     entityManager.init();

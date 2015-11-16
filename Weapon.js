@@ -27,14 +27,6 @@ Weapon.prototype.t = 0;
 Weapon.prototype.KEY_FIRE = 13;
 Weapon.prototype.launchVel = 2;
 
-Weapon.prototype.setup = function (descr) {
-
-    // Apply all setup properies from the (optional) descriptor
-    for (var property in descr) {
-        this[property] = descr[property];
-    }
-};
-
 Weapon.prototype.fire = function(cx, cy, rotation) {
     //if (eatKey(this.KEY_FIRE)) {
     
