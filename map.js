@@ -19,7 +19,9 @@ function Map(descr) {
 
 Map.prototype = new Entity();
 
-Map.prototype.isLand = function(x, y) {
+Map.prototype.isLand = function(cx, cy) {
+    var x = parseInt(cx);
+    var y = parseInt(cy);
     return this.getAlphaAt(x, y) !== 0;
 };
 
@@ -49,17 +51,16 @@ Map.prototype.render = function(ctx) {
 Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
     var theta;
     for(theta = 0; theta < 2*Math.PI; theta += Math.PI/12) {
-        var y = r*Math.sin(theta);
-        var x = r*Math.cos(theta);
+        var y = cy+r*Math.sin(theta);
+        var x = cx+r*Math.cos(theta);
         if(this.isLand(x,y)) return true;
     }
     return false;
 }
 
-Map.prototype.vertLineCollidesWithMap = function(x0, y1, y2) {
-    var yMin = parseInt(Math.min(y1,y2));
-    var yMax = parseInt(Math.max(y1,y2));
-    var x = parseInt(x0);
+Map.prototype.vertLineCollidesWithMap = function(x, y1, y2) {
+    var yMin = Math.min(y1,y2);
+    var yMax = Math.max(y1,y2);
     var y;
     var i;
     for(y = yMin; y <= yMax; y++) {
@@ -68,10 +69,9 @@ Map.prototype.vertLineCollidesWithMap = function(x0, y1, y2) {
     return false;
 }
 
-Map.prototype.horiLineCollidesWithMap = function(x1, x2, y0) {
-    var xMin = parseInt(Math.min(x1,x2));
-    var xMax = parseInt(Math.max(x1,x2));
-    var y = parseInt(y0);
+Map.prototype.horiLineCollidesWithMap = function(x1, x2, y) {
+    var xMin = Math.min(x1,x2);
+    var xMax = Math.max(x1,x2);
     var x;
     var i = 0;
     for(x = xMin; x <= xMax; x++) {

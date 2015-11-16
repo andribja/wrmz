@@ -52,6 +52,7 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
+Worm.prototype.shotPower = 0;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -82,6 +83,12 @@ Worm.prototype.update = function (du) {
     if(this.isActive) {
         this.maybeMove();
        
+        // Count the seconds the FIRE key has been pressed, max 2
+        if(keys[this.KEY_FIRE]) {
+            this.shotPower += du/SECS_TO_NOMINALS;
+            if(this.shotPower > 2) this.shotPower = 2;
+        }
+
         // Handle firing
         this.maybeFireWeapon();
 
@@ -281,8 +288,12 @@ Worm.prototype.computeGravity = function () {
 
 Worm.prototype.maybeFireWeapon = function () {
 
-    if (eatKey(this.KEY_FIRE)) {
-        this.currentWeapon.fire(this.cx, this.cy, this.rotation); 
+    // Fire if the FIRE key has been pressed and released
+    if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
+        this.currentWeapon.fire(this.cx, this.cy, this.rotation, this.shotPower); 
+
+        // make sure we don't fire again until the FIRE key has been pressed another time
+        this.shotPower = 0;
         /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;
