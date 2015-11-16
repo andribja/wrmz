@@ -33,14 +33,12 @@ need to tweak it if you do something "non-obvious" in yours.
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-var g_canvas = document.getElementById("g_canvas");
-var g_ctx = g_canvas.getContext("2d");
-
 // Stretch canvas to window on resize
 window.addEventListener('resize', resizeListener);
 
 function resizeListener(e) {
     util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
+    util.resizeCanvas(bg_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 /*
@@ -186,6 +184,7 @@ function requestPreloads() {
 
     var requiredImages = {
         map    : "images/world3.png",
+        background : "images/bg.jpg",
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
         target   : "images/target.png",
@@ -225,6 +224,7 @@ function preloadDone() {
 
     // Stretch the canvas to the window
     util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
+    util.resizeCanvas(bg_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 // =================

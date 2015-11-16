@@ -3,21 +3,25 @@ function Map(descr) {
     this.setup(descr);
 
     this.sprite = g_sprites['map'];
+    this.width = this.sprite.width;
+    this.height = this.sprite.height;   // For checking if anything has fallen into the ocean
+    FULL_WIDTH = this.width;
+    FULL_HEIGHT = this.height + this.LAND_OFFSET;
 
-    FULL_WIDTH = this.sprite.width;
-    FULL_HEIGHT = this.sprite.height;
+    // Init stuff for the sea
+    g_images.sea = this.getWaveImg(g_canvas, g_ctx, FULL_WIDTH, 20, 'blue', 'cyan', 4);
+    this.seaX = 0;
+    this.seaY = FULL_HEIGHT - 2*this.LAND_OFFSET; 
+    this.seaVel = 1;
     
     // Get a quick snapshot of the full image to store it's data
-    g_canvas.width = FULL_WIDTH;
-    g_canvas.height = FULL_HEIGHT;
-    this.sprite.drawAt(g_ctx, 0, 0);
-    this.imageData = g_ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
+    this.grabMapData(g_canvas, g_ctx, FULL_WIDTH, FULL_HEIGHT);
 
     this.shakeEffectTimer = -1;
-    //spatialManager.register(this)
 }
 
 Map.prototype = new Entity();
+Map.prototype.LAND_OFFSET = 100;
 
 Map.prototype.isLand = function(x, y) {
     return this.getAlphaAt(x, y) !== 0;
@@ -33,17 +37,6 @@ Map.prototype.setAlphaAt = function(x, y, alpha) {
     var i =  util.getPixelIndex(this.imageData, x, y) + 3;
     
     this.imageData.data[i] = alpha;
-};
-
-Map.prototype.render = function(ctx) {
-    var dx = 0;
-    var dy = 0;
-    /*if(this.shakeEffectTimer > 0) {
-        dx = Math.random()*15*this.shakeEffectTimer;
-        dy = Math.random()*15*this.shakeEffectTimer;
-    }*/
-    
-    ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
 };
 
 Map.prototype.circleCollidesWithMap = function(cx, cy, r) {
@@ -122,6 +115,8 @@ Map.prototype.update = function(du) {
 
     // The map shakes for a bit when it takes damage
     this.shakeEffectTimer -= du/SECS_TO_NOMINALS;
+
+    this.seaX = (this.seaX + this.seaVel*du) % g_canvas.width;
 };
 
 // Negative dx scrolls to the left
@@ -139,4 +134,115 @@ Map.prototype.focusOn = function(cx, cy) {
     var scrollY = cy - g_canvas.height/2 - OFFSET_Y;
 
     this.scroll(scrollX, scrollY); 
+};
+
+Map.prototype.getWaveImg = function(canvas, ctx, width, height, stroke, fill, thickness) {
+    // Store the canvas info to be able to restore it later
+    var oldWidth = canvas.width;
+    var oldHeight = canvas.height;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.save();
+    ctx.beginPath();
+
+    var desiredFreq = 0.08;
+    var f = Math.floor(desiredFreq * width / (2*Math.PI)) * 2*Math.PI / width;
+
+    var iterations = 1000;
+    var incr = width / iterations;
+    var x = 0, y = canvas.height/2;
+    
+    ctx.moveTo(x, y);
+    ctx.strokeStyle = stroke;
+    ctx.fillStyle = fill;
+    ctx.lineWidth = thickness;
+
+    // Draw a sine-wave shape
+    for(var i=0; i<iterations; i ++) {
+        x += incr;
+        y = canvas.height/2 + (height / 2 - thickness) * Math.sin(f*x);
+        ctx.lineTo(x, y);
+    }
+
+    // Close it up
+    ctx.lineTo(x, canvas.height);
+    ctx.lineTo(0, canvas.height);
+    ctx.lineTo(0, canvas.height/2);
+    ctx.closePath();
+
+    ctx.stroke();
+    ctx.fill();
+
+    ctx.restore();
+
+    // Grab the data and make an image
+    var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var img = new Image();
+    img.src = canvas.toDataURL(data);
+
+    // Restore the old canvas properties
+    canvas.width = oldWidth;
+    canvas.height = oldHeight;
+
+    return img;
+};
+
+Map.prototype.grabMapData = function(canvas, ctx, width, height) {
+    var oldWidth = canvas.width;
+    var oldHeight = canvas.height;
+
+    canvas.width = width;
+    canvas.height = height;
+    this.sprite.drawAt(ctx, 0, 0);
+    this.imageData = ctx.getImageData(0,0, g_canvas.width, g_canvas.height);
+
+    canvas.width = oldWidth;
+    canvas.height = oldHeight;
+};
+
+Map.prototype.renderWave = function(ctx, oy) {
+    // Draw the wave
+    var img = g_images.sea;
+    ctx.drawImage(img, this.seaX - OFFSET_X, this.seaY - OFFSET_Y + oy);
+
+    // Wrap it around the right edge
+    ctx.drawImage(img, img.width - this.seaX, 0, this.seaX, img.height,
+                    -OFFSET_X, this.seaY - OFFSET_Y + oy, this.seaX, img.height);
+}
+
+Map.prototype.renderBackground = function(ctx) {
+    //bg_ctx.drawImage(g_images.background, -OFFSET_X, -OFFSET_Y);
+
+    util.fillBox(ctx, 0, this.seaY, FULL_WIDTH, FULL_HEIGHT, 'cyan');
+    
+    this.renderWave(ctx, -20);
+    this.renderWave(ctx, 10);
+    this.renderWave(ctx, 40)
+    
+};
+
+Map.prototype.renderForeground = function(ctx) {
+    var dx = 0;
+    var dy = 0;
+    /*if(this.shakeEffectTimer > 0) {
+        dx = Math.random()*15*this.shakeEffectTimer;
+        dy = Math.random()*15*this.shakeEffectTimer;
+    }*/ 
+
+    ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
+
+    util.fillBox(ctx, 0, this.height-10, FULL_WIDTH, FULL_HEIGHT, 'cyan');
+    //this.renderWave(ctx, 40);   
+    this.renderWave(ctx, 70);
+    this.renderWave(ctx, 100);
+
+}
+
+Map.prototype.render = function(ctx) {
+
+    this.renderBackground(bg_ctx);
+    this.renderForeground(ctx);
+    
 };
