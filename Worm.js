@@ -53,6 +53,7 @@ Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
 Worm.prototype.takeWeaponHit = true;
+//Worm.prototype.isStoned = false;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -347,10 +348,9 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 
 Worm.prototype.death = function() {
     
-    this.wormSprite = g_sprites.Tombstone;
     this.isDeadNow = true;
-
-    //spatialManager.unregister(this);
+    entityManager.generateTombstone(this.cx, this.cy);
+    spatialManager.unregister(this);
 };
 
 /*

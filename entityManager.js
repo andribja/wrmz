@@ -34,6 +34,7 @@ _activeWorm: 0,
 _timer : 60,
 shakeEffectTimer: -1,
 _animations: [],
+_tombstones: [],
 
 // "PRIVATE" METHODS
 
@@ -54,7 +55,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._worms2, this._worms, this._weapons, this._animations];
+    this._categories = [this._map, this._worms2, this._worms, this._weapons, this._animations, this._tombstones];
 },
 
 init: function() {
@@ -124,7 +125,10 @@ generateWorm : function(descr) {
 
 generateMap : function(descr) {
     this._map.push(new Map(descr)); // TODO fix parameter to map image variable
+},
 
+generateTombstone : function(x, y){
+    this._tombstones.push(new Tombstone(x, y));
 },
 
 update: function(du) {
@@ -139,6 +143,8 @@ update: function(du) {
         var i = 0;
 
         while (i < aCategory.length) {
+
+            //spatialManager.unregister(aCategory[i]);
 
             var status = aCategory[i].update(du);
 
@@ -163,7 +169,6 @@ update: function(du) {
                 }
 
                 if(aCategory[i] instanceof Worm && aCategory[i].isDeadNow && aCategory[i].isActive){
-                    aCategory[i].wormSprite = g_sprites.Tombstone;
                     this._timer = 0;
                     spatialManager.unregister(aCategory[i]);
                 }
@@ -171,6 +176,7 @@ update: function(du) {
                 aCategory.splice(i,1);
             }
             else {
+                //spatialManager.register(aCategory[i]);
                 ++i;
             }
         }
