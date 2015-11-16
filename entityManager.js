@@ -61,8 +61,6 @@ deferredSetup : function () {
 
 init: function() {
     this.generateMap();
-    //this._generateRocks();
-    //this._generateShip();
 },
 
 selectNextWorm: function() {
@@ -144,6 +142,7 @@ generateTombstone : function(x, y){
 update: function(du) {
 
     if(this._worms[0].length === 0 || this._worms[1].length === 0){
+        //Just put something here --- fix
         console.log("Congratulations, you win!");
         keys[KEY_QUIT] = true;
     }

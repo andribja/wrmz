@@ -64,7 +64,7 @@ Bazooka.prototype.update = function (du) {
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
-    if (hitEntity && this.age > 3*du) {
+    if (hitEntity && this.age > 3*du && !(hitEntity instanceof Bazooka)) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) 
             hitEntity.takeDamage(this.cx, this.cy, this.damageRadius) 

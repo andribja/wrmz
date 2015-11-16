@@ -13,6 +13,8 @@ function Tombstone(x, y) {
 
 	this.cx = x; this.cy = y - 10;
 	this.tombstoneSprite = g_sprites.Tombstone;
+	this.width = this.tombstoneSprite.width; 
+	this.height = this.tombstoneSprite.height;
 
 	this._scale = 1;
 
@@ -43,18 +45,14 @@ Tombstone.prototype.applyAccel = function(du){
     var aveVelY = (oldVelY + this.velY) / 2;
     var nextY = this.cy + oldVelY * du; 
 
+    console.log("this.cx: " + this.cx + "this.cy: " + this.cy);
     // next position of the worm's bounding box
     var nextLx = this.cx - this.width/2;
     var nextRx = this.cx + this.width/2;
     var nextTopY = nextY - this.height/2;
     var nextBottomY = nextY + this.height/2;
 
-    // prevent tombstone from jumping up into the map
-    if (this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextTopY)) {
-        // it whill hit something, stop moving upwards
-        nextY = this.cy + NOMINAL_GRAVITY*du;
-        if (this.velY<0) this.velY = 0;
-    }
+    console.log("nextLX, nextRX, nextBottomY: " + nextLx + ", " + nextRx + ", " + nextBottomY);
 
     // Land on the ground
     if(this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextBottomY)){
