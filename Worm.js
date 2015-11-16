@@ -346,20 +346,12 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 };
 
 Worm.prototype.death = function() {
-    //TODO implement
+    
     this.wormSprite = g_sprites.Tombstone;
     this.isDeadNow = true;
 
     //spatialManager.unregister(this);
 };
-
-Worm.prototype.collidesWith = function(x, y){
-
-};
-
-/*Worm.prototype.takeWeaponHit = function () {
-    //this.takeDamage(this.cx, this.cy, r);
-};*/
 
 /*
 //Hugsanlega gera getBoundingBox

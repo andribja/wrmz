@@ -60,6 +60,12 @@ Weapon.prototype.checkIfHitMap = function () {
     if(entityManager._map[0].getAlphaAt(cx, cy) !== 0) return true;
 };
 
+Weapon.prototype.checkIfHitWorm = function() {
+    var cx = parseInt(this.cx);
+    var cy = parseInt(this.cy);
+
+};
+
 Weapon.prototype.damageMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
