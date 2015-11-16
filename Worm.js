@@ -40,6 +40,7 @@ Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
 Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
 Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
+Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
 
 // Initial, inheritable, default values
 Worm.prototype.rotation = 0;
@@ -382,6 +383,7 @@ Worm.prototype.chooseWeapon = function() {
     if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
     if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
     if(keys[this.KEY_DYNAMITE]) this.currentWeapon = new Dynamite();
+    if(keys[this.KEY_SHOTGUN]) this.currentWeapon = new Shotgun();
 };
 
 Worm.prototype.render = function (ctx) {

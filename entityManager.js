@@ -26,12 +26,13 @@ with suitable 'data' and 'methods'.
 var entityManager = {
 
 // "PRIVATE" DATA
-_worms   : [],
-_worms2  : [],
+_worms: [[],[]],
+_indexes: [0,0],
 _map : [],
 _weapons : [],
-_activeWorm: 0,
-_timer : 60,
+_activeTeam: 0,
+_initTimer : 10,
+_timer : 10,
 shakeEffectTimer: -1,
 _animations: [],
 _tombstones: [],
@@ -55,7 +56,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._worms2, this._worms, this._weapons, this._animations, this._tombstones];
+    this._categories = [this._map, this._worms[0], this._worms[1], this._weapons, this._animations, this._tombstones];
 },
 
 init: function() {
@@ -66,15 +67,18 @@ init: function() {
 
 selectNextWorm: function() {
     //Fix
-    if(this._worms.length <= 0){
+    if(this._worms[this._activeTeam].length <= 0 || this._worms[(this._activeTeam+1)%2] <= 0){
         console.log("Game over!");
         keys[KEY_QUIT] = true;
         return;
-    } 
-    this._worms[this._activeWorm].isActive = false;
-    this._activeWorm = ++this._activeWorm % this._worms.length;
-    this._worms[this._activeWorm].isActive = true;
-    console.log("currently active: worm " + this._activeWorm);
+    }
+
+    if(typeof this._worms[this._indexes[this._activeTeam]] !== 'undefined') 
+        this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = false;
+    this._indexes[this._activeTeam] = (this._indexes[this._activeTeam] + 1) % this._worms[this._activeTeam].length;
+    this._activeTeam = (this._activeTeam + 1) % 2;
+    this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = true;
+    console.log("currently active: worm " + this._indexes[this._activeTeam] + " of team " + this._activeTeam);
 },
 
 destroyMap: function(cx, cy, r) {
@@ -82,10 +86,12 @@ destroyMap: function(cx, cy, r) {
 },
 
 damageWorms: function(cx, cy, r) {
-    for(var i = 0; i < this._worms.length; i++) {
-        this._worms[i].takeDamage(cx, cy, r);
-        console.log("damaging worm #"+i+"at: "+this._worms[i].cx+" , "+this._worms[i].cy);
-        this._worms[i].shockWave(cx, cy, r);
+    for(var j = 0; j < this._worms.length; j++) {
+        for(var i = 0; i < this._worms[j].length; i++) {
+            this._worms[j][i].takeDamage(cx, cy, r);
+            console.log("damaging worm #"+i+"at: "+this._worms[j][i].cx+" , "+this._worms[j][i].cy);
+            this._worms[j][i].shockWave(cx, cy, r);
+        }
     }
 },
 
@@ -119,8 +125,12 @@ fireAirstrike: function(cx) {
     }
 },
 
-generateWorm : function(descr) {
-    this._worms.push(new Worm(descr));
+addWormTeam2 : function(descr) {
+    this._worms[1].push(new Worm(descr));
+},
+
+addWormTeam1 : function(descr) {
+    this._worms[0].push(new Worm(descr));
 },
 
 generateMap : function(descr) {
@@ -133,7 +143,7 @@ generateTombstone : function(x, y){
 
 update: function(du) {
 
-    if(this._worms.length + this._worms2.length === 1){
+    if(this._worms[0].length === 0 || this._worms[1].length === 0){
         console.log("Congratulations, you win!");
         keys[KEY_QUIT] = true;
     }
@@ -185,7 +195,7 @@ update: function(du) {
         this._timer -= du/SECS_TO_NOMINALS;
     } else {
         this.selectNextWorm();
-        this._timer = 60;
+        this._timer = this._initTimer;
     }
 
     this.shakeEffectTimer -=du/SECS_TO_NOMINALS;
