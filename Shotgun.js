@@ -18,6 +18,10 @@ function Shotgun(descr) {
     this.initY = this.cy;
 
     this.sprite = g_sprites.Shotgun;
+    this.weaponSprite = this.sprite;
+    this.weaponSprite.scale = 0.06;
+    this.weaponSprite.offsetX = 4;
+    this.weaponSprite.offsetY = 5;
 }
 
 Shotgun.prototype = new Weapon();

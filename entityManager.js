@@ -171,7 +171,7 @@ update: function(du) {
                         cx: pos.posX,
                         cy: pos.posY,
                         speed: 0.5,
-                        scale: 2
+                        scale: aCategory[i].damageRadius / 20
                     });
 
                     this._animations.push(animation);

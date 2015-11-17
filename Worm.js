@@ -19,6 +19,7 @@ function Worm(descr) {
 
     // Set normal drawing scale
     this._scale = 1;
+    this.flip = 1;
 
     // Create a target
     this.targetSprite = g_sprites.target;
@@ -42,8 +43,10 @@ Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
 Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
 
+Worm.prototype.RESET_ROTATION = Math.PI/2;
+
 // Initial, inheritable, default values
-Worm.prototype.rotation = 0;
+Worm.prototype.rotation = Worm.prototype.RESET_ROTATION;
 Worm.prototype.cx = 700;
 Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
@@ -158,7 +161,7 @@ Worm.prototype.applyAccel = function (du) {
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
-        this.wormSprite = g_sprites.worm;
+        this.flip = -1;
         var i = this.canGoUpSlope(true, this.cx - 3);
         if(i > -Infinity){
             this.cx -= 3;
@@ -173,7 +176,7 @@ Worm.prototype.maybeMove = function() {
         //}
     }
     if(keys[this.KEY_RIGHT]){
-        this.wormSprite = g_sprites.wormFlipped;
+        this.flip = 1;
         var i = this.canGoUpSlope(false, this.cx + 3);
         if(i > -Infinity){
             this.cx += 3;
@@ -195,6 +198,10 @@ Worm.prototype.getXPositionOnCanvas = function(){
     var x = this.cx - OFFSET_X;
     return x;
 };
+
+Worm.prototype.getRotation = function() {
+    return this.rotation * this.flip;
+}
 
 Worm.prototype.isCloseToEdgeOfCanvas = function(left, x){
     var right = !left;
@@ -265,27 +272,33 @@ Worm.prototype.canGoUpSlope = function(left, nextX){
 };
 
 
-var NOMINAL_ROTATE_RATE = 0.1;
+var NOMINAL_ROTATE_RATE = 0.05;
 
 Worm.prototype.updateTargetRotation = function (du) {
     if (keys[this.KEY_ROTATEGUN_L]) {
-        this.rotation -= NOMINAL_ROTATE_RATE * du;
-    }
-    if (keys[this.KEY_ROTATEGUN_R]) {
         this.rotation += NOMINAL_ROTATE_RATE * du;
     }
+    if (keys[this.KEY_ROTATEGUN_R]) {
+        this.rotation -= NOMINAL_ROTATE_RATE * du;
+    }
 
-    this.rotation = util.wrapRange(this.rotation, 0, consts.FULL_CIRCLE);
+    this.rotation = util.clampRange(this.rotation, 0, Math.PI);
 };
 
 Worm.prototype.updateTarget = function(du){
-    if(this.cx === entityManager._worms[1])
-        console.log("updateTarget");
-    this.updateTargetRotation(du);
+    if(this.currentWeapon instanceof Airstrike) {
+        this.targetCx = g_mouseX + OFFSET_X;
+        this.targetCy = g_mouseY + OFFSET_Y;
 
-    var distFromWorm = 40;
-    this.targetCx = +Math.sin(this.rotation)*distFromWorm + this.cx;
-    this.targetCy = -Math.cos(this.rotation)*distFromWorm + this.cy;
+        this.rotation = this.RESET_ROTATION;
+    } else {
+        this.updateTargetRotation(du);
+
+        var distFromWorm = 40;
+        this.targetCx = +Math.sin(this.getRotation())*distFromWorm + this.cx;
+        this.targetCy = -Math.cos(this.getRotation())*distFromWorm + this.cy;
+    }
+    
 };
 
 var NOMINAL_GRAVITY = 0.2;
@@ -299,7 +312,7 @@ Worm.prototype.maybeFireWeapon = function () {
 
     // Fire if the FIRE key has been pressed and released
     if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
-        this.currentWeapon.fire(this.cx, this.cy, this.rotation, this.shotPower); 
+        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower); 
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
@@ -398,19 +411,33 @@ Worm.prototype.chooseWeapon = function() {
 };
 
 Worm.prototype.render = function (ctx) {
+    var posX = this.cx - OFFSET_X,
+        posY = this.cy - OFFSET_Y,
+        targetX = this.targetCx - OFFSET_X,
+        targetY = this.targetCy - OFFSET_Y;
+
+
+    // Draw the worm
     var origScale = this.wormSprite.scale;
     // pass my scale into the sprite, for drawing
     this.wormSprite.scale = this._scale;
-    this.wormSprite.drawCentredAt(ctx, this.cx - OFFSET_X, 
-                                    this.cy - OFFSET_Y, 0);
+
+    ctx.save();
+    ctx.translate(posX, posY);
+    ctx.scale(this.flip, 1);
+    ctx.translate(-posX, -posY);
+
+    this.wormSprite.drawCentredAt(ctx, posX, posY, 0);
+
+    ctx.restore();
+
     this.wormSprite.scale = origScale;
-    
+
     if(this.isActive) {
-        // draw target when aiming
+        // Draw the target when aiming
         if(!keys[this.KEY_FIRE]) {
             this.targetSprite.scale = this._scale;
-            this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
-                                        this.targetCy - OFFSET_Y, 0);
+            this.targetSprite.drawCentredAt(ctx, targetX, targetY, 0);
             this.targetSprite.scale = origScale;
         }
 
@@ -420,6 +447,23 @@ Worm.prototype.render = function (ctx) {
             g_sprites.powerBar.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
                 0, 0+15*this.shotPower, g_sprites.powerBar.height);
         }
+
+        // Draw the weapon
+        var weaponSprite = this.currentWeapon.weaponSprite;
+        if(weaponSprite.offsetY)
+            posY += weaponSprite.offsetY;
+        if(weaponSprite.offsetX)
+            posX += weaponSprite.offsetX * this.flip;
+
+        ctx.save();
+        ctx.translate(posX, posY);
+        ctx.scale(this.flip, 1);
+        ctx.rotate(this.rotation - Math.PI/2);
+        ctx.translate(-posX, -posY);
+
+        weaponSprite.drawCentredAt(ctx, posX, posY);
+
+        ctx.restore();
     }
 
     ctx.save();

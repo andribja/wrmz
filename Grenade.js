@@ -18,8 +18,11 @@ function Grenade(descr) {
     this.initY = this.cy;
     
     this.sprite = g_sprites.Grenade;
+    this.weaponSprite = this.sprite;
     this.width = this.sprite.width; 
     this.height = this.sprite.height; 
+    this.weaponSprite.offsetX = 5;
+    this.weaponSprite.offsetY = 5;
 }
 
 Grenade.prototype = new Weapon();
