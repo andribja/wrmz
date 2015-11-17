@@ -18,6 +18,7 @@ function Grenade(descr) {
     this.initY = this.cy;
     
     this.sprite = g_sprites.Grenade;
+    this.gunSprite = this.sprite;
     this.width = this.sprite.width; 
     this.height = this.sprite.height; 
 }

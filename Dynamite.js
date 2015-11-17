@@ -18,6 +18,7 @@ function Dynamite(descr) {
     this.initY = this.cy;
     
     this.sprite = g_sprites.Dynamite;
+    this.gunSprite = this.sprite;
     this.width = this.sprite.width; 
     this.height = this.sprite.height; 
 }

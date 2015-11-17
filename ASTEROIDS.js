@@ -192,7 +192,9 @@ function requestPreloads() {
         explosion : "images/explosion.png",
         grenade : "images/grenade.png",
         tombstone : "images/tombstone.png",
-        dynamite : "images/dynamite.png"
+        dynamite : "images/dynamite.png",
+        bazooka : 'images/bazooka.png',
+        airstrike : 'images/airstrike.png'
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -216,6 +218,8 @@ function preloadDone() {
     g_sprites.Airstrike = new Sprite(g_images.grenade);
     g_sprites.Tombstone = new Sprite(g_images.tombstone);
     g_sprites.Dynamite = new Sprite(g_images.dynamite);
+    g_sprites.BazookaGun = new Sprite(g_images.bazooka);
+    g_sprites.airstrike = new Sprite(g_images.airstrike);
 
     entityManager.init();
     createInitialShips();

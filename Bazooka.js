@@ -18,6 +18,7 @@ function Bazooka(descr) {
     this.initY = this.cy;
 
     this.sprite = g_sprites.Bazooka;
+    this.gunSprite = g_sprites.BazookaGun;
 }
 
 Bazooka.prototype = new Weapon();

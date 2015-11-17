@@ -398,6 +398,9 @@ Worm.prototype.render = function (ctx) {
         this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
                                         this.targetCy - OFFSET_Y, 0);
         this.targetSprite.scale = origScale;
+        this.currentWeapon.gunSprite.scale = this._scale;
+        this.currentWeapon.gunSprite.drawCentredAt(ctx, this.cx - OFFSET_X,
+                                this.cy - OFFSET_Y, this.rotation-Math.PI/2);
     }
     ctx.save();
     ctx.fillStyle = this.team;

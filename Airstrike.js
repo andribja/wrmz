@@ -17,7 +17,8 @@ function Airstrike(descr) {
     this.initX = this.cx;
     this.initY = this.cy;
 
-    this.sprite = g_sprites.Bazooka;
+    this.sprite = g_sprites.Grenade;
+    this.gunSprite = g_sprites.airstrike;
 }
 
 Airstrike.prototype = new Weapon();
