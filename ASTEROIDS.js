@@ -191,7 +191,7 @@ function requestPreloads() {
         grenade : "images/grenade.png",
         tombstone : "images/tombstone.png",
         dynamite : "images/dynamite.png",
-        powerBar : "images/powerBar.png"
+        powerBar : "images/powerBar.png",
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
         shotgun : "images/shotgun.png"
