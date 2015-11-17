@@ -404,12 +404,24 @@ Worm.prototype.render = function (ctx) {
     this.wormSprite.drawCentredAt(ctx, this.cx - OFFSET_X, 
                                     this.cy - OFFSET_Y, 0);
     this.wormSprite.scale = origScale;
+    
     if(this.isActive) {
-        this.targetSprite.scale = this._scale;
-        this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
+        // draw target when aiming
+        if(!keys[this.KEY_FIRE]) {
+            this.targetSprite.scale = this._scale;
+            this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
                                         this.targetCy - OFFSET_Y, 0);
-        this.targetSprite.scale = origScale;
+            this.targetSprite.scale = origScale;
+        }
+
+        // draw power bar when the weapon gets more power the longer FIRE key is pressed
+        if(this.currentWeapon instanceof Grenade &&
+            keys[this.KEY_FIRE]) {
+            g_sprites.powerBar.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
+                0, 0+15*this.shotPower, g_sprites.powerBar.height);
+        }
     }
+
     ctx.save();
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
