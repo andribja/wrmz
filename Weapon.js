@@ -9,7 +9,7 @@
 // A generic contructor which accepts an arbitrary descriptor object
 function Weapon(descr) {
     // Common inherited setup logic from Entity
-    this.setup(descr);   
+    this.setup(descr);
 }
 
 Weapon.prototype = new Entity();
