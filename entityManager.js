@@ -87,7 +87,6 @@ damageWorms: function(cx, cy, r) {
     for(var j = 0; j < this._worms.length; j++) {
         for(var i = 0; i < this._worms[j].length; i++) {
             this._worms[j][i].takeDamage(cx, cy, r);
-            console.log("damaging worm #"+i+"at: "+this._worms[j][i].cx+" , "+this._worms[j][i].cy);
             this._worms[j][i].shockWave(cx, cy, r);
         }
     }

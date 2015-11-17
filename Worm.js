@@ -73,7 +73,6 @@ Worm.prototype.warpSound = new Audio(
 
 Worm.prototype.update = function (du) {
     if(this.isDeadNow) {
-        console.log("isDeadNow");
         return -1;
     }
 
@@ -335,33 +334,22 @@ Worm.prototype.maybeFireWeapon = function () {
 };
 
 Worm.prototype.shockWave = function(cx, cy, r) {
-    /*
-    // ToDo: fix this, doesn't quite work yet
-//console.log("(cx,cy)= "+cx+" , "+cy);
-    //calculate the x and y components of the vector from the center of the explosion to the worm
+    // x- and y components of the distance vector between the explosion and worm
     var xDist=this.cx-cx; 
     var yDist=this.cy-cy; 
+    var dist = util.dist(cx, cy, this.cx, this.cy);
 
-    var explosionForce = 1000;
-
-    var dist = util.dist(cx, this.cx, cy, this.cy);
-   
-    //use those distances to find the angle of the vextor between the worm and the explosion
+    // the angle of the vector (the shockwave)
     var angle = Math.atan2(yDist,xDist);
+    var dX = Math.cos(angle);
+    var dY = Math.sin(angle);
 
-    //find the x-,and -y components of the vector
-    var vectorX = Math.cos(angle);
-    var vectorY = Math.sin(angle);
-        this.velX=vectorX*explosionForce/dist;
-        //if(vectorY<0) 
-        this.velY=vectorY*explosionForce/dist; //don't sink into the ground
-       // console.log("x,y dist= "+xDist+" , "+yDist);
-       // console.log("dist= "+dist);
-       // console.log("angle= "+angle);
-       // console.log("force vector= "+vectorX+" , "+vectorY);
-       this.shockWaveX=Math.abs(this.velX);
-       this.shockWaveX=Math.abs(this.velY);
-*/
+    // if the worm is close enough, it bounces away from the explosion
+    var damageRadius = 100;
+    if(dist < damageRadius) {
+        this.velX = dX * damageRadius/dist;
+        this.velY = dY * damageRadius/dist;
+    }
 }
 
 Worm.prototype.takeDamage = function(cx, cy, r) {
@@ -471,14 +459,6 @@ Worm.prototype.render = function (ctx) {
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
-/* temporary-------
-ctx.beginPath();
-ctx.fillStyle='black';
-ctx.lineWidth=10;
-ctx.moveTo(this.cx-OFFSET_X,this.cy-OFFSET_Y);
-ctx.lineTo(this.cx+this.shockWaveX*50-OFFSET_X,this.cy+this.shockWaveY*50-OFFSET_Y);
-ctx.stroke();
-//----------------*/
     ctx.restore();
 
 
