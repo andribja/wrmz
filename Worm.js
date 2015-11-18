@@ -25,7 +25,9 @@ function Worm(descr) {
     this.targetSprite = g_sprites.target;
     this.targetCx = this.cx;
     this.targetCy = this.cy - 20;
-
+    this.weapons = {'bazooka': new Bazooka(), 'grenade': new Grenade(),
+        'airstrike': new Airstrike(), 'dynamite': new Dynamite(), 
+        'shotgun': new Shotgun()};
     this.currentWeapon = new Bazooka();
 };
 
@@ -390,11 +392,11 @@ Worm.prototype.getBoundingBox = function() {
 };
 
 Worm.prototype.chooseWeapon = function() {
-    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = new Bazooka();
-    if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
-    if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
-    if(keys[this.KEY_DYNAMITE]) this.currentWeapon = new Dynamite();
-    if(keys[this.KEY_SHOTGUN]) this.currentWeapon = new Shotgun();
+    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = this.weapons.bazooka;
+    if(keys[this.KEY_GRENADE]) this.currentWeapon = this.weapons.grenade;
+    if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = this.weapons.airstrike;
+    if(keys[this.KEY_DYNAMITE]) this.currentWeapon = this.weapons.dynamite;
+    if(keys[this.KEY_SHOTGUN]) this.currentWeapon = this.weapons.shotgun;
 };
 
 Worm.prototype.render = function (ctx) {
