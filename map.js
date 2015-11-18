@@ -214,9 +214,8 @@ Map.prototype.renderWave = function(ctx, oy) {
 
 Map.prototype.renderBackground = function(ctx) {
     //bg_ctx.drawImage(g_images.background, -OFFSET_X, -OFFSET_Y);
-
-    util.fillBox(ctx, 0, this.seaY, FULL_WIDTH, FULL_HEIGHT, 'cyan');
-    
+    ctx.drawImage(g_images.bkgnd, -OFFSET_X, -OFFSET_Y);
+    util.fillBox(ctx, 0, this.seaY, FULL_WIDTH, FULL_HEIGHT, 'cyan'); 
     this.renderWave(ctx, -20);
     this.renderWave(ctx, 10);
     this.renderWave(ctx, 40)
@@ -226,10 +225,10 @@ Map.prototype.renderBackground = function(ctx) {
 Map.prototype.renderForeground = function(ctx) {
     var dx = 0;
     var dy = 0;
-    /*if(this.shakeEffectTimer > 0) {
+    if(this.shakeEffectTimer > 0) {
         dx = Math.random()*15*this.shakeEffectTimer;
         dy = Math.random()*15*this.shakeEffectTimer;
-    }*/ 
+    } 
 
     ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
 

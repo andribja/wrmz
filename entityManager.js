@@ -207,14 +207,7 @@ update: function(du) {
 },
 
 render: function(ctx) {
-    /*ctx.save();
-
-    if(this.shakeEffectTimer > 0){
-        var dx = Math.random()*4*this.shakeEffectTimer;
-        var dy = Math.random()*10*this.shakeEffectTimer;
-        ctx.translate(dx, dy);
-    }*/
-
+   
     var debugX = 10, debugY = 100;
 
     for (var c = 0; c < this._categories.length; ++c) {
@@ -233,8 +226,6 @@ render: function(ctx) {
         }
         debugY += 10;
     }
-
-    //ctx.restore();
 
     if(this.doAnimation) {
 
@@ -268,6 +259,7 @@ render: function(ctx) {
     }
 
     ctx.save();
+    ctx.fillStyle = 'yellow';
     ctx.font = '20pt Arial Bold';
     ctx.fillText(Math.ceil(this._timer), 20, 40);
     ctx.textAlign = 'right';

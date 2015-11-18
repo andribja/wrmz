@@ -100,7 +100,7 @@ Dynamite.prototype.render = function(ctx) {
 
     // Draw countdown
     ctx.save();
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.font = '10pt Arial Bold';
     ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-20 - OFFSET_Y);
