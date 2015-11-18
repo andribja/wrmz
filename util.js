@@ -112,6 +112,37 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = oldStyle;
 },
 
+fillRoundedBox: function(ctx, x, y, w, h, r, fillStyle, lineStyle, lineWidth) {
+    var oldFill = ctx.fillStyle;
+    var oldStroke = ctx.strokeStyle;
+    var oldWidth = ctx.lineWidth;
+
+    ctx.fillStyle = fillStyle;
+    ctx.strokeStyle = lineStyle;
+    ctx.lineWidth = lineWidth;
+
+    var hw = w/2;
+    var hh = h/2;
+    var cx = x + hw;
+    var cy = y + hw;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - hh);
+    ctx.arcTo(cx + hw, cy - hh, cx + hw, cy - hh + r, r);
+    ctx.arcTo(cx + hw, cy + hh, cx + hw - r, cy + hh, r);
+    ctx.arcTo(cx - hw, cy + hh, cx - hw, cy + hh - r, r);
+    ctx.arcTo(cx - hw, cy - hh, cx - hw + r, cy - hh, r);
+    ctx.lineTo(cx, cy - hh);
+    ctx.closePath();
+
+    ctx.stroke();
+    ctx.fill();
+
+    ctx.fillStyle = oldFill;
+    ctx.strokeStyle = oldStroke;
+    ctx.lineWidth = oldWidth;
+},
+
 strokeBox: function(ctx, x, y, w, h, style) {
     var oldStyle = ctx.fillStyle;
     ctx.strokeStyle = style;

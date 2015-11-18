@@ -192,7 +192,7 @@ function requestPreloads() {
         tombstone : "images/tombstone.png",
         dynamite : "images/dynamite.png",
         bazooka : 'images/bazooka.png',
-        airstrike : 'images/airstrike.png'
+        airstrike : 'images/airstrike.png',
         powerBar : "images/powerBar.png",
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
