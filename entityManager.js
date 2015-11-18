@@ -263,6 +263,7 @@ render: function(ctx) {
     }
 
     ctx.save();
+    ctx.fillStyle = 'yellow';
     ctx.font = '20pt Arial Bold';
     ctx.fillText(Math.ceil(this._timer), 20, 40);
     ctx.textAlign = 'right';

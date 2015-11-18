@@ -312,10 +312,11 @@ Worm.prototype.maybeFireWeapon = function () {
     // Fire if the FIRE key has been pressed and released
     if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
         this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower);
-        this.isActive = false;
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
+        if(this.currentWeapon instanceof Dynamite) return;
+        this.isActive = false;
         /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;

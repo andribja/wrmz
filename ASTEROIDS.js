@@ -196,7 +196,8 @@ function requestPreloads() {
         powerBar : "images/powerBar.png",
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
-        shotgun : "images/shotgun.png"
+        shotgun : "images/shotgun.png",
+        bkgnd : "images/space.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
