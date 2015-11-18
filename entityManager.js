@@ -92,7 +92,7 @@ damageWorms: function(cx, cy, r) {
     }
 },
 
-fireWeapon: function(cx, cy, velX, velY, rotation, weapon) {
+fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel) {
     // the worm's weapon is passed to the function as a string
     // this is a fix so the appropriate weapon can be created
     var fn = window[weapon];
@@ -103,7 +103,7 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon) {
         velY : velY,
 
         rotation : rotation,
-        initVel : 10
+        initVel : initVel
     }));
 },
 

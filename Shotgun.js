@@ -22,6 +22,8 @@ function Shotgun(descr) {
     this.weaponSprite.scale = 0.06;
     this.weaponSprite.offsetX = 4;
     this.weaponSprite.offsetY = 5;
+
+    this.scalablePower = true;
 }
 
 Shotgun.prototype = new Weapon();

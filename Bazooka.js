@@ -21,6 +21,8 @@ function Bazooka(descr) {
     this.weaponSprite = g_sprites.launcher;
     this.weaponSprite.scale = 0.04;
     this.weaponSprite.offsetY = 5;
+
+    this.scalablePower = true;
 }
 
 Bazooka.prototype = new Weapon();
