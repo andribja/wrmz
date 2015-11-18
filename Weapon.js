@@ -26,9 +26,11 @@ Weapon.prototype.damageRadius = 40;
 Weapon.prototype.t = 0;
 Weapon.prototype.KEY_FIRE = 13;
 Weapon.prototype.launchVel = 2;
+Weapon.prototype.ammo = 0;
 
 Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
     //if (eatKey(this.KEY_FIRE)) {
+        if(this.ammo <= 0) return;
     
         var dX = +Math.sin(rotation);
         var dY = -Math.cos(rotation);
@@ -47,6 +49,8 @@ Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
            relVelX, relVelY,
            rotation,
            this.name, initVel);
+
+        this.ammo--;
     //}
 }
 
@@ -70,4 +74,5 @@ Weapon.prototype.render = function (ctx) {
     this.sprite.drawCentredAt(
         ctx, this.cx - OFFSET_X, this.cy - OFFSET_Y, this.rotation
     );
+    
 };

@@ -16,6 +16,7 @@ function Airstrike(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
+    this.ammo = 1;
 
     this.sprite = g_sprites.Grenade;
     this.weaponSprite = g_sprites.airstrike;
@@ -39,7 +40,9 @@ Airstrike.prototype.damageRadius = 40;
 Airstrike.prototype.t = 0;
 
 Airstrike.prototype.fire = function(cx, cy, rotation) {
+    if(this.ammo <= 0) return;
     g_mouseAim = true;
+    this.ammo--;
 }
 
 Airstrike.prototype.update = function (du) {

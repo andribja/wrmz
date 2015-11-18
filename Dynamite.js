@@ -16,7 +16,7 @@ function Dynamite(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
-    
+    this.ammo = 2; 
     this.sprite = g_sprites.Dynamite;
     this.weaponSprite = this.sprite;
     this.weaponSprite.offsetX = 5;

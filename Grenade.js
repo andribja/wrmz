@@ -16,6 +16,7 @@ function Grenade(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
+    this.ammo = 10;
     
     this.sprite = g_sprites.Grenade;
     this.weaponSprite = this.sprite;

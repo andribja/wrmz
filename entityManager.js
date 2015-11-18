@@ -238,6 +238,11 @@ render: function(ctx) {
     ctx.save();
     ctx.font = '20pt Arial Bold';
     ctx.fillText(Math.ceil(this._timer), 20, 40);
+    ctx.textAlign = 'right';
+    ctx.fillText('Ammo: ' 
+        + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
+        .currentWeapon.ammo,
+        g_canvas.width-20, 40);
     ctx.restore();
 
     if(this.gameOver){
