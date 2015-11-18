@@ -25,6 +25,7 @@ function handleMouse(evt) {
     if (!button) return;
     if(g_mouseAim) {
         entityManager.fireAirstrike(g_mouseX + OFFSET_X);
+        entityManager._timer = 5;
         g_mouseAim = false;
     }
     // Use ctrl+click to focus
