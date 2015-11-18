@@ -19,7 +19,7 @@ function Airstrike(descr) {
 
     this.sprite = g_sprites.Grenade;
     this.weaponSprite = g_sprites.airstrike;
-    this.weaponSprite.scale = 0.08;
+    this.weaponSprite.scale = 0.8;
     this.weaponSprite.offsetY = -8;
     this.weaponSprite.offsetX = 8;
 
