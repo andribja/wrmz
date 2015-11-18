@@ -161,29 +161,27 @@ Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
         this.flip = -1;
+
         var i = this.canGoUpSlope(true, this.cx - 3);
         if(i > -Infinity){
             this.cx -= 3;
             this.cy -= i;
         }
-        //If the worm is close to the left edge of the canvas we refocus
-        // Is buggy, needs fixing
-        //if(this.isCloseToEdgeOfCanvas(true, this.getXPositionOnCanvas())){
-        //    console.log("this.cx, this.cy: " + this.cx + ", " + this.cy);
+
+        // Refocus
         if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy); 
-        //}
     }
     if(keys[this.KEY_RIGHT]){
         this.flip = 1;
+
         var i = this.canGoUpSlope(false, this.cx + 3);
         if(i > -Infinity){
             this.cx += 3;
             this.cy -= i;
         }
-        //If the worm is close to the right edge of the canvas we refocus
-        //This seems to work fine
-        //if(this.isCloseToEdgeOfCanvas(false, this.getXPositionOnCanvas()))
+
+        // Refocus
         if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy);   
     }
@@ -201,16 +199,6 @@ Worm.prototype.getXPositionOnCanvas = function(){
 Worm.prototype.getRotation = function() {
     return this.rotation * this.flip;
 }
-
-Worm.prototype.isCloseToEdgeOfCanvas = function(left, x){
-    var right = !left;
-    if(left && x < 100)
-        return true;
-    else if(right && x + 100 > g_canvas.width)
-        return true;   
-    else 
-        return false;
-};
 
 var NOMINAL_JUMP = -5;
 
@@ -247,13 +235,10 @@ Worm.prototype.canGoUpSlope = function(left, nextX){
     // See which side of the worm we need to check 
     if(left)
         x = parseInt(nextX - this.width/2);
-        //x = parseInt(this.cx - this.width/2);
     else
         x = parseInt(nextX + this.width/2);
-        //x = parseInt(this.cx + this.width/2);
 
-    // Count pixels that arent transparent, first only close to the bottom of the worm
-    // Then on the whole side of the worm
+    // Count pixels that arent transparent close to the bottom of the worm
     for(var j = 0; j <= 10; j++){
         if(entityManager._map[0].getAlphaAt(x, yBottom-j) != 0)
             i++;
@@ -261,9 +246,7 @@ Worm.prototype.canGoUpSlope = function(left, nextX){
 
     var wholeEdgeCollides = this.verticalEdgeCollidesWithMap(x, yBottom-12, yTop);
     
-    // We need to figure out which numbers are appropriate here
-    // For how many non-transparent pixels are on the side of the worm
-    // can the worm move?
+    // Return pixels that worm can move upwards
     if(i <= 10 && !wholeEdgeCollides){
         return i;
     }

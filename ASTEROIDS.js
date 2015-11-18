@@ -215,7 +215,6 @@ function preloadDone() {
     g_sprites.Shotgun = new Sprite(g_images.shotgun);
 
     entityManager.init();
-    createInitialShips();
     createInitialWorms();
 
     main.init();
