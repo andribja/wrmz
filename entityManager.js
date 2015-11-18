@@ -233,7 +233,7 @@ render: function(ctx) {
     if(this.doAnimation) {
 
     }
-
+    if(this.gameOver) return;
     ctx.save();
     ctx.font = '20pt Arial Bold';
     ctx.fillText(Math.ceil(this._timer), 20, 40);
