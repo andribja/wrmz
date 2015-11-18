@@ -186,6 +186,8 @@ function requestPreloads() {
         background : "images/bg.jpg",
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
+        jetpackFlying : "images/jetpackFlying.png",
+        jetpack : "images/jetpack.png",
         target   : "images/target.png",
         explosion : "images/explosion.png",
         grenade : "images/grenade.png",
@@ -196,7 +198,7 @@ function requestPreloads() {
         powerBar : "images/powerBar.png",
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
-        shotgun : "images/shotgun.png"
+        shotgun : "images/shotgun.png",
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -226,6 +228,8 @@ function preloadDone() {
     g_sprites.launcher = new Sprite(g_images.launcher);
     g_sprites.Detonator = new Sprite(g_images.detonator);
     g_sprites.Shotgun = new Sprite(g_images.shotgun);
+    g_sprites.Jetpack = new Sprite(g_images.jetpack);
+    g_sprites.JetpackFlying = new Sprite(g_images.jetpackFlying);
 
     entityManager.init();
     createInitialShips();

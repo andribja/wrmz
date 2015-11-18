@@ -226,10 +226,10 @@ Map.prototype.renderBackground = function(ctx) {
 Map.prototype.renderForeground = function(ctx) {
     var dx = 0;
     var dy = 0;
-    /*if(this.shakeEffectTimer > 0) {
+    if(this.shakeEffectTimer > 0) {
         dx = Math.random()*15*this.shakeEffectTimer;
         dy = Math.random()*15*this.shakeEffectTimer;
-    }*/ 
+    } 
 
     ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
 
