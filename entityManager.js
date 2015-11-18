@@ -96,6 +96,7 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel) {
     // the worm's weapon is passed to the function as a string
     // this is a fix so the appropriate weapon can be created
     var fn = window[weapon];
+    console.log("entityManager:"+cx+","+cy);
     this._weapons.push(new fn({
         cx   : cx,
         cy   : cy,
