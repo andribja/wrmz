@@ -77,6 +77,11 @@ selectNextWorm: function() {
     this._activeTeam = (this._activeTeam + 1) % 2;
     this._indexes[this._activeTeam] = (this._indexes[this._activeTeam] + 1) % this._worms[this._activeTeam].length;
     this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = true;
+    
+    var cx = this._worms[this._activeTeam][this._indexes[this._activeTeam]].cx;
+    var cy = this._worms[this._activeTeam][this._indexes[this._activeTeam]].cy;
+    this._map[0].focusOn(cx, cy);
+    
     console.log("currently active: worm " + this._indexes[this._activeTeam] + " of team " + this._activeTeam);
 },
 

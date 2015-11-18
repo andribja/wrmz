@@ -1,6 +1,6 @@
-// =========
-// ASTEROIDS
-// =========
+// =====
+// WORMS
+// =====
 /*
 
 A sort-of-playable version of the classic arcade game.
@@ -46,15 +46,6 @@ function resizeListener(e) {
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-
-// ====================
-// CREATE INITIAL SHIPS
-// ====================
-
-function createInitialShips() {
-
-}
-
 // ====================
 // CREATE INITIAL WORMS
 // ====================
@@ -63,8 +54,7 @@ function createInitialWorms() {
     entityManager.addWormTeam1({
         cx : 700,
         cy : 200,
-        isActive : true,
-        //cy : 450
+        isActive : true
     });
     entityManager.addWormTeam2({
         cx:1100,
@@ -208,9 +198,6 @@ var g_sprites = {};
 
 function preloadDone() {
     g_sprites.map = new Sprite(g_images.map);
-    //g_sprites.ship  = new Sprite(g_images.ship);
-    //g_sprites.ship2 = new Sprite(g_images.ship2);
-    //g_sprites.rock  = new Sprite(g_images.rock);
     g_sprites.worm  = new Sprite(g_images.worm);
     g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 
     g_sprites.target = new Sprite(g_images.target);
