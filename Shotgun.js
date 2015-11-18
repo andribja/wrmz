@@ -38,12 +38,12 @@ Shotgun.prototype = new Weapon();
 Shotgun.prototype.damageRadius = 10;
 Shotgun.prototype.t = 0;
 
-Shotgun.prototype.fire = function(cx, cy, rotation) {
-    Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/24);
+Shotgun.prototype.fire = function(cx, cy, rotation, shotPower) {
+    Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/24, shotPower);
     //Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/48);
-    Weapon.prototype.fire.call(this, cx, cy, rotation);
+    Weapon.prototype.fire.call(this, cx, cy, rotation, shotPower);
     //Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/48);
-    Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/24);
+    Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/24, shotPower);
 }
 
 Shotgun.prototype.update = function (du) {
