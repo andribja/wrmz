@@ -17,9 +17,9 @@ function Airstrike(descr) {
     this.initX = this.cx;
     this.initY = this.cy;
 
-    this.sprite = g_sprites.Bazooka;
-    this.weaponSprite = g_sprites.Detonator;
-    this.weaponSprite.scale = 0.08;
+    this.sprite = g_sprites.Grenade;
+    this.weaponSprite = g_sprites.airstrike;
+    this.weaponSprite.scale = 0.8;
     this.weaponSprite.offsetY = -8;
     this.weaponSprite.offsetX = 8;
 

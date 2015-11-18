@@ -191,6 +191,8 @@ function requestPreloads() {
         grenade : "images/grenade.png",
         tombstone : "images/tombstone.png",
         dynamite : "images/dynamite.png",
+        bazooka : 'images/bazooka.png',
+        airstrike : 'images/airstrike.png',
         powerBar : "images/powerBar.png",
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
@@ -218,6 +220,8 @@ function preloadDone() {
     g_sprites.Airstrike = new Sprite(g_images.grenade);
     g_sprites.Tombstone = new Sprite(g_images.tombstone);
     g_sprites.Dynamite = new Sprite(g_images.dynamite);
+    g_sprites.BazookaGun = new Sprite(g_images.bazooka);
+    g_sprites.airstrike = new Sprite(g_images.airstrike);
     g_sprites.powerBar = new Sprite(g_images.powerBar);
     g_sprites.launcher = new Sprite(g_images.launcher);
     g_sprites.Detonator = new Sprite(g_images.detonator);

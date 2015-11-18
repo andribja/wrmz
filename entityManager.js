@@ -71,10 +71,10 @@ selectNextWorm: function() {
         return;
     }
 
-    if(typeof this._worms[this._indexes[this._activeTeam]] !== 'undefined') 
+    if(typeof this._worms[this._activeTeam][this._indexes[this._activeTeam]] !== 'undefined') 
         this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = false;
-    this._indexes[this._activeTeam] = (this._indexes[this._activeTeam] + 1) % this._worms[this._activeTeam].length;
     this._activeTeam = (this._activeTeam + 1) % 2;
+    this._indexes[this._activeTeam] = (this._indexes[this._activeTeam] + 1) % this._worms[this._activeTeam].length;
     this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = true;
     console.log("currently active: worm " + this._indexes[this._activeTeam] + " of team " + this._activeTeam);
 },
