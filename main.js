@@ -60,10 +60,10 @@ main._updateClocks = function (frameTime) {
 main._iterCore = function (dt) {
     
     // Handle QUIT
-    if (requestedQuit()) {
+    /*if (requestedQuit()) {
         this.gameOver();
         return;
-    }
+    }*/
     
     gatherInputs();
     update(dt);
@@ -81,7 +81,7 @@ main.gameOver = function () {
 //
 var KEY_QUIT = 'Q'.charCodeAt(0);
 function requestedQuit() {
-    return keys[KEY_QUIT];
+    return;// keys[KEY_QUIT];
 }
 
 // Annoying shim for Firefox and Safari
