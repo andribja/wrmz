@@ -16,6 +16,7 @@ function Shotgun(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
+    this.ammo = 9;
 
     this.sprite = g_sprites.Shotgun;
     this.weaponSprite = this.sprite;
@@ -39,11 +40,13 @@ Shotgun.prototype.damageRadius = 10;
 Shotgun.prototype.t = 0;
 
 Shotgun.prototype.fire = function(cx, cy, rotation, shotPower) {
-    Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/24, shotPower);
-    //Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/48);
+    if(this.ammo <= 0) return;
+    Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/96, shotPower);
+    Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/48, shotPower);
     Weapon.prototype.fire.call(this, cx, cy, rotation, shotPower);
-    //Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/48);
+    Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/48, shotPower);
     Weapon.prototype.fire.call(this, cx, cy, rotation+Math.PI/24, shotPower);
+    this.ammo--;
 }
 
 Shotgun.prototype.update = function (du) {

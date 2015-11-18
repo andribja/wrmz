@@ -16,6 +16,7 @@ function Grenade(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
+    this.ammo = 10;
     
     this.sprite = g_sprites.Grenade;
     this.weaponSprite = this.sprite;
@@ -135,7 +136,7 @@ Grenade.prototype.render = function(ctx) {
 
     // Draw countdown
     ctx.save();
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.font = '10pt Arial Bold';
     ctx.fillText(Math.ceil(this.countdown),this.cx - OFFSET_X, this.cy-20 - OFFSET_Y);

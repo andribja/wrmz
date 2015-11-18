@@ -31,8 +31,8 @@ _indexes: [0,0],
 _map : [],
 _weapons : [],
 _activeTeam: 0,
-_initTimer : 10,
-_timer : 10,
+_initTimer : 45,
+_timer : 45,
 shakeEffectTimer: -1,
 _animations: [],
 _tombstones: [],
@@ -51,6 +51,7 @@ _forEachOf: function(aCategory, fn) {
 // to request the blessed release of death!
 //
 KILL_ME_NOW : -1,
+gameOver : false,
 
 // Some things must be deferred until after initial construction
 // i.e. thing which need `this` to be defined.
@@ -66,8 +67,8 @@ init: function() {
 selectNextWorm: function() {
     //Fix
     if(this._worms[this._activeTeam].length <= 0 || this._worms[(this._activeTeam+1)%2] <= 0){
-        console.log("Game over!");
-        keys[KEY_QUIT] = true;
+        this.gameOver = true;
+        main.gameOver();
         return;
     }
 
@@ -76,6 +77,11 @@ selectNextWorm: function() {
     this._activeTeam = (this._activeTeam + 1) % 2;
     this._indexes[this._activeTeam] = (this._indexes[this._activeTeam] + 1) % this._worms[this._activeTeam].length;
     this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = true;
+    
+    var cx = this._worms[this._activeTeam][this._indexes[this._activeTeam]].cx;
+    var cy = this._worms[this._activeTeam][this._indexes[this._activeTeam]].cy;
+    this._map[0].focusOn(cx, cy);
+    
     console.log("currently active: worm " + this._indexes[this._activeTeam] + " of team " + this._activeTeam);
 },
 
@@ -143,8 +149,8 @@ update: function(du) {
 
     if(this._worms[0].length === 0 || this._worms[1].length === 0){
         //Just put something here --- fix
-        console.log("Congratulations, you win!");
-        keys[KEY_QUIT] = true;
+        this.gameOver = true;
+        main.gameOver();
     }
     for (var c = 0; c < this._categories.length; ++c) {
 
@@ -225,12 +231,45 @@ render: function(ctx) {
 
     }
 
+    if(this.gameOver){
+        console.log("game over");
+        var beginX = g_canvas.width/2 - g_canvas.width/4;
+        var beginY = g_canvas.height/2 - g_canvas.height/4;
+
+        var winningTeam = "";
+        if(this._worms[0].length > 0)
+            winningTeam = this._worms[0][0].team;
+        else
+            winningTeam = this._worms[1][0].team;
+
+        ctx.save();
+        ctx.fillStyle = 'black';
+        ctx.strokeRect(beginX, beginY, g_canvas.width/2, g_canvas.height/2);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(beginX, beginY, g_canvas.width/2, g_canvas.height/2);
+        ctx.font = '20pt Arial Bold';
+        ctx.textAlign = "center";
+        ctx.fillStyle = 'black';
+        ctx.fillText("Game Over!", g_canvas.width/2, g_canvas.height/2);
+        ctx.fillStyle = winningTeam;
+        ctx.fillText("Team " + winningTeam + " wins!!!", g_canvas.width/2, g_canvas.height/2+25);
+
+        ctx.restore();
+        return;
+    }
+
     ctx.save();
+    ctx.fillStyle = 'yellow';
     ctx.font = '20pt Arial Bold';
     ctx.fillText(Math.ceil(this._timer), 20, 40);
+    ctx.textAlign = 'right';
+    ctx.fillText('Ammo: ' 
+        + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
+        .currentWeapon.ammo,
+        g_canvas.width-20, 40);
     ctx.restore();
     
-}
+    }
 
 }
 

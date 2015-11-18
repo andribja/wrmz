@@ -16,7 +16,7 @@ function Dynamite(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
-    
+    this.ammo = 2; 
     this.sprite = g_sprites.Dynamite;
     this.weaponSprite = this.sprite;
     this.weaponSprite.offsetX = 5;
@@ -100,7 +100,7 @@ Dynamite.prototype.render = function(ctx) {
 
     // Draw countdown
     ctx.save();
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.font = '10pt Arial Bold';
     ctx.fillText(Math.ceil(this.t),this.cx - OFFSET_X, this.cy-20 - OFFSET_Y);

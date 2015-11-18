@@ -12,7 +12,7 @@ function Bazooka(descr) {
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
     //this.fireSound.play();
-    
+    this.ammo = 99;
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
@@ -21,7 +21,7 @@ function Bazooka(descr) {
     this.weaponSprite = g_sprites.launcher;
     this.weaponSprite.scale = 0.04;
     this.weaponSprite.offsetY = 5;
-
+    
     this.scalablePower = true;
 }
 

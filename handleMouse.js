@@ -25,13 +25,12 @@ function handleMouse(evt) {
     if (!button) return;
     if(g_mouseAim) {
         entityManager.fireAirstrike(g_mouseX + OFFSET_X);
+        entityManager._timer = 5;
         g_mouseAim = false;
     }
     // Use ctrl+click to focus
     if(keys[17])
 	    entityManager._map[0].focusOn(g_mouseX + OFFSET_X, g_mouseY + OFFSET_Y);
-	else
-    	entityManager.destroyMap(g_mouseX + OFFSET_X, g_mouseY + OFFSET_Y, 50);
 }
 
 // Handle "down" and "move" events the same way.
