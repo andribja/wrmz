@@ -62,6 +62,7 @@ Worm.prototype.shotPower = 0;
 Worm.prototype.takeWeaponHit = true; 
 Worm.prototype.fuel = 15;
 Worm.prototype.canShoot = false;
+Worm.prototype.jetpacking = false;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -172,11 +173,13 @@ Worm.prototype.applyAccel = function (du) {
 };
 
 
-var NOMINAL_JETPACK = -3;
+var NOMINAL_JETPACK = -1;
 
 Worm.prototype.jetPack = function(du) {
     // fly if worm is jetpacking
     if(this.isActive && keys[this.KEY_JETPACK] && this.fuel > 0) {
+        this.jetpacking = true;
+
         this.velY = NOMINAL_JETPACK;
         this.fuel -= du/SECS_TO_NOMINALS;
 
@@ -187,6 +190,7 @@ Worm.prototype.jetPack = function(du) {
     }
      else {
         this.wormSprite = g_sprites.worm;
+        this.jetpacking = false;
     }
 }
 
@@ -458,7 +462,7 @@ Worm.prototype.render = function (ctx) {
 
     if(this.isActive) {
         // Draw the target when aiming
-        if(!keys[this.KEY_FIRE]) {
+        if(!keys[this.KEY_FIRE] && !this.jetpacking) {
             this.targetSprite.scale = this._scale;
             this.targetSprite.drawCentredAt(ctx, targetX, targetY, 0);
             this.targetSprite.scale = origScale;
@@ -469,6 +473,12 @@ Worm.prototype.render = function (ctx) {
             keys[this.KEY_FIRE]) {
             g_sprites.powerBar.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
                 0, 0+15*this.shotPower, g_sprites.powerBar.height);
+        }
+
+        // draw power bar when the weapon gets more power the longer FIRE key is pressed
+        if(this.jetpacking) {
+            g_sprites.fuelMeter.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
+                0, 2*this.fuel, g_sprites.fuelMeter.height);
         }
 
         // Draw the weapon
@@ -484,7 +494,7 @@ Worm.prototype.render = function (ctx) {
         ctx.rotate(this.rotation - Math.PI/2);
         ctx.translate(-posX, -posY);
 
-        weaponSprite.drawCentredAt(ctx, posX, posY);
+        if(!this.jetpacking) weaponSprite.drawCentredAt(ctx, posX, posY);
 
         ctx.restore();
     }
