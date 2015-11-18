@@ -19,6 +19,7 @@ function Worm(descr) {
 
     // Set normal drawing scale
     this._scale = 1;
+    this.flip = 1;
 
     // Create a target
     this.targetSprite = g_sprites.target;
@@ -42,8 +43,10 @@ Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
 Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
 
+Worm.prototype.RESET_ROTATION = Math.PI/2;
+
 // Initial, inheritable, default values
-Worm.prototype.rotation = 0;
+Worm.prototype.rotation = Worm.prototype.RESET_ROTATION;
 Worm.prototype.cx = 700;
 Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
@@ -53,7 +56,9 @@ Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
+Worm.prototype.shotPower = 0;
 Worm.prototype.takeWeaponHit = true;
+//Worm.prototype.isStoned = false;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -68,7 +73,6 @@ Worm.prototype.warpSound = new Audio(
 
 Worm.prototype.update = function (du) {
     if(this.isDeadNow) {
-        console.log("isDeadNow");
         return -1;
     }
 
@@ -89,6 +93,12 @@ Worm.prototype.update = function (du) {
     if(this.isActive) {
         this.maybeMove();
        
+        // Count the seconds the FIRE key has been pressed, max 2
+        if(keys[this.KEY_FIRE]) {
+            this.shotPower += du/SECS_TO_NOMINALS;
+            if(this.shotPower > 2) this.shotPower = 2;
+        }
+
         // Handle firing
         this.maybeFireWeapon();
 
@@ -150,7 +160,7 @@ Worm.prototype.applyAccel = function (du) {
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
     if(keys[this.KEY_LEFT]){
-        this.wormSprite = g_sprites.worm;
+        this.flip = -1;
         var i = this.canGoUpSlope(true, this.cx - 3);
         if(i > -Infinity){
             this.cx -= 3;
@@ -165,7 +175,7 @@ Worm.prototype.maybeMove = function() {
         //}
     }
     if(keys[this.KEY_RIGHT]){
-        this.wormSprite = g_sprites.wormFlipped;
+        this.flip = 1;
         var i = this.canGoUpSlope(false, this.cx + 3);
         if(i > -Infinity){
             this.cx += 3;
@@ -187,6 +197,10 @@ Worm.prototype.getXPositionOnCanvas = function(){
     var x = this.cx - OFFSET_X;
     return x;
 };
+
+Worm.prototype.getRotation = function() {
+    return this.rotation * this.flip;
+}
 
 Worm.prototype.isCloseToEdgeOfCanvas = function(left, x){
     var right = !left;
@@ -257,27 +271,33 @@ Worm.prototype.canGoUpSlope = function(left, nextX){
 };
 
 
-var NOMINAL_ROTATE_RATE = 0.1;
+var NOMINAL_ROTATE_RATE = 0.05;
 
 Worm.prototype.updateTargetRotation = function (du) {
     if (keys[this.KEY_ROTATEGUN_L]) {
-        this.rotation -= NOMINAL_ROTATE_RATE * du;
-    }
-    if (keys[this.KEY_ROTATEGUN_R]) {
         this.rotation += NOMINAL_ROTATE_RATE * du;
     }
+    if (keys[this.KEY_ROTATEGUN_R]) {
+        this.rotation -= NOMINAL_ROTATE_RATE * du;
+    }
 
-    this.rotation = util.wrapRange(this.rotation, 0, consts.FULL_CIRCLE);
+    this.rotation = util.clampRange(this.rotation, 0, Math.PI);
 };
 
 Worm.prototype.updateTarget = function(du){
-    if(this.cx === entityManager._worms[1])
-        console.log("updateTarget");
-    this.updateTargetRotation(du);
+    if(this.currentWeapon instanceof Airstrike) {
+        this.targetCx = g_mouseX + OFFSET_X;
+        this.targetCy = g_mouseY + OFFSET_Y;
 
-    var distFromWorm = 40;
-    this.targetCx = +Math.sin(this.rotation)*distFromWorm + this.cx;
-    this.targetCy = -Math.cos(this.rotation)*distFromWorm + this.cy;
+        this.rotation = this.RESET_ROTATION;
+    } else {
+        this.updateTargetRotation(du);
+
+        var distFromWorm = 40;
+        this.targetCx = +Math.sin(this.getRotation())*distFromWorm + this.cx;
+        this.targetCy = -Math.cos(this.getRotation())*distFromWorm + this.cy;
+    }
+    
 };
 
 var NOMINAL_GRAVITY = 0.2;
@@ -289,8 +309,12 @@ Worm.prototype.computeGravity = function () {
 
 Worm.prototype.maybeFireWeapon = function () {
 
-    if (eatKey(this.KEY_FIRE)) {
-        this.currentWeapon.fire(this.cx, this.cy, this.rotation); 
+    // Fire if the FIRE key has been pressed and released
+    if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
+        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower); 
+
+        // make sure we don't fire again until the FIRE key has been pressed another time
+        this.shotPower = 0;
         /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;
@@ -310,33 +334,22 @@ Worm.prototype.maybeFireWeapon = function () {
 };
 
 Worm.prototype.shockWave = function(cx, cy, r) {
-    /*
-    // ToDo: fix this, doesn't quite work yet
-//console.log("(cx,cy)= "+cx+" , "+cy);
-    //calculate the x and y components of the vector from the center of the explosion to the worm
+    // x- and y components of the distance vector between the explosion and worm
     var xDist=this.cx-cx; 
     var yDist=this.cy-cy; 
+    var dist = util.dist(cx, cy, this.cx, this.cy);
 
-    var explosionForce = 1000;
-
-    var dist = util.dist(cx, this.cx, cy, this.cy);
-   
-    //use those distances to find the angle of the vextor between the worm and the explosion
+    // the angle of the vector (the shockwave)
     var angle = Math.atan2(yDist,xDist);
+    var dX = Math.cos(angle);
+    var dY = Math.sin(angle);
 
-    //find the x-,and -y components of the vector
-    var vectorX = Math.cos(angle);
-    var vectorY = Math.sin(angle);
-        this.velX=vectorX*explosionForce/dist;
-        //if(vectorY<0) 
-        this.velY=vectorY*explosionForce/dist; //don't sink into the ground
-       // console.log("x,y dist= "+xDist+" , "+yDist);
-       // console.log("dist= "+dist);
-       // console.log("angle= "+angle);
-       // console.log("force vector= "+vectorX+" , "+vectorY);
-       this.shockWaveX=Math.abs(this.velX);
-       this.shockWaveX=Math.abs(this.velY);
-*/
+    // if the worm is close enough, it bounces away from the explosion
+    var damageRadius = 100;
+    if(dist < damageRadius) {
+        this.velX = dX * damageRadius/dist;
+        this.velY = dY * damageRadius/dist;
+    }
 }
 
 Worm.prototype.takeDamage = function(cx, cy, r) {
@@ -348,10 +361,9 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 
 Worm.prototype.death = function() {
     
-    this.wormSprite = g_sprites.Tombstone;
     this.isDeadNow = true;
-
-    //spatialManager.unregister(this);
+    entityManager.generateTombstone(this.cx, this.cy);
+    spatialManager.unregister(this);
 };
 
 /*
@@ -387,34 +399,66 @@ Worm.prototype.chooseWeapon = function() {
 };
 
 Worm.prototype.render = function (ctx) {
+    var posX = this.cx - OFFSET_X,
+        posY = this.cy - OFFSET_Y,
+        targetX = this.targetCx - OFFSET_X,
+        targetY = this.targetCy - OFFSET_Y;
+
+
+    // Draw the worm
     var origScale = this.wormSprite.scale;
     // pass my scale into the sprite, for drawing
     this.wormSprite.scale = this._scale;
-    this.wormSprite.drawCentredAt(ctx, this.cx - OFFSET_X, 
-                                    this.cy - OFFSET_Y, 0);
+
+    ctx.save();
+    ctx.translate(posX, posY);
+    ctx.scale(this.flip, 1);
+    ctx.translate(-posX, -posY);
+
+    this.wormSprite.drawCentredAt(ctx, posX, posY, 0);
+
+    ctx.restore();
+
     this.wormSprite.scale = origScale;
+
     if(this.isActive) {
-        this.targetSprite.scale = this._scale;
-        this.targetSprite.drawCentredAt(ctx, this.targetCx - OFFSET_X, 
-                                        this.targetCy - OFFSET_Y, 0);
-        this.targetSprite.scale = origScale;
-        this.currentWeapon.gunSprite.scale = this._scale;
-        this.currentWeapon.gunSprite.drawCentredAt(ctx, this.cx - OFFSET_X,
-                                this.cy - OFFSET_Y, this.rotation-Math.PI/2);
+        // Draw the target when aiming
+        if(!keys[this.KEY_FIRE]) {
+            this.targetSprite.scale = this._scale;
+            this.targetSprite.drawCentredAt(ctx, targetX, targetY, 0);
+            this.targetSprite.scale = origScale;
+        }
+
+        // draw power bar when the weapon gets more power the longer FIRE key is pressed
+        if(this.currentWeapon instanceof Grenade &&
+            keys[this.KEY_FIRE]) {
+            g_sprites.powerBar.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
+                0, 0+15*this.shotPower, g_sprites.powerBar.height);
+        }
+
+        // Draw the weapon
+        var weaponSprite = this.currentWeapon.weaponSprite;
+        if(weaponSprite.offsetY)
+            posY += weaponSprite.offsetY;
+        if(weaponSprite.offsetX)
+            posX += weaponSprite.offsetX * this.flip;
+
+        ctx.save();
+        ctx.translate(posX, posY);
+        ctx.scale(this.flip, 1);
+        ctx.rotate(this.rotation - Math.PI/2);
+        ctx.translate(-posX, -posY);
+
+        weaponSprite.drawCentredAt(ctx, posX, posY);
+
+        ctx.restore();
     }
+
     ctx.save();
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
-/* temporary-------
-ctx.beginPath();
-ctx.fillStyle='black';
-ctx.lineWidth=10;
-ctx.moveTo(this.cx-OFFSET_X,this.cy-OFFSET_Y);
-ctx.lineTo(this.cx+this.shockWaveX*50-OFFSET_X,this.cy+this.shockWaveY*50-OFFSET_Y);
-ctx.stroke();
-//----------------*/
     ctx.restore();
 
 

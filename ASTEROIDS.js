@@ -33,14 +33,12 @@ need to tweak it if you do something "non-obvious" in yours.
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
-var g_canvas = document.getElementById("g_canvas");
-var g_ctx = g_canvas.getContext("2d");
-
 // Stretch canvas to window on resize
 window.addEventListener('resize', resizeListener);
 
 function resizeListener(e) {
     util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
+    util.resizeCanvas(bg_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 /*
@@ -116,7 +114,6 @@ function updateSimulation(du) {
     processDiagnostics();
     
     entityManager.update(du);
-
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -126,7 +123,7 @@ var g_useGravity = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-var KEY_MIXED   = keyCode('M');;
+var KEY_MIXED   = keyCode('M');
 var KEY_GRAVITY = keyCode('G');
 var KEY_AVE_VEL = keyCode('V');
 var KEY_SPATIAL = keyCode('X');
@@ -186,6 +183,7 @@ function requestPreloads() {
 
     var requiredImages = {
         map    : "images/world3.png",
+        background : "images/bg.jpg",
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
         target   : "images/target.png",
@@ -195,6 +193,10 @@ function requestPreloads() {
         dynamite : "images/dynamite.png",
         bazooka : 'images/bazooka.png',
         airstrike : 'images/airstrike.png'
+        powerBar : "images/powerBar.png",
+        launcher : "images/rocket_launcher.png",
+        detonator : "images/Detonator.png",
+        shotgun : "images/shotgun.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -220,6 +222,10 @@ function preloadDone() {
     g_sprites.Dynamite = new Sprite(g_images.dynamite);
     g_sprites.BazookaGun = new Sprite(g_images.bazooka);
     g_sprites.airstrike = new Sprite(g_images.airstrike);
+    g_sprites.powerBar = new Sprite(g_images.powerBar);
+    g_sprites.launcher = new Sprite(g_images.launcher);
+    g_sprites.Detonator = new Sprite(g_images.detonator);
+    g_sprites.Shotgun = new Sprite(g_images.shotgun);
 
     entityManager.init();
     createInitialShips();
@@ -229,6 +235,7 @@ function preloadDone() {
 
     // Stretch the canvas to the window
     util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
+    util.resizeCanvas(bg_canvas, FULL_WIDTH, FULL_HEIGHT);
 }
 
 // =================

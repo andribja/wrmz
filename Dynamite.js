@@ -18,7 +18,10 @@ function Dynamite(descr) {
     this.initY = this.cy;
     
     this.sprite = g_sprites.Dynamite;
-    this.gunSprite = this.sprite;
+    this.weaponSprite = this.sprite;
+    this.weaponSprite.offsetX = 5;
+    this.weaponSprite.offsetY = 5;
+
     this.width = this.sprite.width; 
     this.height = this.sprite.height; 
 }
@@ -33,7 +36,7 @@ Dynamite.prototype = new Weapon();
     
 // Initial, inheritable, default values
 Dynamite.prototype.name = 'Dynamite';
-Dynamite.prototype.damageRadius = 40;
+Dynamite.prototype.damageRadius = 80;
 Dynamite.prototype.t = 5;
 
 Dynamite.prototype.update = function (du) {

@@ -35,6 +35,7 @@ _initTimer : 10,
 _timer : 10,
 shakeEffectTimer: -1,
 _animations: [],
+_tombstones: [],
 
 // "PRIVATE" METHODS
 
@@ -55,13 +56,11 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._map, this._worms[0], this._worms[1], this._weapons, this._animations];
+    this._categories = [this._map, this._worms[0], this._worms[1], this._weapons, this._animations, this._tombstones];
 },
 
 init: function() {
     this.generateMap();
-    //this._generateRocks();
-    //this._generateShip();
 },
 
 selectNextWorm: function() {
@@ -88,7 +87,6 @@ damageWorms: function(cx, cy, r) {
     for(var j = 0; j < this._worms.length; j++) {
         for(var i = 0; i < this._worms[j].length; i++) {
             this._worms[j][i].takeDamage(cx, cy, r);
-            console.log("damaging worm #"+i+"at: "+this._worms[j][i].cx+" , "+this._worms[j][i].cy);
             this._worms[j][i].shockWave(cx, cy, r);
         }
     }
@@ -134,12 +132,16 @@ addWormTeam1 : function(descr) {
 
 generateMap : function(descr) {
     this._map.push(new Map(descr)); // TODO fix parameter to map image variable
+},
 
+generateTombstone : function(x, y){
+    this._tombstones.push(new Tombstone(x, y));
 },
 
 update: function(du) {
 
     if(this._worms[0].length === 0 || this._worms[1].length === 0){
+        //Just put something here --- fix
         console.log("Congratulations, you win!");
         keys[KEY_QUIT] = true;
     }
@@ -149,6 +151,8 @@ update: function(du) {
         var i = 0;
 
         while (i < aCategory.length) {
+
+            //spatialManager.unregister(aCategory[i]);
 
             var status = aCategory[i].update(du);
 
@@ -166,14 +170,13 @@ update: function(du) {
                         cx: pos.posX,
                         cy: pos.posY,
                         speed: 0.5,
-                        scale: 2
+                        scale: aCategory[i].damageRadius / 20
                     });
 
                     this._animations.push(animation);
                 }
 
                 if(aCategory[i] instanceof Worm && aCategory[i].isDeadNow && aCategory[i].isActive){
-                    aCategory[i].wormSprite = g_sprites.Tombstone;
                     this._timer = 0;
                     spatialManager.unregister(aCategory[i]);
                 }
@@ -181,6 +184,7 @@ update: function(du) {
                 aCategory.splice(i,1);
             }
             else {
+                //spatialManager.register(aCategory[i]);
                 ++i;
             }
         }

@@ -18,7 +18,9 @@ function Bazooka(descr) {
     this.initY = this.cy;
 
     this.sprite = g_sprites.Bazooka;
-    this.gunSprite = g_sprites.BazookaGun;
+    this.weaponSprite = g_sprites.launcher;
+    this.weaponSprite.scale = 0.04;
+    this.weaponSprite.offsetY = 5;
 }
 
 Bazooka.prototype = new Weapon();
@@ -65,7 +67,7 @@ Bazooka.prototype.update = function (du) {
     // Handle collisions
     //
     var hitEntity = this.findHitEntity();
-    if (hitEntity && this.age > 3*du) {
+    if (hitEntity && this.age > 3*du && !(hitEntity instanceof Bazooka)) {
         var canTakeHit = hitEntity.takeWeaponHit;
         if (canTakeHit) 
             hitEntity.takeDamage(this.cx, this.cy, this.damageRadius) 

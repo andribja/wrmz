@@ -10,7 +10,6 @@
 function Weapon(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
-
 }
 
 Weapon.prototype = new Entity();
@@ -51,12 +50,6 @@ Weapon.prototype.checkIfHitMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
     if(entityManager._map[0].getAlphaAt(cx, cy) !== 0) return true;
-};
-
-Weapon.prototype.checkIfHitWorm = function() {
-    var cx = parseInt(this.cx);
-    var cy = parseInt(this.cy);
-
 };
 
 Weapon.prototype.damageMap = function () {
