@@ -234,18 +234,9 @@ render: function(ctx) {
     if(this.doAnimation) {
 
     }
-    if(this.gameOver) return;
-    ctx.save();
-    ctx.font = '20pt Arial Bold';
-    ctx.fillText(Math.ceil(this._timer), 20, 40);
-    ctx.textAlign = 'right';
-    ctx.fillText('Ammo: ' 
-        + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
-        .currentWeapon.ammo,
-        g_canvas.width-20, 40);
-    ctx.restore();
 
     if(this.gameOver){
+        console.log("game over");
         var beginX = g_canvas.width/2 - g_canvas.width/4;
         var beginY = g_canvas.height/2 - g_canvas.height/4;
 
@@ -268,9 +259,20 @@ render: function(ctx) {
         ctx.fillText("Team " + winningTeam + " wins!!!", g_canvas.width/2, g_canvas.height/2+25);
 
         ctx.restore();
+        return;
     }
+
+    ctx.save();
+    ctx.font = '20pt Arial Bold';
+    ctx.fillText(Math.ceil(this._timer), 20, 40);
+    ctx.textAlign = 'right';
+    ctx.fillText('Ammo: ' 
+        + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
+        .currentWeapon.ammo,
+        g_canvas.width-20, 40);
+    ctx.restore();
     
-}
+    }
 
 }
 
