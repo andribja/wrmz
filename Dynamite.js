@@ -24,6 +24,8 @@ function Dynamite(descr) {
 
     this.width = this.sprite.width; 
     this.height = this.sprite.height; 
+
+    this.scalablePower = false;
 }
 
 Dynamite.prototype = new Weapon();

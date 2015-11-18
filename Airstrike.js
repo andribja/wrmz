@@ -22,6 +22,8 @@ function Airstrike(descr) {
     this.weaponSprite.scale = 0.08;
     this.weaponSprite.offsetY = -8;
     this.weaponSprite.offsetX = 8;
+
+    this.scalablePower = false;
 }
 
 Airstrike.prototype = new Weapon();

@@ -51,7 +51,6 @@ Worm.prototype.cx = 700;
 Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
 Worm.prototype.velY = 0;
-Worm.prototype.launchVel = 2;
 Worm.prototype.health = 100;
 Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
@@ -430,7 +429,7 @@ Worm.prototype.render = function (ctx) {
         }
 
         // draw power bar when the weapon gets more power the longer FIRE key is pressed
-        if(this.currentWeapon instanceof Grenade &&
+        if(this.currentWeapon.scalablePower &&
             keys[this.KEY_FIRE]) {
             g_sprites.powerBar.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
                 0, 0+15*this.shotPower, g_sprites.powerBar.height);

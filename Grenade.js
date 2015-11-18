@@ -23,6 +23,8 @@ function Grenade(descr) {
     this.height = this.sprite.height; 
     this.weaponSprite.offsetX = 5;
     this.weaponSprite.offsetY = 5;
+
+    this.scalablePower = true;
 }
 
 Grenade.prototype = new Weapon();
