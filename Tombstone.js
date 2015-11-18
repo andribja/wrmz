@@ -19,6 +19,7 @@ function Tombstone(x, y) {
 	this._scale = 1;
 
 	spatialManager.register(this);
+
 };
 
 Tombstone.prototype = new Entity();
@@ -45,20 +46,15 @@ Tombstone.prototype.applyAccel = function(du){
     var aveVelY = (oldVelY + this.velY) / 2;
     var nextY = this.cy + oldVelY * du; 
 
-    console.log("this.cx: " + this.cx + "this.cy: " + this.cy);
     // next position of the worm's bounding box
     var nextLx = this.cx - this.width/2;
     var nextRx = this.cx + this.width/2;
     var nextTopY = nextY - this.height/2;
     var nextBottomY = nextY + this.height/2;
 
-    console.log("nextLX, nextRX, nextBottomY: " + nextLx + ", " + nextRx + ", " + nextBottomY);
-
     // Land on the ground
-    if(this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextBottomY)){
-    	console.log("vely 0");
+    if(this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextBottomY))
         this.velY = 0;
-    }
 
     // Move
     this.cy = nextY;

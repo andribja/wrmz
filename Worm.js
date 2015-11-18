@@ -25,7 +25,9 @@ function Worm(descr) {
     this.targetSprite = g_sprites.target;
     this.targetCx = this.cx;
     this.targetCy = this.cy - 20;
-
+    this.weapons = {'bazooka': new Bazooka(), 'grenade': new Grenade(),
+        'airstrike': new Airstrike(), 'dynamite': new Dynamite(), 
+        'shotgun': new Shotgun()};
     this.currentWeapon = new Bazooka();
 };
 
@@ -42,6 +44,7 @@ Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
 Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
 Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
+Worm.prototype.KEY_JETPACK = 'J'.charCodeAt(0);
 
 Worm.prototype.RESET_ROTATION = Math.PI/2;
 
@@ -56,8 +59,9 @@ Worm.prototype.team = "green";
 Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
 Worm.prototype.shotPower = 0;
-Worm.prototype.takeWeaponHit = true;
-//Worm.prototype.isStoned = false;
+Worm.prototype.takeWeaponHit = true; 
+Worm.prototype.fuel = 15;
+Worm.prototype.canShoot = false;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -71,8 +75,16 @@ Worm.prototype.warpSound = new Audio(
 */
 
 Worm.prototype.update = function (du) {
+
     if(this.isDeadNow) {
         return -1;
+    }
+
+    // Worm may not shoot when jumping or flying
+    if(!this.horizontalEdgeCollidesWithMap(this.cx-this.width/2, this.cx+this.width/2, this.cy+this.height/2)) {
+        this.canShoot = false;
+    } else {
+        this.canShoot = true;
     }
 
     // choose current weapon
@@ -93,7 +105,7 @@ Worm.prototype.update = function (du) {
         this.maybeMove();
        
         // Count the seconds the FIRE key has been pressed, max 2
-        if(keys[this.KEY_FIRE]) {
+        if(this.canShoot && keys[this.KEY_FIRE]) {
             this.shotPower += du/SECS_TO_NOMINALS;
             if(this.shotPower > 2) this.shotPower = 2;
         }
@@ -110,6 +122,10 @@ Worm.prototype.update = function (du) {
 };
 
 Worm.prototype.applyAccel = function (du) {
+    
+    // fly if worm is jetpacking
+    this.jetPack(du);
+
     // original velocity
     var oldVelX = this.velX;
     var oldVelY = this.velY;
@@ -155,6 +171,24 @@ Worm.prototype.applyAccel = function (du) {
     this.cy = nextY;
 };
 
+
+var NOMINAL_JETPACK = -3;
+
+Worm.prototype.jetPack = function(du) {
+    // fly if worm is jetpacking
+    if(this.isActive && keys[this.KEY_JETPACK] && this.fuel > 0) {
+        this.velY = NOMINAL_JETPACK;
+        this.fuel -= du/SECS_TO_NOMINALS;
+
+        // alternate between images to create an 'animation'
+        var random = Math.random();
+        if(random < 0.5) this.wormSprite = g_sprites.JetpackFlying;
+        else this.wormSprite = g_sprites.Jetpack;
+    }
+     else {
+        this.wormSprite = g_sprites.worm;
+    }
+}
 
 Worm.prototype.maybeMove = function() {
     // Check if worm collides with map
@@ -310,10 +344,12 @@ Worm.prototype.maybeFireWeapon = function () {
 
     // Fire if the FIRE key has been pressed and released
     if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
-        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower); 
+        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower);
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
+        if(this.currentWeapon instanceof Dynamite) return;
+        this.isActive = false;
         /*var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = 10;
@@ -390,11 +426,11 @@ Worm.prototype.getBoundingBox = function() {
 };
 
 Worm.prototype.chooseWeapon = function() {
-    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = new Bazooka();
-    if(keys[this.KEY_GRENADE]) this.currentWeapon = new Grenade();
-    if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = new Airstrike();
-    if(keys[this.KEY_DYNAMITE]) this.currentWeapon = new Dynamite();
-    if(keys[this.KEY_SHOTGUN]) this.currentWeapon = new Shotgun();
+    if(keys[this.KEY_BAZOOKA]) this.currentWeapon = this.weapons.bazooka;
+    if(keys[this.KEY_GRENADE]) this.currentWeapon = this.weapons.grenade;
+    if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = this.weapons.airstrike;
+    if(keys[this.KEY_DYNAMITE]) this.currentWeapon = this.weapons.dynamite;
+    if(keys[this.KEY_SHOTGUN]) this.currentWeapon = this.weapons.shotgun;
 };
 
 Worm.prototype.render = function (ctx) {
