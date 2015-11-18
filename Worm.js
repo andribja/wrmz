@@ -59,7 +59,6 @@ Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
 Worm.prototype.shotPower = 0;
 Worm.prototype.takeWeaponHit = true;
-//Worm.prototype.isStoned = false;
 
 // TEMPORARY ----
 Worm.prototype.shockWaveX=0;
@@ -312,7 +311,8 @@ Worm.prototype.maybeFireWeapon = function () {
 
     // Fire if the FIRE key has been pressed and released
     if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
-        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower); 
+        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower);
+        this.isActive = false;
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;

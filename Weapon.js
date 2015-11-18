@@ -30,8 +30,7 @@ Weapon.prototype.ammo = 0;
 
 Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
     //if (eatKey(this.KEY_FIRE)) {
-        if(this.ammo <= 0) return;
-    
+        if(this.ammo <= 0) return; 
         var dX = +Math.sin(rotation);
         var dY = -Math.cos(rotation);
         var launchDist = 10;
@@ -51,6 +50,7 @@ Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
            this.name, initVel);
 
         this.ammo--;
+        entityManager._timer = 5;
     //}
 }
 
