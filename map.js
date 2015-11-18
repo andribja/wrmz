@@ -215,7 +215,7 @@ Map.prototype.renderWave = function(ctx, oy) {
 Map.prototype.renderBackground = function(ctx) {
     //bg_ctx.drawImage(g_images.background, -OFFSET_X, -OFFSET_Y);
 
-    util.fillBox(ctx, 0, this.seaY, FULL_WIDTH, FULL_HEIGHT, 'cyan');
+    util.fillBox(ctx, -OFFSET_X, this.seaY - OFFSET_Y, FULL_WIDTH, FULL_HEIGHT, 'cyan');
     
     this.renderWave(ctx, -20);
     this.renderWave(ctx, 10);
@@ -233,7 +233,7 @@ Map.prototype.renderForeground = function(ctx) {
 
     ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
 
-    util.fillBox(ctx, 0, this.height-10, FULL_WIDTH, FULL_HEIGHT, 'cyan');
+    util.fillBox(ctx, -OFFSET_X, this.height-10 - OFFSET_Y, FULL_WIDTH, FULL_HEIGHT, 'cyan');
     //this.renderWave(ctx, 40);   
     this.renderWave(ctx, 70);
     this.renderWave(ctx, 100);
