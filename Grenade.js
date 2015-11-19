@@ -26,6 +26,11 @@ function Grenade(descr) {
     this.weaponSprite.offsetY = 5;
 
     this.scalablePower = true;
+
+    this.impactSound = new Audio(
+    "sounds/grenadeImpact.wav");
+    this.fireSound = new Audio(
+    "sounds/grenadeExploding.wav");
 }
 
 Grenade.prototype = new Weapon();
@@ -49,6 +54,7 @@ Grenade.prototype.update = function (du) {
 
     // explode when the countdown ends
     if(this.countdown < 0) {
+        this.fireSound.play();
         this.damageMap();
         this.damageWorms();
         return entityManager.KILL_ME_NOW;
@@ -100,6 +106,8 @@ Grenade.prototype.move = function (du) {
     // Land on the map
     var mapHit = entityManager._map[0].circleCollidesWithMap(nextX, nextY, 1);
     if(mapHit) {
+        // only play the impact sound once 
+        if(this.velX != 0 && this.velY != 0) this.impactSound.play();
         this.velX = 0;
         this.velY = 0;
     }

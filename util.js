@@ -151,7 +151,10 @@ strokeBox: function(ctx, x, y, w, h, style) {
 },
 
 getPixelIndex: function(imgData, x, y) {
-    return parseInt(y) * imgData.width * 4 + parseInt(x) * 4;
+    var index = parseInt(y) * imgData.width * 4 + parseInt(x) * 4;
+
+    if(index >= 0 && index < imgData.data.length)
+        return index;
 },
 
 setPixelData: function(imgData, x, y, r, g, b, a) {

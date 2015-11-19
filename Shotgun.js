@@ -11,7 +11,7 @@ function Shotgun(descr) {
      // Common inherited setup logic from Weapon
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
-    //this.fireSound.play();
+    //this.explosionSound.play();
     
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
@@ -25,12 +25,14 @@ function Shotgun(descr) {
     this.weaponSprite.offsetY = 5;
 
     this.scalablePower = true;
+
+    this.fireSound = new Audio("sounds/shotgunFire.wav");
 }
 
 Shotgun.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Shotgun.prototype.fireSound = new Audio(
+//Shotgun.prototype.explosionSound = new Audio(
  //   "sounds/ShotgunFire.ogg");
 //Shotgun.prototype.zappedSound = new Audio(
   //  "sounds/ShotgunZapped.ogg");
@@ -41,6 +43,7 @@ Shotgun.prototype.t = 0;
 
 Shotgun.prototype.fire = function(cx, cy, rotation, shotPower) {
     if(this.ammo <= 0) return;
+    this.fireSound.play();
     Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/96, shotPower);
     Weapon.prototype.fire.call(this, cx, cy, rotation-Math.PI/48, shotPower);
     Weapon.prototype.fire.call(this, cx, cy, rotation, shotPower);

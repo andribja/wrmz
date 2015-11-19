@@ -6,6 +6,7 @@
 
 var canvas = document.getElementById("g_canvas");
 var ctx = canvas.getContext("2d");
+var debugPreload = false
 
 /*
 0        1         2         3         4         5         6         7         8
@@ -37,8 +38,8 @@ Image.prototype.asyncLoad = function(src, asyncCallback) {
     // It *may* happen immediately (on some browsers) if the image is already
     // in-cache, but will most likely happen some time later when the load has
     // occurred and the resulting event is processesd in the queue.
-    
-    console.log("requesting image src of ", src);
+    if(debugPreload)
+        console.log("requesting image src of ", src);
     this.src = src;
 };
 
@@ -80,7 +81,8 @@ function imagesPreload(requiredImages,
     //
     preloadHandler = function () {
 
-        console.log("preloadHandler called with this=", this);
+        if(debugPreload)
+            console.log("preloadHandler called with this=", this);
         loadedImages[this.name] = this;
 
         if (0 === this.width) {
@@ -120,7 +122,8 @@ function imagesPreload(requiredImages,
         
         if (requiredImages.hasOwnProperty(currentName)) {
             
-            console.log("preloading image", currentName);
+            if(debugPreload)
+                console.log("preloading image", currentName);
             currentImage = new Image();
             currentImage.name = currentName;
             currentImage.crossOrigin = "Anonymous";

@@ -26,6 +26,9 @@ function Dynamite(descr) {
     this.height = this.sprite.height; 
 
     this.scalablePower = false;
+
+    this.fireSound = new Audio(
+    "sounds/dynamite.wav");
 }
 
 Dynamite.prototype = new Weapon();
@@ -49,6 +52,7 @@ Dynamite.prototype.update = function (du) {
 
     // explode when the countdown ends
     if(this.t < 0) {
+        this.fireSound.play();
         this.damageMap();
         this.damageWorms();
         return entityManager.KILL_ME_NOW;
