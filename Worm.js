@@ -69,11 +69,11 @@ Worm.prototype.shockWaveX=0;
 Worm.prototype.shockWaveY=0;
 //--------------
 
-/*
+
 // HACKED-IN AUDIO (no preloading)
-Worm.prototype.warpSound = new Audio(
-    "sounds/WormWarp.ogg");
-*/
+Worm.prototype.jetpackSound = new Audio(
+    "sounds/jetPackLoop2.wav");
+
 
 Worm.prototype.update = function (du) {
 
@@ -179,6 +179,7 @@ Worm.prototype.jetPack = function(du) {
     // fly if worm is jetpacking
     if(this.isActive && keys[this.KEY_JETPACK] && this.fuel > 0) {
         this.jetpacking = true;
+        this.jetpackSound.play();
 
         this.velY = NOMINAL_JETPACK;
         this.fuel -= du/SECS_TO_NOMINALS;
@@ -191,6 +192,7 @@ Worm.prototype.jetPack = function(du) {
      else {
         this.wormSprite = g_sprites.worm;
         this.jetpacking = false;
+        console.log(this.jetpacking);
     }
 }
 

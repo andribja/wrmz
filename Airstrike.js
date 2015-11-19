@@ -11,7 +11,7 @@ function Airstrike(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
-    //this.fireSound.play();
+    //this.explosionSound.play();
     
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
@@ -25,12 +25,14 @@ function Airstrike(descr) {
     this.weaponSprite.offsetX = 8;
 
     this.scalablePower = false;
+
+    //this.explosionSound = new Audio("...");
 }
 
 Airstrike.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Weapon.prototype.fireSound = new Audio(
+//Weapon.prototype.explosionSound = new Audio(
  //   "sounds/WeaponFire.ogg");
 //Weapon.prototype.zappedSound = new Audio(
   //  "sounds/WeaponZapped.ogg");

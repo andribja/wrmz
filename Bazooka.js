@@ -11,7 +11,7 @@ function Bazooka(descr) {
      // Common inherited setup logic from Weapon
     this.setup(descr);
     // Make a noise when I am created (i.e. fired)
-    //this.fireSound.play();
+    //this.explosionSound.play();
     this.ammo = 99;
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
@@ -23,12 +23,14 @@ function Bazooka(descr) {
     this.weaponSprite.offsetY = 5;
     
     this.scalablePower = true;
+
+    this.explosionSound = new Audio("sounds/bazookaExplosion.wav");
 }
 
 Bazooka.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Bazooka.prototype.fireSound = new Audio(
+//Bazooka.prototype.explosionSound = new Audio(
  //   "sounds/BazookaFire.ogg");
 //Bazooka.prototype.zappedSound = new Audio(
   //  "sounds/BazookaZapped.ogg");
@@ -50,6 +52,7 @@ Bazooka.prototype.update = function (du) {
     // did it hit something?
     var mapHit = this.checkIfHitMap();
     if(mapHit) {
+        this.explosionSound.play();
         this.damageMap();
         this.damageWorms();
         return entityManager.KILL_ME_NOW;
