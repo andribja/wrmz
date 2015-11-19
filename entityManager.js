@@ -145,6 +145,17 @@ generateTombstone : function(x, y){
     this._tombstones.push(new Tombstone(x, y));
 },
 
+getTeamHealth : function(teamNo) {
+    var worms = this._worms[teamNo-1];
+    var health = 0;
+
+    for(var i in worms) {
+        health += worms[i].health;
+    }
+
+    return health;
+},
+
 update: function(du) {
 
     if(this._worms[0].length === 0 || this._worms[1].length === 0){
@@ -262,16 +273,41 @@ render: function(ctx) {
     ctx.fillStyle = 'yellow';
     ctx.font = '20pt Arial Bold';
     ctx.fillText(Math.ceil(this._timer), 20, 40);
+ 
+    // Render team health on the screen
+    var w = this.getTeamHealth(1) / 200 * 150;
+    var h = 20;
+    var r = 5;
+
+    var xOff = 20;
+    var yOff = 20;
+
+    var x = xOff;
+    var y = g_canvas.height - (yOff + 50);
+
+    ctx.fillStyle = "green";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Team 1", x, y);
+    util.fillRoundedBox(ctx, x + 100, y-w/2, w, h, r, "green", "black", 2);
+
+    ctx.fillStyle = "red";
+    ctx.textBaseline = "middle";
+    y += 30;
+    w = this.getTeamHealth(2) / 200 * 150;
+    ctx.fillText("Team 2", x, y);
+    util.fillRoundedBox(ctx, x + 100, y-w/2, w, h, r, "red", "black", 2);
+
+    // Draw ammo on screen
     ctx.textAlign = 'right';
     ctx.fillText('Ammo: ' 
         + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
         .currentWeapon.ammo,
         g_canvas.width-20, 40);
+
     ctx.restore();
     
     }
-
-}
+};
 
 // Some deferred setup which needs the object to have been created first
 entityManager.deferredSetup();
