@@ -57,7 +57,7 @@ Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
 Weapon.prototype.checkIfHitMap = function () {
     var cx = parseInt(this.cx);
     var cy = parseInt(this.cy);
-    if(entityManager._map[0].getAlphaAt(cx, cy) !== 0) return true;
+    return entityManager._map[0].getAlphaAt(cx, cy) > 0;
 };
 
 Weapon.prototype.damageMap = function () {
