@@ -81,8 +81,11 @@ Worm.prototype.wormSpringSound = new Audio(
 
 Worm.prototype.update = function (du) {
 
+    // ToDo: Unregister and check for death?
+    spatialManager.unregister(this);
+
     if(this.isDeadNow) {
-        return -1;
+        return entityManager.KILL_ME_NOW;
     }
 
     // Worm may not shoot when jumping or flying
@@ -97,10 +100,17 @@ Worm.prototype.update = function (du) {
         this.chooseWeapon();  
     } 
 
-    // ToDo: Unregister and check for death?
-    spatialManager.unregister(this);
+    if(this.cy - this.height >= FULL_HEIGHT)
+        this.death();
+
+    if(this.cy + this.height/2 >= entityManager._map[0].height) {
+        this.isDrowning = true;
+    }
     
-    this.applyAccel(du);
+    if(this.isDrowning)
+        this.applyAccel(du/8);
+    else
+        this.applyAccel(du);
 
     // Update the weapon's aim
     this.updateTarget(du);
@@ -117,12 +127,6 @@ Worm.prototype.update = function (du) {
 
         // Handle firing
         this.maybeFireWeapon();
-
-        if(this.cy >= g_canvas.height)
-            this.death();
-        else if(this.cy - this.height/2 >= entityManager._map[0].seaY){
-            this.drown();
-        }
     }
     
     // ToDo: Register?
@@ -158,14 +162,19 @@ Worm.prototype.applyAccel = function (du) {
 
     // prevent worm from jumping up into the map
     if (this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextTopY)) {
-        // it whill hit something, stop moving upwards
-        nextY = this.cy + NOMINAL_GRAVITY*du;
-        if (this.velY<0) this.velY = 0;
+        // Check if we're above ground
+        if(this.cy + this.height/2 < entityManager._map[0].height) {
+            // it whill hit something, stop moving upwards
+            nextY = this.cy + NOMINAL_GRAVITY*du;
+            if (this.velY<0) this.velY = 0;
+        }
     }
 
     // Land on the ground
     if(this.horizontalEdgeCollidesWithMap(nextLx, nextRx, nextBottomY)){
-        this.velY = 0;
+        // Check if we're above ground
+        if(this.cy + this.height/2 < entityManager._map[0].height)
+            this.velY = 0;
     }
 
     // Don't walk through walls
