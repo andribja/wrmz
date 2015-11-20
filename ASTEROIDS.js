@@ -189,6 +189,7 @@ function requestPreloads() {
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
         shotgun : "images/shotgun.png",
+        baseballBat : "images/baseballBat.png",
         fuelMeter : "images/fuelMeter.png",
         bkgnd : "images/space.png"
 
@@ -218,6 +219,7 @@ function preloadDone() {
     g_sprites.launcher = new Sprite(g_images.launcher);
     g_sprites.Detonator = new Sprite(g_images.detonator);
     g_sprites.Shotgun = new Sprite(g_images.shotgun);
+    g_sprites.baseballBat = new Sprite(g_images.baseballBat);
     g_sprites.Jetpack = new Sprite(g_images.jetpack);
     g_sprites.JetpackFlying = new Sprite(g_images.jetpackFlying);
     g_sprites.fuelMeter = new Sprite(g_images.fuelMeter);

@@ -28,7 +28,7 @@ Weapon.prototype.KEY_FIRE = 13;
 Weapon.prototype.launchVel = 2;
 Weapon.prototype.ammo = 0;
 
-Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
+Weapon.prototype.fire = function(cx, cy, rotation, shotPower, orientation) {
     //if (eatKey(this.KEY_FIRE)) {
         if(this.ammo <= 0) return; 
         var dX = +Math.sin(rotation);
@@ -47,7 +47,7 @@ Weapon.prototype.fire = function(cx, cy, rotation, shotPower) {
            cx + dX * launchDist, cy + dY * launchDist,
            relVelX, relVelY,
            rotation,
-           this.name, initVel);
+           this.name, initVel, orientation);
 
         this.ammo--;
         entityManager._timer = 5;

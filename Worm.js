@@ -27,7 +27,7 @@ function Worm(descr) {
     this.targetCy = this.cy - 20;
     this.weapons = {'bazooka': new Bazooka(), 'grenade': new Grenade(),
         'airstrike': new Airstrike(), 'dynamite': new Dynamite(), 
-        'shotgun': new Shotgun()};
+        'shotgun': new Shotgun(), 'baseballBat' : new BaseballBat()};
     this.currentWeapon = new Bazooka();
 };
 
@@ -44,7 +44,9 @@ Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
 Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
 Worm.prototype.KEY_DYNAMITE = '4'.charCodeAt(0);
 Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
+Worm.prototype.KEY_BASEBALLBAT = '6'.charCodeAt(0);
 Worm.prototype.KEY_JETPACK = 'J'.charCodeAt(0);
+
 
 Worm.prototype.RESET_ROTATION = Math.PI/2;
 
@@ -73,6 +75,8 @@ Worm.prototype.shockWaveY=0;
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.jetpackSound = new Audio(
     "sounds/jetPackLoop2.wav");
+Worm.prototype.wormSpringSound = new Audio(
+    "sounds/wormSpring.wav");
 
 
 Worm.prototype.update = function (du) {
@@ -192,7 +196,6 @@ Worm.prototype.jetPack = function(du) {
      else {
         this.wormSprite = g_sprites.worm;
         this.jetpacking = false;
-        console.log(this.jetpacking);
     }
 }
 
@@ -350,7 +353,8 @@ Worm.prototype.maybeFireWeapon = function () {
 
     // Fire if the FIRE key has been pressed and released
     if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
-        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower);
+        // update the orientation of the baseballBat
+        this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower, this.flip);
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
@@ -391,13 +395,22 @@ Worm.prototype.shockWave = function(cx, cy, r) {
         this.velX = dX * damageRadius/dist;
         this.velY = dY * damageRadius/dist;
     }
-}
+};
 
 Worm.prototype.takeDamage = function(cx, cy, r) {
     var d = util.dist(this.cx, this.cy, cx, cy);
     if(d > r) return;
     else this.health -= Math.ceil(r-d);
     if(this.health <= 0) this.death();
+};
+
+Worm.prototype.takeBaseballBat = function(cx, cy, power, orientation) {
+    this.health -= 1;
+    if(this.health <= 0) this.death();
+    if(this.velX === 0 && this.velY === 0) {
+        this.velX = orientation*2*power;
+        this.velY = -3*power;
+    }
 };
 
 Worm.prototype.death = function() {
@@ -437,6 +450,7 @@ Worm.prototype.chooseWeapon = function() {
     if(keys[this.KEY_AIRSTRIKE]) this.currentWeapon = this.weapons.airstrike;
     if(keys[this.KEY_DYNAMITE]) this.currentWeapon = this.weapons.dynamite;
     if(keys[this.KEY_SHOTGUN]) this.currentWeapon = this.weapons.shotgun;
+    if(keys[this.KEY_BASEBALLBAT]) this.currentWeapon = this.weapons.baseballBat;
 };
 
 Worm.prototype.render = function (ctx) {

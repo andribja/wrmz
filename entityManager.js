@@ -98,7 +98,29 @@ damageWorms: function(cx, cy, r) {
     }
 },
 
-fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel) {
+damageWormsHalfRadius: function(cx, cy, r, orientation) {
+    console.log("cx, cy, r, orientation: "+cx+","+cy+","+r+","+orientation);
+    for(var j = 0; j < this._worms.length; j++) {
+        for(var i = 0; i < this._worms[j].length; i++) { 
+            var currentWorm = this._worms[j][i];
+            var posX = currentWorm.getPos().posX;
+            var posY = currentWorm.getPos().posY;
+            var distance = util.dist(cx, cy, posX, posY);
+            // only damage worms to the left/right
+            // depending on the orientation -1/1
+            // and only check worms in r distance but not the worm
+            // who is holding the weapon
+            if (orientation === -1 && posX < cx && distance < r && distance > 11)
+                currentWorm.takeBaseballBat(cx, cy, 3, orientation);
+            if (orientation === 1 && posX > cx && distance < r && distance > 11)
+                currentWorm.takeBaseballBat(cx, cy, 3, orientation);
+            
+            //this._worms[j][i].shockWave(cx, cy, r);
+        }
+    }
+},
+
+fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel, orientation) {
     // the worm's weapon is passed to the function as a string
     // this is a fix so the appropriate weapon can be created
     var fn = window[weapon];
@@ -110,7 +132,8 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel) {
         velY : velY,
 
         rotation : rotation,
-        initVel : initVel
+        initVel : initVel,
+        orientation : orientation
     }));
 },
 
@@ -175,7 +198,6 @@ update: function(du) {
             var status = aCategory[i].update(du);
 
             if (status === this.KILL_ME_NOW) {
-                console.log("Kill me now");
                 // remove the dead guy, and shuffle the others down to
                 // posrevent a confusing gap from appearing in the array
 
@@ -191,7 +213,8 @@ update: function(du) {
                         scale: aCategory[i].damageRadius / 20
                     });
 
-                    this._animations.push(animation);
+                    if(!(aCategory[i] instanceof BaseballBat))
+                        this._animations.push(animation);
                 }
 
                 if(aCategory[i] instanceof Worm && aCategory[i].isDeadNow && aCategory[i].isActive){
