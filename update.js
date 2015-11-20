@@ -40,7 +40,8 @@ function update(dt) {
     //
     var du = (dt / NOMINAL_UPDATE_INTERVAL);
     
-    updateSimulation(du);
+    if(entityManager.gameStarted)
+        updateSimulation(du);
     
     g_prevUpdateDt = original_dt;
     g_prevUpdateDu = du;

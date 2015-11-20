@@ -77,6 +77,13 @@ wrappedDistSq: function(x1, y1, x2, y2, xWrap, yWrap) {
     return this.square(dx) + this.square(dy);
 },
 
+isWithin: function(targetX, targetY, x, y, w, h) {
+    if(targetX >= x && targetX <= x+w) {
+        if(targetY >= y && targetY <= y+h)
+            return true;
+    }
+},
+
 
 // CANVAS OPS
 // ==========
@@ -193,6 +200,11 @@ resizeCanvas: function(canvas, maxWidth, maxHeight) {
 
     canvas.width = width;
     canvas.height = height;
+},
+
+drawImgScaled: function(ctx, image, x, y, scale) {
+    ctx.drawImage(image, 0, 0, image.width, image.height, 
+                    x, y, image.width*scale, image.height*scale);
 }
 
 };

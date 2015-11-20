@@ -8,11 +8,12 @@ function handleKeydown(evt) {
     keys[evt.keyCode] = true;
 
     if(!entityManager.gameStarted && evt.keyCode === KEY_START){
-    	main.init();
+    	//main.init();
+    	entityManager.generateMap();
         entityManager.gameStarted = true;
     }
     if(!entityManager.gameStarted && evt.keyCode === KEY_INSTRUCTIONS){
-    	getInstructions();
+    	g_infoScreen = !g_infoScreen;
     }
 }
 
