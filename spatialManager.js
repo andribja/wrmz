@@ -57,6 +57,7 @@ findEntityInRange: function(obj) {
     for(var ID in this._entities) {
         var collidingEntity = this._entities[ID];
         var pos = collidingEntity.getPos();
+        if(collidingEntity instanceof Shotgun) continue;
 
         // Is my bounding object a circle?
         if(obj.getRadius) {
