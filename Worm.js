@@ -121,7 +121,6 @@ Worm.prototype.update = function (du) {
         this.maybeFireWeapon();
     }
     
-    // ToDo: Register?
     spatialManager.register(this);
 };
 
@@ -175,9 +174,16 @@ Worm.prototype.applyAccel = function (du) {
         this.velX = 0;
     }
 
-    // now move for real
+    // Now, move for real
     this.cx = nextX;
     this.cy = nextY;
+};
+
+
+var NOMINAL_GRAVITY = 0.2;
+
+Worm.prototype.computeGravity = function () {
+    return g_useGravity ? NOMINAL_GRAVITY : 0;
 };
 
 
@@ -192,32 +198,35 @@ Worm.prototype.jetPack = function(du) {
         this.velY = NOMINAL_JETPACK;
         this.fuel -= du/SECS_TO_NOMINALS;
 
-        // alternate between images to create an 'animation'
+        // alternate randomly between images to create an 'animation'
         var random = Math.random();
         if(random < 0.5) this.wormSprite = g_sprites.JetpackFlying;
         else this.wormSprite = g_sprites.Jetpack;
-    }
-     else {
+    } else {
         this.wormSprite = g_sprites.worm;
         this.jetpacking = false;
     }
 }
 
 Worm.prototype.maybeMove = function() {
-    // Check if worm collides with map
+    
     if(keys[this.KEY_LEFT]){
         this.flip = -1;
 
         var i = this.canGoUpSlope(true, this.cx - 3);
+        // when the worm tries to walk up a slope it is colliding with a few pixels at its left/right bottom
+        // if the pixels are few enough (the slope not too steep), it should be able to walk up the slope
+        // i is the number of pixels it has to elevate before taking the step left/right
         if(i > -Infinity){
             this.cx -= 3;
             this.cy -= i;
         }
 
-        // Refocus
+        // Refocus the map to follow the active worm
         if(!g_mouseAim)
             entityManager._map[0].focusOn(this.cx, this.cy); 
     }
+
     if(keys[this.KEY_RIGHT]){
         this.flip = 1;
 
@@ -237,14 +246,6 @@ Worm.prototype.maybeMove = function() {
     }
 };
 
-Worm.prototype.getXPositionOnCanvas = function(){
-    var x = this.cx - OFFSET_X;
-    return x;
-};
-
-Worm.prototype.getRotation = function() {
-    return this.rotation * this.flip;
-}
 
 var NOMINAL_JUMP = -5;
 
@@ -253,10 +254,19 @@ Worm.prototype.maybeJump = function(){
     var xLeft = this.cx - this.width/2;
     var xRight = this.cx + this.width/2;
 
-    // The worm can only jump if it is close enough to the ground
+    // The worm can only jump if it is close enough to the ground (prevents double jumping)
     if(this.horizontalEdgeCollidesWithMap(xLeft, xRight, yBottom)) {
         this.velY = NOMINAL_JUMP;
     }
+};
+
+Worm.prototype.getXPositionOnCanvas = function(){
+    var x = this.cx - OFFSET_X;
+    return x;
+};
+
+Worm.prototype.getRotation = function() {
+    return this.rotation * this.flip;
 };
 
 Worm.prototype.verticalEdgeCollidesWithMap = function(x, y1, y2){
@@ -271,9 +281,7 @@ Worm.prototype.horizontalEdgeCollidesWithMap = function(x1, x2, y){
 
 
 Worm.prototype.canGoUpSlope = function(left, nextX){
-    
-    // ToDo: reyna að breyta þannig að við notum föllin úr map 1/2
-
+  
     var yBottom = parseInt(this.cy + this.height/2);
     var yTop = parseInt(this.cy - this.height/2);
     var i = 0; var k = 0; var x; 
@@ -326,47 +334,25 @@ Worm.prototype.updateTarget = function(du){
         this.targetCx = +Math.sin(this.getRotation())*distFromWorm + this.cx;
         this.targetCy = -Math.cos(this.getRotation())*distFromWorm + this.cy;
     }
-    
 };
-
-var NOMINAL_GRAVITY = 0.2;
-
-Worm.prototype.computeGravity = function () {
-    return g_useGravity ? NOMINAL_GRAVITY : 0;
-};
-
 
 Worm.prototype.maybeFireWeapon = function () {
 
     // Fire if the FIRE key has been pressed and released
     if (!keys[this.KEY_FIRE] && this.shotPower > 0) {
-        // update the orientation of the baseballBat
+        
         this.currentWeapon.fire(this.cx, this.cy, this.getRotation(), this.shotPower, this.flip);
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
         if(this.currentWeapon instanceof Dynamite) return;
         this.isActive = false;
-        /*var dX = +Math.sin(this.rotation);
-        var dY = -Math.cos(this.rotation);
-        var launchDist = 10;
-        
-        var relVel = this.launchVel;
-        var relVelX = dX * relVel;
-        var relVelY = dY * relVel;
-
-        entityManager.fireWeapon(
-           this.cx + dX * launchDist, this.cy + dY * launchDist,
-           relVelX, relVelY,
-           this.rotation,
-           this.currentWeapon);*/
-
     }
     
 };
 
 Worm.prototype.shockWave = function(cx, cy, r) {
-    // x- and y components of the distance vector between the explosion and worm
+    // x and y components of the distance vector between the explosion and worm
     var xDist=this.cx-cx; 
     var yDist=this.cy-cy; 
     var dist = util.dist(cx, cy, this.cx, this.cy);
@@ -377,10 +363,10 @@ Worm.prototype.shockWave = function(cx, cy, r) {
     var dY = Math.sin(angle);
 
     // if the worm is close enough, it bounces away from the explosion
-    var damageRadius = 100;
-    if(dist < damageRadius) {
-        this.velX = dX * damageRadius/dist;
-        this.velY = dY * damageRadius/dist;
+    var shockWaveRadius = 100;
+    if(dist < shockWaveRadius) {
+        this.velX = dX * shockWaveRadius/dist;
+        this.velY = dY * shockWaveRadius/dist;
     }
 };
 
@@ -395,6 +381,9 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
 Worm.prototype.takeBaseballBat = function(cx, cy, power, orientation) {
     this.health -= 20;
     if(this.health <= 0) this.death();
+
+    // make sure the velocity isn't changed again when worm is flying away 
+    // but hasn't left the damage radius yet
     if(this.velX === 0 && this.velY === 0) {
         this.velX = orientation*power/2;
         this.velY = -1*power/2;
@@ -406,7 +395,6 @@ Worm.prototype.drown = function(){
 };
 
 Worm.prototype.death = function() {
-    
     this.isDeadNow = true;
     entityManager.generateTombstone(this.cx, this.cy);
     spatialManager.unregister(this);
