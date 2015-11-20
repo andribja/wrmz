@@ -42,7 +42,7 @@ Weapon.prototype.fire = function(cx, cy, rotation, shotPower, orientation) {
            this.name, initVel, orientation);
 
         this.ammo--;
-        entityManager._timer = 5;
+        entityManager._timer = 3;
 }
 
 Weapon.prototype.checkIfHitMap = function () {
