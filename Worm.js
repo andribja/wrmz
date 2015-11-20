@@ -116,6 +116,9 @@ Worm.prototype.update = function (du) {
 
         if(this.cy >= g_canvas.height)
             this.death();
+        else if(this.cy - this.height/2 >= entityManager._map[0].seaY){
+            this.drown();
+        }
     }
     
     // ToDo: Register?
@@ -192,7 +195,6 @@ Worm.prototype.jetPack = function(du) {
      else {
         this.wormSprite = g_sprites.worm;
         this.jetpacking = false;
-        console.log(this.jetpacking);
     }
 }
 
@@ -381,6 +383,10 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
     if(d > r) return;
     else this.health -= Math.ceil(r-d);
     if(this.health <= 0) this.death();
+};
+
+Worm.prototype.drown = function(){
+    this.death();
 };
 
 Worm.prototype.death = function() {

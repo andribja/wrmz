@@ -196,7 +196,11 @@ update: function(du) {
                 }
 
                 if(aCategory[i] instanceof Worm && aCategory[i].isDeadNow && aCategory[i].isActive){
-                    this._timer = 0;
+                    // Timerinn hér var 0, en mér finnst koma betur út ef hann er >0.
+                    // Þá verður hins vegar vandamál með select next worm
+                    // Kemur semsagt upp villa í línu 284 í þessu skjali
+                    // Ef einn ormur úr sitthvoru liðinu er dáinn
+                    this._timer = 3;
                     spatialManager.unregister(aCategory[i]);
                 }
 
@@ -278,6 +282,7 @@ render: function(ctx) {
 
     // Draw ammo on screen
     ctx.textAlign = 'right';
+    console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
     ctx.fillText('Ammo: ' 
         + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
         .currentWeapon.ammo,
@@ -346,10 +351,10 @@ function endGame(ctx){
         var beginY = g_canvas.height/2 - g_canvas.height/4;
 
         var winningTeam = "";
-        if(this._worms[0].length > 0)
-            winningTeam = this._worms[0][0].team;
+        if(entityManager._worms[0].length > 0)
+            winningTeam = entityManager._worms[0][0].team;
         else
-            winningTeam = this._worms[1][0].team;
+            winningTeam = entityManager._worms[1][0].team;
 
         ctx.save();
         ctx.fillStyle = 'black';
@@ -361,11 +366,14 @@ function endGame(ctx){
         ctx.fillStyle = 'black';
         ctx.fillText("Game Over!", g_canvas.width/2, g_canvas.height/2);
         ctx.fillStyle = winningTeam;
-        ctx.fillText("Team " + winningTeam + " wins!!!", g_canvas.width/2, g_canvas.height/2+25);
+        ctx.fillText(capFirstLetterOf(winningTeam) + " team wins!!!", g_canvas.width/2, g_canvas.height/2+25);
 
         ctx.restore();
 }
 
+function capFirstLetterOf(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 // Some deferred setup which needs the object to have been created first
 entityManager.deferredSetup();
 
