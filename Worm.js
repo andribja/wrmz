@@ -62,7 +62,7 @@ Worm.prototype.fuel = 15;
 Worm.prototype.health = 100;
 Worm.prototype.shotPower = 0;
 Worm.prototype.timeLeft = 0;
-Worm.prototype.substeps = 2;
+Worm.prototype.substeps = 3;
 
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.jetpackSound = new Audio(
