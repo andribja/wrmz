@@ -25,7 +25,8 @@ function createInitialWorms() {
     entityManager.addWormTeam1({
         cx : 700,
         cy : 200,
-        isActive : true
+        isActive : true,
+        canShoot : true 
     });
     entityManager.addWormTeam2({
         cx:1100,

@@ -87,7 +87,7 @@ selectNextWorm: function() {
         this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = false;
     this._activeTeam = (this._activeTeam + 1) % 2;
     this._indexes[this._activeTeam] = (this._indexes[this._activeTeam] + 1) % this._worms[this._activeTeam].length;
-    this._worms[this._activeTeam][this._indexes[this._activeTeam]].isActive = true;
+    this._worms[this._activeTeam][this._indexes[this._activeTeam]].makeActive();
     
     var cx = this._worms[this._activeTeam][this._indexes[this._activeTeam]].cx;
     var cy = this._worms[this._activeTeam][this._indexes[this._activeTeam]].cy;
