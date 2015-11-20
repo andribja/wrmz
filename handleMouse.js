@@ -25,7 +25,7 @@ function handleMouse(evt) {
     if (!button) return;
 
     if(!entityManager.gameStarted) {
-        g_selectedMap = g_hoverMap;
+        g_selectedMap = g_hoverMap || g_selectedMap;
     }
 
     if(g_mouseAim) {
