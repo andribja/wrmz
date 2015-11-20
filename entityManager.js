@@ -311,24 +311,6 @@ render: function(ctx) {
     ctx.fillText("Team 2", x, y);
     util.fillRoundedBox(ctx, x + 100, y-w/2, w, h, r, "red", "black", 2);
 
-    // Draw ammo on screen
-<<<<<<< HEAD
-    var worm = this._worms[this._activeTeam][this._indexes[this._activeTeam]];
-    if(worm) {
-        ctx.textAlign = 'right';
-        console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
-        ctx.fillText('Ammo: ' + worm.currentWeapon.ammo, g_canvas.width-20, 40);
-=======
-    ctx.textAlign = 'right';
-    console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
-    if(this._worms[this._activeTeam][this._indexes[this._activeTeam]]
-             !== 'undefined') {
-        ctx.fillText('Ammo: ' 
-            + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
-            .currentWeapon.ammo,
-            g_canvas.width-20, 40);
->>>>>>> 07e90cb0ec22e60d31f3afafa63c2476ba09e2cd
-    }
     ctx.restore();
     
     }

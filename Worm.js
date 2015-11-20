@@ -523,6 +523,14 @@ Worm.prototype.render = function (ctx) {
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
     ctx.restore();
+    if(!this.isActive) return;
+    ctx.save();
+    ctx.fillStyle = 'yellow';
+    ctx.textAlign = 'right';
+    ctx.font = '20pt Arial Bold';
+    ctx.fillText('Ammo: ' + this.currentWeapon.ammo, g_canvas.width-20, 40);
+    ctx.restore();
+
 
 
 };
