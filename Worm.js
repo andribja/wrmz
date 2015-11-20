@@ -62,6 +62,7 @@ Worm.prototype.fuel = 15;
 Worm.prototype.health = 100;
 Worm.prototype.shotPower = 0;
 Worm.prototype.timeLeft = 0;
+Worm.prototype.substeps = 2;
 
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.jetpackSound = new Audio(
@@ -99,11 +100,14 @@ Worm.prototype.update = function (du) {
         this.isDrowning = true;
     }
     
-    if(this.isDrowning)
+    if(this.isDrowning) {
         this.applyAccel(du/8);
-    else
-        this.applyAccel(du);
-
+    } else {
+        for(var i = 0; i < this.substeps; i++) {
+            this.applyAccel(du/this.substeps);
+        }
+    }
+            
     // Update the weapon's aim
     this.updateTarget(du);
  
@@ -363,18 +367,20 @@ Worm.prototype.shockWave = function(cx, cy, r) {
     var dY = Math.sin(angle);
 
     // if the worm is close enough, it bounces away from the explosion
-    var shockWaveRadius = 100;
+    var shockWaveRadius = 140;
     if(dist < shockWaveRadius) {
         this.velX = dX * shockWaveRadius/dist;
         this.velY = dY * shockWaveRadius/dist;
+        console.log(this.velY);
     }
 };
 
-Worm.prototype.takeDamage = function(cx, cy, r) {
+Worm.prototype.takeDamage = function(cx, cy, bombRadius) {
+    var damageRadius = bombRadius+40;
     var d = util.dist(this.cx, this.cy, cx, cy);
-    if(d > r) return;
-    else this.health -= Math.ceil(r-d);
-    if(Math.ceil(r-d) >= 20) this.ouchSound.play();
+    if(d > damageRadius) return;
+    else this.health -= Math.ceil(damageRadius-d);
+    if(Math.ceil(damageRadius-d) >= 20) this.ouchSound.play();
     if(this.health <= 0) this.death();
 };
 
