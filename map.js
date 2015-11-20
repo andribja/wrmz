@@ -31,10 +31,11 @@ Map.prototype.isLand = function(cx, cy) {
 };
 
 Map.prototype.getAlphaAt = function(x, y) {
-    var i =  util.getPixelIndex(this.imageData, x, y) + 3;
+    var i =  util.getPixelIndex(this.imageData, x, y);
 
     if(i !== undefined)
-        return this.imageData.data[i];
+        return this.imageData.data[i+3];
+    else return 0;
 };
 
 Map.prototype.setAlphaAt = function(x, y, alpha) {
