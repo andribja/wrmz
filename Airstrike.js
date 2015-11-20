@@ -10,8 +10,6 @@
 function Airstrike(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
-    // Make a noise when I am created (i.e. fired)
-    //this.explosionSound.play();
     
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
@@ -25,17 +23,13 @@ function Airstrike(descr) {
     this.weaponSprite.offsetX = 8;
 
     this.scalablePower = false;
-
-    //this.explosionSound = new Audio("...");
 }
 
 Airstrike.prototype = new Weapon();
 
 // HACKED-IN AUDIO (no preloading)
-//Weapon.prototype.explosionSound = new Audio(
- //   "sounds/WeaponFire.ogg");
-//Weapon.prototype.zappedSound = new Audio(
-  //  "sounds/WeaponZapped.ogg");
+Airstrike.prototype.fireSound = new Audio("sounds/airstrike.wav");
+Airstrike.prototype.explosionSound = new Audio("sounds/airstrikeExplosion2.wav");
     
 // Initial, inheritable, default values
 Airstrike.prototype.damageRadius = 40;
@@ -54,6 +48,7 @@ Airstrike.prototype.update = function (du) {
     var mapHit = this.checkIfHitMap();
     console.log(mapHit);
     if(mapHit) {
+        this.explosionSound.play();
         this.damageMap();
         this.damageWorms();
         return entityManager.KILL_ME_NOW;
