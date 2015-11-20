@@ -1,21 +1,7 @@
 /*
 
 entityManager.js
-
-A module which handles arbitrary entity-management for "Asteroids"
-
-
-We create this module as a single global object, and initialise it
-with suitable 'data' and 'methods'.
-
-"Private" properties are denoted by an underscore prefix convention.
-
-*/
-
-
 "use strict";
-
-
 // Tell jslint not to complain about my use of underscore prefixes (nomen),
 // my flattening of some indentation (white), or my use of incr/decr ops 
 // (plusplus).
@@ -34,7 +20,6 @@ _weapons : [],
 _activeTeam: 0,
 _initTimer : 45,
 _timer : 45,
-shakeEffectTimer: -1,
 _animations: [],
 _tombstones: [],
 
@@ -125,31 +110,31 @@ damageWorms: function(cx, cy, r) {
 },
 
 damageWormsHalfRadius: function(cx, cy, r, damagePower, orientation) {
-    console.log("cx, cy, r, orientation: "+cx+","+cy+","+r+","+orientation);
+    
     for(var j = 0; j < this._worms.length; j++) {
         for(var i = 0; i < this._worms[j].length; i++) { 
             var currentWorm = this._worms[j][i];
             var posX = currentWorm.getPos().posX;
             var posY = currentWorm.getPos().posY;
             var distance = util.dist(cx, cy, posX, posY);
+            
             // only damage worms to the left/right
             // depending on the orientation -1/1
             // and only check worms in r distance but not the worm
             // who is holding the weapon
             if (orientation === -1 && posX < cx && distance < r && distance > 11)
                 currentWorm.takeBaseballBat(cx, cy, damagePower, orientation);
+            
             if (orientation === 1 && posX > cx && distance < r && distance > 11)
                 currentWorm.takeBaseballBat(cx, cy, damagePower, orientation);
-            
-            //this._worms[j][i].shockWave(cx, cy, r);
         }
     }
 },
 
 fireWeapon: function(cx, cy, velX, velY, rotation, weapon, shotPower, orientation) {
     // the worm's weapon is passed to the function as a string
-    // this is a fix so the appropriate weapon can be created
     var fn = window[weapon];
+    
     console.log("entityManager:"+cx+","+cy);
     this._weapons.push(new fn({
         cx   : cx,
@@ -266,8 +251,6 @@ update: function(du) {
         this.selectNextWorm();
         this._timer = this._initTimer;
     }
-
-    this.shakeEffectTimer -=du/SECS_TO_NOMINALS;
 },
 
 render: function(ctx) {
@@ -329,11 +312,22 @@ render: function(ctx) {
     util.fillRoundedBox(ctx, x + 100, y-w/2, w, h, r, "red", "black", 2);
 
     // Draw ammo on screen
+<<<<<<< HEAD
     var worm = this._worms[this._activeTeam][this._indexes[this._activeTeam]];
     if(worm) {
         ctx.textAlign = 'right';
         console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
         ctx.fillText('Ammo: ' + worm.currentWeapon.ammo, g_canvas.width-20, 40);
+=======
+    ctx.textAlign = 'right';
+    console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
+    if(this._worms[this._activeTeam][this._indexes[this._activeTeam]]
+             !== 'undefined') {
+        ctx.fillText('Ammo: ' 
+            + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
+            .currentWeapon.ammo,
+            g_canvas.width-20, 40);
+>>>>>>> 07e90cb0ec22e60d31f3afafa63c2476ba09e2cd
     }
     ctx.restore();
     

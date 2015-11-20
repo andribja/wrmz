@@ -38,7 +38,8 @@ Shotgun.prototype = new Weapon();
   //  "sounds/ShotgunZapped.ogg");
     
 // Initial, inheritable, default values
-Shotgun.prototype.damageRadius = 10;
+Shotgun.prototype.name = 'Shotgun';
+Shotgun.prototype.damageRadius = 30;
 Shotgun.prototype.t = 0;
 
 Shotgun.prototype.fire = function(cx, cy, rotation, shotPower) {
