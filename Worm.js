@@ -77,6 +77,8 @@ Worm.prototype.jetpackSound = new Audio(
     "sounds/jetPackLoop2.wav");
 Worm.prototype.wormSpringSound = new Audio(
     "sounds/wormSpring.wav");
+Worm.prototype.ouchSound = new Audio(
+    "sounds/wormOuch.wav");
 
 
 Worm.prototype.update = function (du) {
@@ -387,6 +389,7 @@ Worm.prototype.takeDamage = function(cx, cy, r) {
     var d = util.dist(this.cx, this.cy, cx, cy);
     if(d > r) return;
     else this.health -= Math.ceil(r-d);
+    if(Math.ceil(r-d) >= 20) this.ouchSound.play();
     if(this.health <= 0) this.death();
 };
 

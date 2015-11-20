@@ -37,7 +37,7 @@ Map.prototype.getAlphaAt = function(x, y) {
 };
 
 Map.prototype.setAlphaAt = function(x, y, alpha) {
-    var i =  util.getPixelIndex(this.imageData, x, y) + 3;
+    var i = util.getPixelIndex(this.imageData, x, y) + 3;
     
     this.imageData.data[i] = alpha;
 };
