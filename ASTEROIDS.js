@@ -1,35 +1,6 @@
 // =====
 // WORMS
 // =====
-/*
-
-A sort-of-playable version of the classic arcade game.
-
-
-HOMEWORK INSTRUCTIONS:
-
-You have some "TODO"s to fill in again, particularly in:
-
-spatialManager.js
-
-But also, to a lesser extent, in:
-
-Rock.js
-Bullet.js
-Ship.js
-
-
-...Basically, you need to implement the core of the spatialManager,
-and modify the Rock/Bullet/Ship to register (and unregister)
-with it correctly, so that they can participate in collisions.
-
-Be sure to test the diagnostic rendering for the spatialManager,
-as toggled by the 'X' key. We rely on that for marking. My default
-implementation will work for the "obvious" approach, but you might
-need to tweak it if you do something "non-obvious" in yours.
-*/
-
-"use strict";
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
@@ -131,7 +102,7 @@ var KEY_START = keyCode('B');
 var KEY_INSTRUCTIONS = keyCode('I');
 
 function processDiagnostics() {
-
+/*
     if (eatKey(KEY_MIXED))
         g_allowMixedActions = !g_allowMixedActions;
 
@@ -140,6 +111,7 @@ function processDiagnostics() {
     if (eatKey(KEY_AVE_VEL)) g_useAveVel = !g_useAveVel;
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
+*/
 }
 
 
@@ -175,27 +147,29 @@ function requestPreloads() {
     var requiredImages = {
         startScreenWorm1 : "images/startScreenWorm1.png",
         startScreenWorm2 : "images/startScreenWorm2.png",
+
         map    : "images/world3.png",
         background : "images/bg.jpg",
+        bkgnd : "images/space.png",
+
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
+        tombstone : "images/tombstone.png",
         jetpackFlying : "images/jetpackFlying.png",
         jetpack : "images/jetpack.png",
+        fuelMeter : "images/fuelMeter.png",
+        
+        powerBar : "images/powerBar.png",
         target   : "images/crosshair.png",
         explosion : "images/explosion.png",
         grenade : "images/grenade.png",
-        tombstone : "images/tombstone.png",
         dynamite : "images/dynamite.png",
         bazooka : 'images/bazooka.png',
         airstrike : 'images/airstrike.png',
-        powerBar : "images/powerBar.png",
         launcher : "images/rocket_launcher.png",
         detonator : "images/Detonator.png",
         shotgun : "images/shotgun.png",
-        baseballBat : "images/baseballBat.png",
-        fuelMeter : "images/fuelMeter.png",
-        bkgnd : "images/space.png"
-
+        baseballBat : "images/baseballBat.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -209,25 +183,27 @@ function preloadDone() {
     g_sprites.startScreenWorm1 = new Sprite(g_images.startScreenWorm1);
     g_sprites.startScreenWorm2 = new Sprite(g_images.startScreenWorm2);
     g_sprites.map = new Sprite(g_images.map);
+
     g_sprites.worm  = new Sprite(g_images.worm);
     g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 
     g_sprites.target = new Sprite(g_images.target);
+    g_sprites.Tombstone = new Sprite(g_images.tombstone);
+    g_sprites.Jetpack = new Sprite(g_images.jetpack);
+    g_sprites.JetpackFlying = new Sprite(g_images.jetpackFlying);
+    g_sprites.fuelMeter = new Sprite(g_images.fuelMeter);
+
+    g_sprites.powerBar = new Sprite(g_images.powerBar);
     g_sprites.Bazooka = new Sprite(g_images.target);
     g_sprites.Bazooka.scale = 0.5;
     g_sprites.Grenade = new Sprite(g_images.grenade);
     g_sprites.Airstrike = new Sprite(g_images.grenade);
-    g_sprites.Tombstone = new Sprite(g_images.tombstone);
     g_sprites.Dynamite = new Sprite(g_images.dynamite);
     g_sprites.BazookaGun = new Sprite(g_images.bazooka);
     g_sprites.airstrike = new Sprite(g_images.airstrike);
-    g_sprites.powerBar = new Sprite(g_images.powerBar);
     g_sprites.launcher = new Sprite(g_images.launcher);
     g_sprites.Detonator = new Sprite(g_images.detonator);
     g_sprites.Shotgun = new Sprite(g_images.shotgun);
     g_sprites.baseballBat = new Sprite(g_images.baseballBat);
-    g_sprites.Jetpack = new Sprite(g_images.jetpack);
-    g_sprites.JetpackFlying = new Sprite(g_images.jetpackFlying);
-    g_sprites.fuelMeter = new Sprite(g_images.fuelMeter);
 
     entityManager.init();
     createInitialWorms();
