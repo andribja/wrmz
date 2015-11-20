@@ -63,6 +63,7 @@ Worm.prototype.health = 100;
 Worm.prototype.shotPower = 0;
 Worm.prototype.timeLeft = 0;
 Worm.prototype.substeps = 3;
+Worm.prototype.hasFired = false;
 
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.jetpackSound = new Audio(
@@ -122,10 +123,16 @@ Worm.prototype.update = function (du) {
         }
 
         // Handle firing
-        this.maybeFireWeapon();
+        if(!this.hasFired)
+            this.maybeFireWeapon();
     }
     
     spatialManager.register(this);
+};
+
+Worm.prototype.makeActive = function () {
+    this.isActive = true;
+    this.hasFired = false;
 };
 
 Worm.prototype.applyAccel = function (du) {
@@ -349,7 +356,7 @@ Worm.prototype.maybeFireWeapon = function () {
 
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
-        if(this.currentWeapon instanceof Dynamite) return;
+        this.hasFired = true;
         this.isActive = false;
     }
     
@@ -379,7 +386,7 @@ Worm.prototype.takeDamage = function(cx, cy, bombRadius) {
     var damageRadius = bombRadius+40;
     var d = util.dist(this.cx, this.cy, cx, cy);
     if(d > damageRadius) return;
-    else this.health -= Math.ceil(damageRadius-d);
+    else this.health -= Math.ceil((damageRadius-d)/2);
     if(Math.ceil(damageRadius-d) >= 20) this.ouchSound.play();
     if(this.health <= 0) this.death();
 };
