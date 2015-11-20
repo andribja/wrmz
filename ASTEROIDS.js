@@ -188,7 +188,7 @@ var g_sprites = {};
 function preloadDone() {
     g_sprites.startScreenWorm1 = new Sprite(g_images.startScreenWorm1);
     g_sprites.startScreenWorm2 = new Sprite(g_images.startScreenWorm2);
-    
+
     g_sprites.map_space = new Sprite(g_images.map_space);
     g_sprites.map_candy = new Sprite(g_images.map_candy);
     g_sprites.map_urban = new Sprite(g_images.map_urban);
@@ -221,7 +221,8 @@ function preloadDone() {
     // Stretch the canvas to the window
     util.resizeCanvas(g_canvas, FULL_WIDTH, FULL_HEIGHT);
     util.resizeCanvas(bg_canvas, FULL_WIDTH, FULL_HEIGHT);
-    startScreen(g_ctx);
+
+    main.init();
 }
 
 // =================
@@ -239,6 +240,15 @@ function preloadDone() {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
+    if(!entityManager.gameStarted) {
+        if(g_infoScreen)
+            getInstructions();
+        else
+            startScreen(g_ctx);
+        
+        return;
+    }
+
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);

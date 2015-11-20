@@ -9,10 +9,11 @@ function handleKeydown(evt) {
 
     if(!entityManager.gameStarted && evt.keyCode === KEY_START){
     	main.init();
+    	entityManager.generateMap();
         entityManager.gameStarted = true;
     }
     if(!entityManager.gameStarted && evt.keyCode === KEY_INSTRUCTIONS){
-    	getInstructions();
+    	g_infoScreen = !g_infoScreen;
     }
 }
 

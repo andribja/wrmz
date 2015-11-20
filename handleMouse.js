@@ -23,11 +23,18 @@ function handleMouse(evt) {
     // If no button is being pressed, then bail
     var button = evt.buttons === undefined ? evt.which : evt.buttons;
     if (!button) return;
+
+    if(!entityManager.gameStarted) {
+        g_selectedMap = g_hoverMap;
+    }
+
     if(g_mouseAim) {
         entityManager.fireAirstrike(g_mouseX + OFFSET_X);
         entityManager._timer = 5;
         g_mouseAim = false;
     }
+
+
     // Use ctrl+click to focus
     if(keys[17])
 	    entityManager._map[0].focusOn(g_mouseX + OFFSET_X, g_mouseY + OFFSET_Y);

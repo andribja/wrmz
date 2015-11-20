@@ -72,7 +72,7 @@ init: function() {
         seaColor: ['blue', '#338BFF']
     };
 
-    this.generateMap(this._maps["space"]);
+    this.generateMap(this._maps[g_selectedMap]);
 },
 
 selectNextWorm: function() {
@@ -172,7 +172,9 @@ addWormTeam1 : function(descr) {
 },
 
 generateMap : function(descr) {
-    this._map.push(new Map(descr)); // TODO fix parameter to map image variable
+    if(descr === undefined)
+        descr = this._maps[g_selectedMap]
+    this._map[0] = new Map(descr); // TODO fix parameter to map image variable
 },
 
 generateTombstone : function(x, y){
@@ -331,9 +333,93 @@ function startScreen (ctx) {
     ctx.fillStyle = 'yellow';
     ctx.font = '20pt Arial Bold';
     ctx.textAlign = "center";
-    ctx.fillText("Press 'B' to start a game of Worms!", g_canvas.width/2, g_canvas.height/2-25);
-    ctx.fillText("Press 'I' to get instructions", g_canvas.width/2, g_canvas.height/2+25);
+    ctx.fillText("Press 'B' to start a game of Worms!", g_canvas.width/2, g_canvas.height/2-100);
+    ctx.fillText("Press 'I' to get instructions", g_canvas.width/2, g_canvas.height/2-50);
+    ctx.fillText("Select a map to play", g_canvas.width/2, g_canvas.height/2);
+
+    drawMapSelection(ctx);
+
     ctx.restore();
+}
+
+function drawMapSelection(ctx) {
+    var scale = 0.1;
+    var p = 30; // padding
+    var xOff = g_canvas.width/2;
+    var yOff = g_canvas.height * 2/3 - 25;
+    var space = entityManager._maps['space'];
+
+    // Space map
+    var img = g_images['map_space'];
+    var x, y, w, h;
+        w = img.width * scale,
+        h = img.height * scale,
+        x = xOff - w - 2*p, 
+        y = yOff;
+
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    if(util.isWithin(g_mouseX, g_mouseY, x-p, y-p, w + 2*p, h + 2*p)) {
+        g_hoverMap = "space";
+        ctx.globalAlpha = 1;
+    } else if(g_selectedMap === 'space')
+        ctx.globalAlpha = 1;
+        
+    util.fillBox(ctx, x - p, y - p, w + 2*p, h + 2*p, 'black');
+    ctx.restore();
+    util.drawImgScaled(ctx, img, x, y, scale);
+
+    // Candy map
+    img = g_images['map_candy'];
+    x = xOff + 2*p, 
+    y = yOff;
+
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    if(util.isWithin(g_mouseX, g_mouseY, x-p, y-p, w + 2*p, h + 2*p)) {
+        g_hoverMap = "candy";
+        ctx.globalAlpha = 1;
+    } else if(g_selectedMap === 'candy')
+        ctx.globalAlpha = 1;
+        
+    util.fillBox(ctx, x - p, y - p, w + 2*p, h + 2*p, 'black');
+    ctx.restore();
+    util.drawImgScaled(ctx, img, x, y, scale);
+
+    // Urban map
+    img = g_images['map_urban'];
+    x = xOff - w - 2*p, 
+    y = yOff + 150;
+
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    if(util.isWithin(g_mouseX, g_mouseY, x-p, y-p, w + 2*p, h + 2*p)) {
+        g_hoverMap = "urban";
+        ctx.globalAlpha = 1;
+    } else if(g_selectedMap === 'urban')
+        ctx.globalAlpha = 1;
+        
+    util.fillBox(ctx, x - p, y - p, w + 2*p, h + 2*p, 'black');
+    ctx.restore();
+    util.drawImgScaled(ctx, img, x, y, scale);
+
+    // Tree map
+    img = g_images['map_trees'];
+    x = xOff + 2*p, 
+    y = yOff + 150;
+
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    if(util.isWithin(g_mouseX, g_mouseY, x-p, y-p, w + 2*p, h + 2*p)) {
+        g_hoverMap = "trees";
+        ctx.globalAlpha = 1;
+    } else if(g_selectedMap === 'trees')
+        ctx.globalAlpha = 1;
+        
+    util.fillBox(ctx, x - p, y - p, w + 2*p, h + 2*p, 'black');
+    ctx.restore();
+    util.drawImgScaled(ctx, img, x, y, scale);
+
 }
 
 function drawSprite(ctx, sprite, scale, x, y, rotation){
@@ -355,16 +441,20 @@ function getInstructions(){
     ctx.fillStyle = 'yellow';
     ctx.font = '15pt Arial Bold';
     ctx.textAlign = "center";
-    ctx.fillText("Press AWSD to move worm", g_canvas.width/2, g_canvas.height/11);
-    ctx.fillText("Press spacebar to jump and 'J' for Jetpack", g_canvas.width/2, 2*g_canvas.height/11);
-    ctx.fillText("Press 1 for Bazooka", g_canvas.width/2, 3*g_canvas.height/11);
-    ctx.fillText("Press 2 for Grenade", g_canvas.width/2, 4*g_canvas.height/11);
-    ctx.fillText("Press 3 for Airstrike, enter to aim and click to shoot", g_canvas.width/2, 5*g_canvas.height/11);
-    ctx.fillText("Press 4 for Dynamite", g_canvas.width/2, 6*g_canvas.height/11);
-    ctx.fillText("Press 5 for Shotgun", g_canvas.width/2, 7*g_canvas.height/11);
-    ctx.fillText("Use arrow buttons to move map", g_canvas.width/2, 8*g_canvas.height/11);
-    ctx.fillText("Press and/or hold enter to shoot", g_canvas.width/2, 9*g_canvas.height/11);
-    ctx.fillText("Press 'B' to start a game of Worms!", g_canvas.width/2, 10*g_canvas.height/11);
+    ctx.fillText("Press AWSD to move worm", g_canvas.width/2, g_canvas.height/12);
+    ctx.fillText("Press spacebar to jump and 'J' for Jetpack", g_canvas.width/2, 2*g_canvas.height/12);
+    ctx.fillText("Press 1 for Bazooka", g_canvas.width/2, 3*g_canvas.height/12);
+    ctx.fillText("Press 2 for Grenade", g_canvas.width/2, 4*g_canvas.height/12);
+    ctx.fillText("Press 3 for Airstrike, enter to aim and click to shoot", g_canvas.width/2, 5*g_canvas.height/12);
+    ctx.fillText("Press 4 for Dynamite", g_canvas.width/2, 6*g_canvas.height/12);
+    ctx.fillText("Press 5 for Shotgun", g_canvas.width/2, 7*g_canvas.height/12);
+    ctx.fillText("Press 6 for Baseball bat", g_canvas.width/2, 8*g_canvas.height/12);
+    ctx.fillText("Use arrow buttons to move map", g_canvas.width/2, 9*g_canvas.height/12);
+    ctx.fillText("Press and/or hold enter to shoot", g_canvas.width/2, 10*g_canvas.height/12);
+    ctx.fillText("Press 'B' to start a game of Worms!", g_canvas.width/2, 11*g_canvas.height/12);
+
+    ctx.textAlign = 'left';
+    ctx.fillText("Press 'I' again to go back to the menu", 20, g_canvas.height-20);
     ctx.restore();
 }
 

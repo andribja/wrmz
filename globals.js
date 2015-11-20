@@ -35,3 +35,7 @@ var NOMINAL_UPDATE_INTERVAL = 16.666;
 var SECS_TO_NOMINALS = 1000 / NOMINAL_UPDATE_INTERVAL;
 
 var NOMINAL_GRAVITY = -0.12;
+
+var g_infoScreen = false;
+var g_hoverMap;
+var g_selectedMap = 'space';	// default map

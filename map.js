@@ -2,6 +2,8 @@
 function Map(descr) {
     this.setup(descr);
 
+    console.log("new map", descr)
+
     this.sprite = g_sprites['map_' + this.name];
     this.width = this.sprite.width;
     this.height = this.sprite.height;   // For checking if anything has fallen into the ocean
