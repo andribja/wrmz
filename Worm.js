@@ -412,21 +412,6 @@ Worm.prototype.death = function() {
     spatialManager.unregister(this);
 };
 
-/*
-//Hugsanlega gera getBoundingBox
-Worm.prototype.getRadius = function () {
-    return (this.sprite.width / 2) * 0.9;
-};
-
-// Þurfum að bæta inn this.reset_cx og cy ef við ætlum að nota þetta
-Worm.prototype.reset = function () {
-    this.setPos(this.reset_cx, this.reset_cy);
-    this.rotation = this.reset_rotation;
-    
-    this.halt();
-};
-*/
-
 Worm.prototype.getBoundingBox = function() {
     var box = {};
 
@@ -462,8 +447,8 @@ Worm.prototype.render = function (ctx) {
 
 
     if(this.isActive) {
-        // Draw the target when worm is aiming
-        if(!keys[this.KEY_FIRE] && !this.jetpacking) {
+        // Draw the target when aiming
+        if(!this.jetpacking) {
             this.targetSprite.drawCentredAt(ctx, targetX, targetY, 0);
         }
 

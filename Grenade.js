@@ -36,8 +36,9 @@ Grenade.prototype.damageRadius = 50;
 Grenade.prototype.countdown = 5;
 
 Grenade.prototype.update = function (du) {
-
     spatialManager.unregister(this);
+
+    entityManager._map[0].focusOn(this.cx, this.cy)
     
     this.countdown -= du/SECS_TO_NOMINALS;
 
@@ -65,7 +66,6 @@ Grenade.prototype.move = function (du) {
     // Check if it has landed on the map
     var mapHit = entityManager._map[0].circleCollidesWithMap(nextX, nextY, 1);
     if(mapHit) {
-        
         // only play the impact sound once 
         if(this.velX != 0 && this.velY != 0) this.impactSound.play();
         
@@ -92,14 +92,17 @@ Grenade.prototype.fire = function(cx, cy, rotation, power) {
     var dY = -Math.cos(rotation);
 
     // Calculate the velocity, and fire weapon
-    this.velX = dX*power*3;
-    this.velY = dY*power*3;
+    this.velX = dX*power*10;
+    this.velY = dY*power*10;
 
     entityManager.fireWeapon(
         cx + dX, cy + dY,
         this.velX, this.velY,
         rotation,
         this.name);
+
+    this.ammo--;
+    entityManager._timer = this.countdown + 3;
 };
 
 Grenade.prototype.render = function(ctx) {

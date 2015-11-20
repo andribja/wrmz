@@ -52,6 +52,8 @@ findEntityInRange: function(obj) {
     var posX = obj.getPos().posX;
     var posY = obj.getPos().posY;
 
+
+
     for(var ID in this._entities) {
         var collidingEntity = this._entities[ID];
         var pos = collidingEntity.getPos();
