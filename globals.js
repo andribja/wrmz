@@ -10,6 +10,9 @@ Evil, ugly (but "necessary") globals, which everyone can use.
 "use strict";
 
 /* jshint browser: true, devel: true, globalstrict: true */
+var g_diagnosticsOn_KEY1 = 'N'.charCodeAt(0);
+var g_diagnosticsOn_KEY2 = 'M'.charCodeAt(0);
+var g_diagnosticsOn = false;
 
 // Offset parameters for scrolling
 var OFFSET_X = 0;

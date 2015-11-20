@@ -71,8 +71,10 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-    
-    processDiagnostics();
+    if(eatKey(g_diagnosticsOn_KEY1) && eatKey(g_diagnosticsOn_KEY2)) g_diagnosticsOn = !g_diagnosticsOn;
+
+    if(g_diagnosticsOn) 
+        processDiagnostics();
     
     entityManager.update(du);
 }
@@ -102,7 +104,7 @@ var KEY_START = keyCode('B');
 var KEY_INSTRUCTIONS = keyCode('I');
 
 function processDiagnostics() {
-/*
+
     if (eatKey(KEY_MIXED))
         g_allowMixedActions = !g_allowMixedActions;
 
@@ -111,7 +113,7 @@ function processDiagnostics() {
     if (eatKey(KEY_AVE_VEL)) g_useAveVel = !g_useAveVel;
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
-*/
+
 }
 
 

@@ -3,7 +3,6 @@
 // ==========
 
 "use strict";
-
 /* jshint browser: true, devel: true, globalstrict: true */
 
 // A generic contructor which accepts an arbitrary descriptor object
@@ -17,14 +16,14 @@ function Worm(descr) {
     this.width = this.wormSprite.width;
     this.height = this.wormSprite.height;
 
-    // Set normal drawing scale
-    this._scale = 1;
     this.flip = 1;
 
     // Create a target
     this.targetSprite = g_sprites.target;
     this.targetCx = this.cx;
     this.targetCy = this.cy - 20;
+
+    // Create the arsenal
     this.weapons = {'bazooka': new Bazooka(), 'grenade': new Grenade(),
         'airstrike': new Airstrike(), 'dynamite': new Dynamite(), 
         'shotgun': new Shotgun(), 'baseballBat' : new BaseballBat()};
@@ -32,13 +31,14 @@ function Worm(descr) {
 };
 
 Worm.prototype = new Entity();
+
+// Keys
 Worm.prototype.KEY_LEFT = 'A'.charCodeAt(0);
 Worm.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_L   = 'S'.charCodeAt(0);
 Worm.prototype.KEY_ROTATEGUN_R  = 'W'.charCodeAt(0);
 Worm.prototype.KEY_JUMP   = ' '.charCodeAt(0);
 Worm.prototype.KEY_FIRE   = 13;
-
 Worm.prototype.KEY_BAZOOKA   = '1'.charCodeAt(0);
 Worm.prototype.KEY_GRENADE   = '2'.charCodeAt(0);
 Worm.prototype.KEY_AIRSTRIKE = '3'.charCodeAt(0);
@@ -47,30 +47,21 @@ Worm.prototype.KEY_SHOTGUN = '5'.charCodeAt(0);
 Worm.prototype.KEY_BASEBALLBAT = '6'.charCodeAt(0);
 Worm.prototype.KEY_JETPACK = 'J'.charCodeAt(0);
 
-
 Worm.prototype.RESET_ROTATION = Math.PI/2;
-
-// Initial, inheritable, default values
 Worm.prototype.rotation = Worm.prototype.RESET_ROTATION;
 Worm.prototype.cx = 700;
 Worm.prototype.cy = 450;
 Worm.prototype.velX = 0;
 Worm.prototype.velY = 0;
-Worm.prototype.health = 100;
 Worm.prototype.team = "green";
-Worm.prototype.timeLeft = 0;
 Worm.prototype.isActive = false;
-Worm.prototype.shotPower = 0;
-Worm.prototype.takeWeaponHit = true; 
-Worm.prototype.fuel = 15;
 Worm.prototype.canShoot = false;
 Worm.prototype.jetpacking = false;
-
-// TEMPORARY ----
-Worm.prototype.shockWaveX=0;
-Worm.prototype.shockWaveY=0;
-//--------------
-
+Worm.prototype.takeWeaponHit = true; 
+Worm.prototype.fuel = 15;
+Worm.prototype.health = 100;
+Worm.prototype.shotPower = 0;
+Worm.prototype.timeLeft = 0;
 
 // HACKED-IN AUDIO (no preloading)
 Worm.prototype.jetpackSound = new Audio(
@@ -83,7 +74,6 @@ Worm.prototype.ouchSound = new Audio(
 
 Worm.prototype.update = function (du) {
 
-    // ToDo: Unregister and check for death?
     spatialManager.unregister(this);
 
     if(this.isDeadNow) {
@@ -97,7 +87,7 @@ Worm.prototype.update = function (du) {
         this.canShoot = true;
     }
 
-    // choose current weapon
+    // choose weapon
     if(this.isActive) {
         this.chooseWeapon();  
     } 
@@ -461,39 +451,29 @@ Worm.prototype.render = function (ctx) {
         targetX = this.targetCx - OFFSET_X,
         targetY = this.targetCy - OFFSET_Y;
 
-
     // Draw the worm
-    var origScale = this.wormSprite.scale;
-    // pass my scale into the sprite, for drawing
-    this.wormSprite.scale = this._scale;
-
     ctx.save();
     ctx.translate(posX, posY);
     ctx.scale(this.flip, 1);
     ctx.translate(-posX, -posY);
 
     this.wormSprite.drawCentredAt(ctx, posX, posY, 0);
-
     ctx.restore();
 
-    this.wormSprite.scale = origScale;
 
     if(this.isActive) {
-        // Draw the target when aiming
+        // Draw the target when worm is aiming
         if(!keys[this.KEY_FIRE] && !this.jetpacking) {
-            this.targetSprite.scale = this._scale;
             this.targetSprite.drawCentredAt(ctx, targetX, targetY, 0);
-            this.targetSprite.scale = origScale;
         }
 
-        // draw power bar when the weapon gets more power the longer FIRE key is pressed
-        if(this.currentWeapon.scalablePower &&
-            keys[this.KEY_FIRE]) {
+        // draw power bar if the weapon has scalable power (if it gets more power when 'Enter' is held down longer)
+        if(this.currentWeapon.scalablePower && keys[this.KEY_FIRE]) {
             g_sprites.powerBar.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
                 0, 0+15*this.shotPower, g_sprites.powerBar.height);
         }
 
-        // draw power bar when the weapon gets more power the longer FIRE key is pressed
+        // Show how much fuel the worm has got left
         if(this.jetpacking) {
             g_sprites.fuelMeter.drawPartialCentredAt(ctx, this.cx - OFFSET_X, this.cy-60 - OFFSET_Y, 
                 0, 2*this.fuel, g_sprites.fuelMeter.height);
@@ -511,18 +491,21 @@ Worm.prototype.render = function (ctx) {
         ctx.scale(this.flip, 1);
         ctx.rotate(this.rotation - Math.PI/2);
         ctx.translate(-posX, -posY);
-
-        if(!this.jetpacking) weaponSprite.drawCentredAt(ctx, posX, posY);
-
+        
+        if(!this.jetpacking) 
+            weaponSprite.drawCentredAt(ctx, posX, posY);
         ctx.restore();
     }
 
+    // display the healthpoints of each worm
     ctx.save();
     ctx.fillStyle = this.team;
     ctx.textAlign = 'center';
     ctx.font = '15pt Arial Bold';
     ctx.fillText(this.health,this.cx - OFFSET_X, this.cy-30 - OFFSET_Y);
     ctx.restore();
+
+    // display the ammo of the active worm's weapon in the top right corner
     if(!this.isActive) return;
     ctx.save();
     ctx.fillStyle = 'yellow';
