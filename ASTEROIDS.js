@@ -154,14 +154,13 @@ function requestPreloads() {
 
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
+        tombstone : "images/tombstone.png",
         jetpackFlying : "images/jetpackFlying.png",
         jetpack : "images/jetpack.png",
         fuelMeter : "images/fuelMeter.png",
         
-        target   : "images/target.png",
-        tombstone : "images/tombstone.png",
-
         powerBar : "images/powerBar.png",
+        target   : "images/crosshair.png",
         explosion : "images/explosion.png",
         grenade : "images/grenade.png",
         dynamite : "images/dynamite.png",
