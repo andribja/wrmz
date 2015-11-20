@@ -181,7 +181,7 @@ function requestPreloads() {
         wormFlipped: "images/wormFlipped.png",
         jetpackFlying : "images/jetpackFlying.png",
         jetpack : "images/jetpack.png",
-        target   : "images/target.png",
+        target   : "images/crosshair.png",
         explosion : "images/explosion.png",
         grenade : "images/grenade.png",
         tombstone : "images/tombstone.png",
