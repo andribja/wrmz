@@ -20,6 +20,7 @@ Weapon.prototype.t = 0;
 Weapon.prototype.KEY_FIRE = 13;
 Weapon.prototype.launchVel = 2;
 Weapon.prototype.ammo = 0;
+Weapon.prototype.countdown = 0;
 
 Weapon.prototype.fire = function(cx, cy, rotation, shotPower, orientation) {
         if(this.ammo <= 0) return; 
