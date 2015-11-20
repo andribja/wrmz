@@ -48,7 +48,6 @@ Airstrike.prototype.fire = function(cx, cy, rotation) {
 }
 
 Airstrike.prototype.update = function (du) {
-    console.log("updating Airstrike");
     spatialManager.unregister(this);
     
     // did it hit something?

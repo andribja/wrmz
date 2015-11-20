@@ -93,7 +93,14 @@ Map.prototype.destroy = function(cx, cy, r) {
 Map.prototype.update = function(du) {
     var px = 10;
     if(g_mouseAim) {
-        this.focusOn(g_mouseX + OFFSET_X, g_mouseY + OFFSET_Y);
+        if(g_mouseX < g_canvas.width/4) {
+            this.scroll(-20, 0);
+        }
+
+        if(g_mouseX > g_canvas.width * 3/4) {
+            this.scroll(20, 0);
+        }
+
         return;
     }
 
