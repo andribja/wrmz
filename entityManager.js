@@ -29,6 +29,7 @@ var entityManager = {
 _worms: [[],[]],
 _indexes: [0,0],
 _map : [],
+_maps : {},
 _weapons : [],
 _activeTeam: 0,
 _initTimer : 45,
@@ -62,7 +63,31 @@ deferredSetup : function () {
 },
 
 init: function() {
-    this.generateMap();
+    this._maps['urban'] = {
+        name: "urban",
+        backgroundImg: g_images.sky,
+        seaColor: ['blue', '#338BFF']
+    };
+
+    this._maps['space'] = {
+        name: "space",
+        backgroundImg: g_images.bkgnd,
+        seaColor: ['blue', 'cyan']
+    };
+
+    this._maps['trees'] = {
+        name: "trees",
+        backgroundImg: g_images.sky,
+        seaColor: ['blue', '#338BFF']   // 0:waveline, 1:fill
+    };
+
+    this._maps['candy'] = {
+        name: "candy",
+        backgroundImg: g_images.sky,
+        seaColor: ['blue', '#338BFF']
+    };
+
+    this.generateMap(this._maps["space"]);
 },
 
 selectNextWorm: function() {

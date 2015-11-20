@@ -2,14 +2,15 @@
 function Map(descr) {
     this.setup(descr);
 
-    this.sprite = g_sprites['map'];
+    this.sprite = g_sprites['map_' + this.name];
     this.width = this.sprite.width;
     this.height = this.sprite.height;   // For checking if anything has fallen into the ocean
     FULL_WIDTH = this.width;
     FULL_HEIGHT = this.height + this.LAND_OFFSET;
 
     // Init stuff for the sea
-    g_images.sea = this.getWaveImg(g_canvas, g_ctx, FULL_WIDTH, 20, 'blue', 'cyan', 4);
+    g_images.sea = this.getWaveImg(g_canvas, g_ctx, FULL_WIDTH, 20, 
+                                    this.seaColor[0], this.seaColor[1], 4);
     this.seaX = 0;
     this.seaY = FULL_HEIGHT - 2*this.LAND_OFFSET; 
     this.seaVel = 1;
@@ -221,8 +222,10 @@ Map.prototype.renderWave = function(ctx, oy) {
 
 Map.prototype.renderBackground = function(ctx) {
     //bg_ctx.drawImage(g_images.background, -OFFSET_X, -OFFSET_Y);
-    ctx.drawImage(g_images.bkgnd, -OFFSET_X, -OFFSET_Y);
-    util.fillBox(ctx, -OFFSET_X, this.seaY - OFFSET_Y, FULL_WIDTH, FULL_HEIGHT, 'cyan'); 
+    var img = this.backgroundImg;
+    ctx.drawImage(img, 0, 0, img.width, img.height, -OFFSET_X, -OFFSET_Y,
+                    FULL_WIDTH, FULL_HEIGHT);
+    util.fillBox(ctx, -OFFSET_X, this.seaY - OFFSET_Y, FULL_WIDTH, FULL_HEIGHT, this.seaColor[1]); 
 
     this.renderWave(ctx, -20);
     this.renderWave(ctx, 10);
@@ -240,7 +243,7 @@ Map.prototype.renderForeground = function(ctx) {
 
     ctx.putImageData(this.imageData, -OFFSET_X+dx, -OFFSET_Y+dy);
 
-    util.fillBox(ctx, -OFFSET_X, this.height-10 - OFFSET_Y, FULL_WIDTH, FULL_HEIGHT, 'cyan');
+    util.fillBox(ctx, -OFFSET_X, this.height-10 - OFFSET_Y, FULL_WIDTH, FULL_HEIGHT, this.seaColor[1]);
     //this.renderWave(ctx, 40);   
     this.renderWave(ctx, 70);
     this.renderWave(ctx, 100);

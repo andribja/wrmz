@@ -175,7 +175,10 @@ function requestPreloads() {
     var requiredImages = {
         startScreenWorm1 : "images/startScreenWorm1.png",
         startScreenWorm2 : "images/startScreenWorm2.png",
-        map    : "images/world3.png",
+        map_space    : "images/maps/map_space.png",
+        map_candy : "images/maps/map_candy.png",
+        map_urban : "images/maps/map_urban.png",
+        map_trees : "images/maps/map_trees.png",
         background : "images/bg.jpg",
 		worm   : "images/worm.png",
         wormFlipped: "images/wormFlipped.png",
@@ -194,8 +197,8 @@ function requestPreloads() {
         shotgun : "images/shotgun.png",
         baseballBat : "images/baseballBat.png",
         fuelMeter : "images/fuelMeter.png",
-        bkgnd : "images/space.png"
-
+        bkgnd : "images/space.png",
+        sky : "images/bluesky.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -208,7 +211,10 @@ var g_sprites = {};
 function preloadDone() {
     g_sprites.startScreenWorm1 = new Sprite(g_images.startScreenWorm1);
     g_sprites.startScreenWorm2 = new Sprite(g_images.startScreenWorm2);
-    g_sprites.map = new Sprite(g_images.map);
+    g_sprites.map_space = new Sprite(g_images.map_space);
+    g_sprites.map_candy = new Sprite(g_images.map_candy);
+    g_sprites.map_urban = new Sprite(g_images.map_urban);
+    g_sprites.map_trees = new Sprite(g_images.map_trees);
     g_sprites.worm  = new Sprite(g_images.worm);
     g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 
     g_sprites.target = new Sprite(g_images.target);
