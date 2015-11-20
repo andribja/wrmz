@@ -287,7 +287,7 @@ render: function(ctx) {
     util.fillRoundedBox(ctx, x + 100, y-w/2, w, h, r, "red", "black", 2);
 
     // Draw ammo on screen
-    ctx.textAlign = 'right';
+    /*ctx.textAlign = 'right';
     console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
     if(this._worms[this._activeTeam][this._indexes[this._activeTeam]]
              !== 'undefined') {
@@ -295,7 +295,7 @@ render: function(ctx) {
             + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
             .currentWeapon.ammo,
             g_canvas.width-20, 40);
-    }
+    }*/
     ctx.restore();
     
     }
