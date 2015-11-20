@@ -64,7 +64,7 @@ BaseballBat.prototype.update = function (du) {
 };
 
 BaseballBat.prototype.damageWorms = function() {
-    entityManager.damageWormsHalfRadius(this.cx, this.cy, this.damageRadius, this.orientation);
+    entityManager.damageWormsHalfRadius(this.cx, this.cy, this.damageRadius, this.initVel, this.orientation);
 };
 
 BaseballBat.prototype.getRadius = function() {

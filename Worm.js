@@ -394,8 +394,8 @@ Worm.prototype.takeBaseballBat = function(cx, cy, power, orientation) {
     this.health -= 20;
     if(this.health <= 0) this.death();
     if(this.velX === 0 && this.velY === 0) {
-        this.velX = orientation*2*power;
-        this.velY = -3*power;
+        this.velX = orientation*power/2;
+        this.velY = -1*power/2;
     }
 };
 

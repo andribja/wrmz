@@ -99,7 +99,7 @@ damageWorms: function(cx, cy, r) {
     }
 },
 
-damageWormsHalfRadius: function(cx, cy, r, orientation) {
+damageWormsHalfRadius: function(cx, cy, r, damagePower, orientation) {
     console.log("cx, cy, r, orientation: "+cx+","+cy+","+r+","+orientation);
     for(var j = 0; j < this._worms.length; j++) {
         for(var i = 0; i < this._worms[j].length; i++) { 
@@ -112,16 +112,16 @@ damageWormsHalfRadius: function(cx, cy, r, orientation) {
             // and only check worms in r distance but not the worm
             // who is holding the weapon
             if (orientation === -1 && posX < cx && distance < r && distance > 11)
-                currentWorm.takeBaseballBat(cx, cy, 3, orientation);
+                currentWorm.takeBaseballBat(cx, cy, damagePower, orientation);
             if (orientation === 1 && posX > cx && distance < r && distance > 11)
-                currentWorm.takeBaseballBat(cx, cy, 3, orientation);
+                currentWorm.takeBaseballBat(cx, cy, damagePower, orientation);
             
             //this._worms[j][i].shockWave(cx, cy, r);
         }
     }
 },
 
-fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel, orientation) {
+fireWeapon: function(cx, cy, velX, velY, rotation, weapon, shotPower, orientation) {
     // the worm's weapon is passed to the function as a string
     // this is a fix so the appropriate weapon can be created
     var fn = window[weapon];
@@ -133,7 +133,7 @@ fireWeapon: function(cx, cy, velX, velY, rotation, weapon, initVel, orientation)
         velY : velY,
 
         rotation : rotation,
-        initVel : initVel,
+        initVel : shotPower,
         orientation : orientation
     }));
 },
