@@ -357,7 +357,6 @@ Worm.prototype.maybeFireWeapon = function () {
         // make sure we don't fire again until the FIRE key has been pressed another time
         this.shotPower = 0;
         this.hasFired = true;
-        this.isActive = false;
     }
     
 };
