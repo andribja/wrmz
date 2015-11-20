@@ -173,6 +173,8 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
+        startScreenWorm1 : "images/startScreenWorm1.png",
+        startScreenWorm2 : "images/startScreenWorm2.png",
         map    : "images/world3.png",
         background : "images/bg.jpg",
 		worm   : "images/worm.png",
@@ -204,6 +206,8 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
+    g_sprites.startScreenWorm1 = new Sprite(g_images.startScreenWorm1);
+    g_sprites.startScreenWorm2 = new Sprite(g_images.startScreenWorm2);
     g_sprites.map = new Sprite(g_images.map);
     g_sprites.worm  = new Sprite(g_images.worm);
     g_sprites.wormFlipped = new Sprite(g_images.wormFlipped); 

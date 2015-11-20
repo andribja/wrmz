@@ -320,12 +320,12 @@ function startScreen (ctx) {
     ctx.save();
     ctx.drawImage(g_images.bkgnd, 0,0);
 
-    var wormSprite = g_sprites.worm;
-    var wormJetPack = g_sprites.JetpackFlying;
+    var startScreenWorm1 = g_sprites.startScreenWorm1;
+    var startScreenWorm2 = g_sprites.startScreenWorm2;
     var grenade = g_sprites.Grenade;
     
-    drawSprite(ctx, wormSprite, 6, g_canvas.width/7, 4*g_canvas.height/15, 0);
-    drawSprite(ctx, wormJetPack, 5, 4*g_canvas.width/5, 5*g_canvas.height/7, 0);
+    drawSprite(ctx, startScreenWorm1, 2.5, g_canvas.width/7, 4*g_canvas.height/15, 0);
+    drawSprite(ctx, startScreenWorm2, 3, 4*g_canvas.width/5, 5*g_canvas.height/7, 0);
     drawSprite(ctx, grenade, 4, g_canvas.width/5, 5*g_canvas.height/15, 0);
 
     ctx.fillStyle = 'yellow';
