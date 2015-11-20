@@ -6,6 +6,14 @@ var keys = [];
 
 function handleKeydown(evt) {
     keys[evt.keyCode] = true;
+
+    if(!entityManager.gameStarted && evt.keyCode === KEY_START){
+    	main.init();
+        entityManager.gameStarted = true;
+    }
+    if(!entityManager.gameStarted && evt.keyCode === KEY_INSTRUCTIONS){
+    	getInstructions();
+    }
 }
 
 function handleKeyup(evt) {

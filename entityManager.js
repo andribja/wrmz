@@ -51,6 +51,7 @@ _forEachOf: function(aCategory, fn) {
 // to request the blessed release of death!
 //
 KILL_ME_NOW : -1,
+gameStarted : false,
 gameOver : false,
 
 // Some things must be deferred until after initial construction
@@ -218,7 +219,11 @@ update: function(du) {
                 }
 
                 if(aCategory[i] instanceof Worm && aCategory[i].isDeadNow && aCategory[i].isActive){
-                    this._timer = 0;
+                    // Timerinn hér var 0, en mér finnst koma betur út ef hann er >0.
+                    // Þá verður hins vegar vandamál með select next worm
+                    // Kemur semsagt upp villa í línu 284 í þessu skjali
+                    // Ef einn ormur úr sitthvoru liðinu er dáinn
+                    this._timer = 3;
                     spatialManager.unregister(aCategory[i]);
                 }
 
@@ -266,29 +271,7 @@ render: function(ctx) {
     }
 
     if(this.gameOver){
-        console.log("game over");
-        var beginX = g_canvas.width/2 - g_canvas.width/4;
-        var beginY = g_canvas.height/2 - g_canvas.height/4;
-
-        var winningTeam = "";
-        if(this._worms[0].length > 0)
-            winningTeam = this._worms[0][0].team;
-        else
-            winningTeam = this._worms[1][0].team;
-
-        ctx.save();
-        ctx.fillStyle = 'black';
-        ctx.strokeRect(beginX, beginY, g_canvas.width/2, g_canvas.height/2);
-        ctx.fillStyle = 'white';
-        ctx.fillRect(beginX, beginY, g_canvas.width/2, g_canvas.height/2);
-        ctx.font = '20pt Arial Bold';
-        ctx.textAlign = "center";
-        ctx.fillStyle = 'black';
-        ctx.fillText("Game Over!", g_canvas.width/2, g_canvas.height/2);
-        ctx.fillStyle = winningTeam;
-        ctx.fillText("Team " + winningTeam + " wins!!!", g_canvas.width/2, g_canvas.height/2+25);
-
-        ctx.restore();
+        endGame(ctx);
         return;
     }
 
@@ -322,6 +305,7 @@ render: function(ctx) {
 
     // Draw ammo on screen
     ctx.textAlign = 'right';
+    console.log("this._activeTeam: " + this._activeTeam + " this.index: " + this._indexes[this._activeTeam]);
     ctx.fillText('Ammo: ' 
         + this._worms[this._activeTeam][this._indexes[this._activeTeam]]
         .currentWeapon.ammo,
@@ -332,6 +316,87 @@ render: function(ctx) {
     }
 };
 
+function startScreen (ctx) {
+    ctx.save();
+    ctx.drawImage(g_images.bkgnd, 0,0);
+
+    var wormSprite = g_sprites.worm;
+    var wormJetPack = g_sprites.JetpackFlying;
+    var grenade = g_sprites.Grenade;
+    
+    drawSprite(ctx, wormSprite, 6, g_canvas.width/7, 4*g_canvas.height/15, 0);
+    drawSprite(ctx, wormJetPack, 5, 4*g_canvas.width/5, 5*g_canvas.height/7, 0);
+    drawSprite(ctx, grenade, 4, g_canvas.width/5, 5*g_canvas.height/15, 0);
+
+    ctx.fillStyle = 'yellow';
+    ctx.font = '20pt Arial Bold';
+    ctx.textAlign = "center";
+    ctx.fillText("Press 'B' to start a game of Worms!", g_canvas.width/2, g_canvas.height/2-25);
+    ctx.fillText("Press 'I' to get instructions", g_canvas.width/2, g_canvas.height/2+25);
+    ctx.restore();
+}
+
+function drawSprite(ctx, sprite, scale, x, y, rotation){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.scale(scale, scale);
+    ctx.drawImage(sprite.image, sprite.sx, sprite.sy, sprite.width, sprite.height,
+                    -sprite.width/2, -sprite.height/2, sprite.width, sprite.height);
+    
+    ctx.restore();
+}
+
+function getInstructions(){
+    ctx.save();
+
+    ctx.drawImage(g_images.bkgnd, 0,0);
+
+    ctx.fillStyle = 'yellow';
+    ctx.font = '15pt Arial Bold';
+    ctx.textAlign = "center";
+    ctx.fillText("Press AWSD to move worm", g_canvas.width/2, g_canvas.height/11);
+    ctx.fillText("Press spacebar to jump and 'J' for Jetpack", g_canvas.width/2, 2*g_canvas.height/11);
+    ctx.fillText("Press 1 for Bazooka", g_canvas.width/2, 3*g_canvas.height/11);
+    ctx.fillText("Press 2 for Grenade", g_canvas.width/2, 4*g_canvas.height/11);
+    ctx.fillText("Press 3 for Airstrike, enter to aim and click to shoot", g_canvas.width/2, 5*g_canvas.height/11);
+    ctx.fillText("Press 4 for Dynamite", g_canvas.width/2, 6*g_canvas.height/11);
+    ctx.fillText("Press 5 for Shotgun", g_canvas.width/2, 7*g_canvas.height/11);
+    ctx.fillText("Use arrow buttons to move map", g_canvas.width/2, 8*g_canvas.height/11);
+    ctx.fillText("Press and/or hold enter to shoot", g_canvas.width/2, 9*g_canvas.height/11);
+    ctx.fillText("Press 'B' to start a game of Worms!", g_canvas.width/2, 10*g_canvas.height/11);
+    ctx.restore();
+}
+
+function endGame(ctx){
+        console.log("game over");
+        var beginX = g_canvas.width/2 - g_canvas.width/4;
+        var beginY = g_canvas.height/2 - g_canvas.height/4;
+
+        var winningTeam = "";
+        if(entityManager._worms[0].length > 0)
+            winningTeam = entityManager._worms[0][0].team;
+        else
+            winningTeam = entityManager._worms[1][0].team;
+
+        ctx.save();
+        ctx.fillStyle = 'black';
+        ctx.strokeRect(beginX, beginY, g_canvas.width/2, g_canvas.height/2);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(beginX, beginY, g_canvas.width/2, g_canvas.height/2);
+        ctx.font = '20pt Arial Bold';
+        ctx.textAlign = "center";
+        ctx.fillStyle = 'black';
+        ctx.fillText("Game Over!", g_canvas.width/2, g_canvas.height/2);
+        ctx.fillStyle = winningTeam;
+        ctx.fillText(capFirstLetterOf(winningTeam) + " team wins!!!", g_canvas.width/2, g_canvas.height/2+25);
+
+        ctx.restore();
+}
+
+function capFirstLetterOf(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 // Some deferred setup which needs the object to have been created first
 entityManager.deferredSetup();
 

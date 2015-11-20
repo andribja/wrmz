@@ -72,8 +72,7 @@ Map.prototype.horiLineCollidesWithMap = function(x1, x2, y) {
         if(this.isLand(x,y)) i++;
     }
     // i is the number of pixles on the line, that are colliding with the map
-    // 13 px or more mean that more than 65% of the top/bottom of the worm is colliding with te map
-    // (we might need to change this later)
+    // 13 px or more mean that more than 65% of the top/bottom of the worm is colliding with the map
     if(i>13) return true;
     return false;
 }
