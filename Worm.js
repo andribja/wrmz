@@ -379,7 +379,7 @@ Worm.prototype.takeDamage = function(cx, cy, bombRadius) {
     var damageRadius = bombRadius+40;
     var d = util.dist(this.cx, this.cy, cx, cy);
     if(d > damageRadius) return;
-    else this.health -= Math.ceil(damageRadius-d);
+    else this.health -= Math.ceil((damageRadius-d)/2);
     if(Math.ceil(damageRadius-d) >= 20) this.ouchSound.play();
     if(this.health <= 0) this.death();
 };
