@@ -16,7 +16,7 @@ function Shotgun(descr) {
     this.initAngle = this.rotation - Math.PI / 2;
     this.initX = this.cx;
     this.initY = this.cy;
-    this.ammo = 9;
+    this.ammo = 3;
 
     this.sprite = g_sprites.Bazooka;
     this.weaponSprite = g_sprites.Shotgun;
@@ -39,7 +39,7 @@ Shotgun.prototype = new Weapon();
     
 // Initial, inheritable, default values
 Shotgun.prototype.name = 'Shotgun';
-Shotgun.prototype.damageRadius = 30;
+Shotgun.prototype.damageRadius = 10;
 Shotgun.prototype.t = 0;
 
 Shotgun.prototype.fire = function(cx, cy, rotation, shotPower) {
