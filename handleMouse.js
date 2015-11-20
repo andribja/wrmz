@@ -25,6 +25,7 @@ function handleMouse(evt) {
     if (!button) return;
     if(g_mouseAim) {
         entityManager.fireAirstrike(g_mouseX + OFFSET_X);
+        Airstrike.prototype.fireSound.play();
         entityManager._timer = 5;
         g_mouseAim = false;
     }
